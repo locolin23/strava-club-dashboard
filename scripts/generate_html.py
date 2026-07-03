@@ -2,17 +2,11 @@
 
 import json
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 HISTORY_PATH = BASE_DIR / "docs" / "data.json"
 OUTPUT_PATH = BASE_DIR / "docs" / "index.html"
-
-FR_MONTHS = [
-    "janv.", "févr.", "mars", "avr.", "mai", "juin",
-    "juil.", "août", "sept.", "oct.", "nov.", "déc.",
-]
 
 # Le template utilise des placeholders __XXX__ remplacés par de simples .replace()
 # plutôt que str.format(), pour éviter d'avoir à échapper les accolades dans le JS.
@@ -44,6 +38,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     border-radius: 4px;
     margin-bottom: 2rem;
   }
+  .note a { color: #fc4c02; }
   .card {
     background: #171a22;
     border-radius: 8px;
@@ -56,56 +51,6 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   th { color: #9aa0ab; font-weight: 500; }
 
   .pie-wrap { max-width: 280px; margin: 0 auto; }
-
-  .week-label {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #fc4c02;
-    text-align: center;
-    margin-bottom: 0.75rem;
-  }
-  .range-slider {
-    position: relative;
-    height: 1.5rem;
-    margin: 0.5rem 0.75rem 0;
-  }
-  .range-track {
-    position: absolute;
-    left: 0; right: 0; top: 50%;
-    transform: translateY(-50%);
-    height: 4px;
-    background: #262a35;
-    border-radius: 2px;
-  }
-  .range-fill {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 4px;
-    background: #fc4c02;
-    border-radius: 2px;
-  }
-  .range-handle {
-    position: absolute;
-    top: 50%;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #fc4c02;
-    border: 2px solid #0f1117;
-    transform: translate(-50%, -50%);
-    cursor: grab;
-    touch-action: none;
-  }
-  .range-handle:active { cursor: grabbing; }
-  .range-handle.disabled { background: #5a5f6b; cursor: default; }
-  .range-ticks {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: #6d7280;
-    margin-top: 0.5rem;
-  }
 
   .member-list { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
   .member-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
@@ -120,23 +65,9 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   <div class="note">
     Les données proviennent de l'API club Strava, qui ne renvoie qu'un instantané des activités
     récentes sans date précise ni identifiant unique. Les chiffres reflètent donc ce qui était
-    visible à chaque rafraîchissement, pas un cumul garanti sans doublon. Les "semaines"
-    ci-dessous regroupent les rafraîchissements par semaine calendaire (lundi à dimanche).
-  </div>
-
-  <div class="card" id="weekRangeCard" style="display: __SLICER_DISPLAY__;">
-    <h2>Période sélectionnée</h2>
-    <div class="week-label" id="weekLabel">__INITIAL_WEEK_LABEL__</div>
-    <div class="range-slider" id="weekRangeSlider">
-      <div class="range-track"></div>
-      <div class="range-fill" id="weekRangeFill"></div>
-      <div class="range-handle" id="weekHandleMin" tabindex="0" role="slider" aria-label="Début de la période"></div>
-      <div class="range-handle" id="weekHandleMax" tabindex="0" role="slider" aria-label="Fin de la période"></div>
-    </div>
-    <div class="range-ticks">
-      <span>__FIRST_WEEK_TICK__</span>
-      <span>__LAST_WEEK_TICK__</span>
-    </div>
+    visible à chaque rafraîchissement, pas un cumul garanti sans doublon. La réponse brute de
+    l'API, avant tout traitement, est disponible dans le dépôt :
+    <a href="https://github.com/locolin23/strava-club-dashboard/blob/main/data/raw_activities.json">data/raw_activities.json</a>.
   </div>
 
   <div class="card" id="memberSlicerCard" style="display: __MEMBER_SLICER_DISPLAY__;">
@@ -173,11 +104,12 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 </div>
 
 <script>
-const weeks = __WEEKS_JSON__;
 const historyEntries = __HISTORY_ENTRIES_JSON__;
 const allMembers = __ALL_MEMBERS_JSON__;
 const selectedMembers = new Set(allMembers);
-const weekCount = weeks.length;
+const latestEntry = historyEntries.length > 0
+  ? historyEntries[historyEntries.length - 1]
+  : { leaderboard: [], type_breakdown: {}, members: {} };
 
 const leaderboardChart = new Chart(document.getElementById('leaderboardChart'), {
   type: 'bar',
@@ -187,19 +119,27 @@ const leaderboardChart = new Chart(document.getElementById('leaderboardChart'), 
 
 const typeChart = new Chart(document.getElementById('typeChart'), {
   type: 'pie',
-  data: { labels: [], datasets: [{ data: [], backgroundColor: ['#fc4c02', '#2a9d8f', '#e9c46a', '#264653', '#e76f51', '#8ab17d', '#f4a261'] }] },
+  data: {
+    labels: Object.keys(latestEntry.type_breakdown),
+    datasets: [{ data: Object.values(latestEntry.type_breakdown), backgroundColor: ['#fc4c02', '#2a9d8f', '#e9c46a', '#264653', '#e76f51', '#8ab17d', '#f4a261'] }]
+  },
   options: { responsive: true, maintainAspectRatio: true }
 });
 
 const trendChart = new Chart(document.getElementById('trendChart'), {
   type: 'line',
-  data: { datasets: allMembers.map((name, i) => ({
-    label: name,
-    data: [],
-    borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
-    fill: false,
-    tension: 0.2
-  })) },
+  data: {
+    datasets: allMembers.map((name, i) => ({
+      label: name,
+      data: historyEntries.map(e => ({
+        x: e.timestamp,
+        y: e.members[name] ? e.members[name].run_km : null
+      })),
+      borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
+      fill: false,
+      tension: 0.2
+    }))
+  },
   options: {
     responsive: true,
     plugins: { legend: { position: 'bottom', onClick: () => {} } },
@@ -218,14 +158,6 @@ const trendChart = new Chart(document.getElementById('trendChart'), {
   }
 });
 
-function snapshotIndexForWeek(weekIdx) {
-  return weeks[weekIdx].end_idx;
-}
-
-function currentSnapshot(maxWeek) {
-  return historyEntries[snapshotIndexForWeek(maxWeek)];
-}
-
 function buildMemberRows(members) {
   const rows = Object.entries(members)
     .filter(([name]) => selectedMembers.has(name))
@@ -236,11 +168,10 @@ function buildMemberRows(members) {
   ).join('');
 }
 
-function renderMemberList(maxWeek) {
-  const snapshot = weekCount > 0 ? currentSnapshot(maxWeek) : { members: {} };
+function renderMemberList() {
   const list = document.getElementById('memberList');
   list.innerHTML = allMembers.map(name => {
-    const stats = snapshot.members[name];
+    const stats = latestEntry.members[name];
     const active = stats && (stats.total_km > 0 || stats.run_km > 0);
     const checked = selectedMembers.has(name) ? 'checked' : '';
     const id = `member-${name.replace(/[^a-zA-Z0-9]/g, '-')}`;
@@ -251,121 +182,16 @@ function renderMemberList(maxWeek) {
   }).join('');
 }
 
-function updateCharts(minWeek, maxWeek) {
-  if (weekCount === 0) return;
-  const snapshot = currentSnapshot(maxWeek);
-
-  const filteredLeaderboard = snapshot.leaderboard.filter(([name]) => selectedMembers.has(name));
+function updateCharts() {
+  const filteredLeaderboard = latestEntry.leaderboard.filter(([name]) => selectedMembers.has(name));
   leaderboardChart.data.labels = filteredLeaderboard.map(r => r[0]);
   leaderboardChart.data.datasets[0].data = filteredLeaderboard.map(r => r[1]);
   leaderboardChart.update();
 
-  typeChart.data.labels = Object.keys(snapshot.type_breakdown);
-  typeChart.data.datasets[0].data = Object.values(snapshot.type_breakdown);
-  typeChart.update();
+  document.getElementById('memberTableBody').innerHTML = buildMemberRows(latestEntry.members);
 
-  document.getElementById('memberTableBody').innerHTML = buildMemberRows(snapshot.members);
-
-  const rangeStart = weeks[minWeek].start_idx;
-  const rangeEnd = weeks[maxWeek].end_idx;
-  const rangeEntries = historyEntries.slice(rangeStart, rangeEnd + 1);
-  trendChart.data.datasets.forEach(ds => {
-    ds.hidden = !selectedMembers.has(ds.label);
-    ds.data = rangeEntries.map(e => ({
-      x: e.timestamp,
-      y: e.members[ds.label] ? e.members[ds.label].run_km : null
-    }));
-  });
+  trendChart.data.datasets.forEach(ds => { ds.hidden = !selectedMembers.has(ds.label); });
   trendChart.update();
-}
-
-function updateWeekLabel(minWeek, maxWeek) {
-  const label = document.getElementById('weekLabel');
-  if (minWeek === maxWeek) {
-    label.textContent = `Semaine du ${weeks[minWeek].label}`;
-  } else {
-    label.textContent = `Du ${weeks[minWeek].label} au ${weeks[maxWeek].label}`;
-  }
-}
-
-let currentMinWeek = 0;
-let currentMaxWeek = Math.max(weekCount - 1, 0);
-
-function setupWeekSlider() {
-  const track = document.getElementById('weekRangeSlider');
-  const fill = document.getElementById('weekRangeFill');
-  const handleMin = document.getElementById('weekHandleMin');
-  const handleMax = document.getElementById('weekHandleMax');
-
-  function idxToPercent(idx) {
-    return weekCount > 1 ? (idx / (weekCount - 1)) * 100 : (idx === 0 ? 0 : 100);
-  }
-
-  function render() {
-    const minPct = weekCount > 1 ? idxToPercent(currentMinWeek) : 0;
-    const maxPct = weekCount > 1 ? idxToPercent(currentMaxWeek) : 100;
-    handleMin.style.left = `${minPct}%`;
-    handleMax.style.left = `${maxPct}%`;
-    fill.style.left = `${minPct}%`;
-    fill.style.width = `${Math.max(0, maxPct - minPct)}%`;
-    updateWeekLabel(currentMinWeek, currentMaxWeek);
-    updateCharts(currentMinWeek, currentMaxWeek);
-    renderMemberList(currentMaxWeek);
-  }
-
-  function percentToIdx(pct) {
-    if (weekCount <= 1) return 0;
-    return Math.round((pct / 100) * (weekCount - 1));
-  }
-
-  function bindHandle(handle, isMin) {
-    handle.addEventListener('pointerdown', (event) => {
-      if (weekCount <= 1) return;
-      handle.setPointerCapture(event.pointerId);
-
-      const move = (moveEvent) => {
-        const rect = track.getBoundingClientRect();
-        let pct = ((moveEvent.clientX - rect.left) / rect.width) * 100;
-        pct = Math.max(0, Math.min(100, pct));
-        let idx = percentToIdx(pct);
-        if (isMin) {
-          currentMinWeek = Math.min(idx, currentMaxWeek);
-        } else {
-          currentMaxWeek = Math.max(idx, currentMinWeek);
-        }
-        render();
-      };
-      const up = () => {
-        handle.removeEventListener('pointermove', move);
-        handle.removeEventListener('pointerup', up);
-      };
-      handle.addEventListener('pointermove', move);
-      handle.addEventListener('pointerup', up);
-    });
-
-    handle.addEventListener('keydown', (event) => {
-      if (weekCount <= 1) return;
-      let idx = isMin ? currentMinWeek : currentMaxWeek;
-      if (event.key === 'ArrowLeft') idx -= 1;
-      else if (event.key === 'ArrowRight') idx += 1;
-      else return;
-      event.preventDefault();
-      idx = Math.max(0, Math.min(weekCount - 1, idx));
-      if (isMin) currentMinWeek = Math.min(idx, currentMaxWeek);
-      else currentMaxWeek = Math.max(idx, currentMinWeek);
-      render();
-    });
-  }
-
-  if (weekCount <= 1) {
-    handleMin.classList.add('disabled');
-    handleMax.classList.add('disabled');
-  } else {
-    bindHandle(handleMin, true);
-    bindHandle(handleMax, false);
-  }
-
-  render();
 }
 
 document.getElementById('memberList').addEventListener('change', (event) => {
@@ -373,10 +199,11 @@ document.getElementById('memberList').addEventListener('change', (event) => {
   if (!name) return;
   if (event.target.checked) selectedMembers.add(name);
   else selectedMembers.delete(name);
-  updateCharts(currentMinWeek, currentMaxWeek);
+  updateCharts();
 });
 
-setupWeekSlider();
+renderMemberList();
+updateCharts();
 </script>
 </body>
 </html>
@@ -391,47 +218,6 @@ def build_member_rows(members):
             f"<td>{stats['run_count']}</td><td>{stats['avg_speed_kmh']}</td></tr>"
         )
     return "\n        ".join(rows) if rows else "<tr><td colspan=\"5\">Aucune activité récente</td></tr>"
-
-
-def format_day_month(date_):
-    return f"{date_.day} {FR_MONTHS[date_.month - 1]}"
-
-
-def format_week_label(monday, sunday):
-    if monday.year == sunday.year:
-        return f"{format_day_month(monday)} – {format_day_month(sunday)} {sunday.year}"
-    return f"{format_day_month(monday)} {monday.year} – {format_day_month(sunday)} {sunday.year}"
-
-
-def build_weeks(history):
-    """Groupe les entrées d'historique par semaine calendaire (lundi à dimanche).
-
-    Chaque semaine référence les index de début/fin dans le tableau `history` complet
-    (même ordre que les entrées passées au graphique d'évolution), pour retrouver
-    l'instantané le plus récent de la semaine (l'API ne renvoie pas de cumul, seulement
-    un instantané) et pour borner la plage affichée dans ce graphique.
-    """
-    weeks = []
-    index_by_key = {}
-
-    for idx, entry in enumerate(history):
-        dt = datetime.strptime(entry["timestamp"], "%Y-%m-%dT%H:%M:%SZ")
-        monday = dt.date() - timedelta(days=dt.weekday())
-        key = monday.isoformat()
-
-        if key not in index_by_key:
-            index_by_key[key] = len(weeks)
-            weeks.append(
-                {
-                    "label": format_week_label(monday, monday + timedelta(days=6)),
-                    "start_idx": idx,
-                    "end_idx": idx,
-                }
-            )
-        else:
-            weeks[index_by_key[key]]["end_idx"] = idx
-
-    return weeks
 
 
 def build_all_members(history):
@@ -450,8 +236,6 @@ def main():
     else:
         latest = history[-1]
 
-    weeks = build_weeks(history)
-    initial_week_label = f"Semaine du {weeks[-1]['label']}" if weeks else "Pas encore de données"
     all_members = build_all_members(history)
 
     history_entries = [
@@ -467,13 +251,8 @@ def main():
     replacements = {
         "__LAST_UPDATE__": latest["timestamp"],
         "__MEMBER_ROWS__": build_member_rows(latest["members"]),
-        "__WEEKS_JSON__": json.dumps(weeks, ensure_ascii=False),
         "__HISTORY_ENTRIES_JSON__": json.dumps(history_entries, ensure_ascii=False),
         "__ALL_MEMBERS_JSON__": json.dumps(all_members, ensure_ascii=False),
-        "__INITIAL_WEEK_LABEL__": initial_week_label,
-        "__FIRST_WEEK_TICK__": weeks[0]["label"] if weeks else "",
-        "__LAST_WEEK_TICK__": weeks[-1]["label"] if weeks else "",
-        "__SLICER_DISPLAY__": "block" if weeks else "none",
         "__MEMBER_SLICER_DISPLAY__": "block" if all_members else "none",
     }
 
