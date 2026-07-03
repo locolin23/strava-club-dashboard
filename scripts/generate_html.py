@@ -1,264 +1,473 @@
-"""Génère docs/index.html à partir de l'historique agrégé dans docs/data.json."""
+"""Génère docs/index.html à partir de data/raw_activities.json (la réponse brute de l'API).
+
+Ce dashboard reprend le design "Club Activity Board" (voir design_handoff_club_dashboard/) :
+puisque l'API club ne renvoie aucune date par activité, il n'y a pas de dimension temporelle
+-- la page montre un classement/une composition d'effort à partir du dernier instantané
+récupéré, pas une évolution dans le temps.
+"""
 
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-HISTORY_PATH = BASE_DIR / "docs" / "data.json"
+RAW_PATH = BASE_DIR / "data" / "raw_activities.json"
 OUTPUT_PATH = BASE_DIR / "docs" / "index.html"
+
+# Le design ne définit des couleurs/labels que pour ces 3 types ; les autres types
+# d'activité (ex. Swim) sont ignorés du dashboard plutôt que d'inventer une catégorie.
+SPORT_KEY_BY_TYPE = {"Run": "Run", "Ride": "Ride", "WeightTraining": "Weight"}
 
 # Le template utilise des placeholders __XXX__ remplacés par de simples .replace()
 # plutôt que str.format(), pour éviter d'avoir à échapper les accolades dans le JS.
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Strava Club</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Pingouin — Club Activity Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #0f1117;
-    color: #e6e6e6;
-    margin: 0;
-    padding: 2rem 1rem 4rem;
-  }
-  .container { max-width: 960px; margin: 0 auto; }
-  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
-  .meta { color: #9aa0ab; font-size: 0.9rem; margin-bottom: 1.5rem; }
-  .note {
-    background: #1b1e27;
-    border-left: 3px solid #fc4c02;
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
-    color: #b8bec9;
-    border-radius: 4px;
-    margin-bottom: 2rem;
-  }
-  .note a { color: #fc4c02; }
-  .card {
-    background: #171a22;
-    border-radius: 8px;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
-  }
-  .card h2 { margin-top: 0; font-size: 1.1rem; color: #fc4c02; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid #262a35; }
-  th { color: #9aa0ab; font-weight: 500; }
-
-  .pie-wrap { max-width: 280px; margin: 0 auto; }
-
-  .member-list { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
-  .member-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
-  .member-item input { accent-color: #fc4c02; }
-  .member-item.inactive label { color: #5a5f6b; font-style: italic; }
+  body { margin:0; }
+  @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .filter-chip input { accent-color: currentColor; cursor: pointer; }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>🏃 Dashboard Strava Club</h1>
-  <div class="meta">Dernière mise à jour : __LAST_UPDATE__</div>
-  <div class="note">
-    Les données proviennent de l'API club Strava, qui ne renvoie qu'un instantané des activités
-    récentes sans date précise ni identifiant unique. Les chiffres reflètent donc ce qui était
-    visible à chaque rafraîchissement, pas un cumul garanti sans doublon. La réponse brute de
-    l'API, avant tout traitement, est disponible dans le dépôt :
-    <a href="https://github.com/locolin23/strava-club-dashboard/blob/main/data/raw_activities.json">data/raw_activities.json</a>.
+<div style="font-family:'Barlow',system-ui,sans-serif;background:#F4F1EA;color:#14161A;min-height:100vh;-webkit-font-smoothing:antialiased">
+
+  <!-- ACTIVITY FILTER -->
+  <div style="background:#F4F1EA;border-bottom:1px solid #E7E3DA;padding:14px 6vw">
+    <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">Show activities</span>
+      <div id="sportFilterBar" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
   </div>
 
-  <div class="card" id="memberSlicerCard" style="display: __MEMBER_SLICER_DISPLAY__;">
-    <h2>Membres affichés</h2>
-    <div class="member-list" id="memberList"></div>
+  <!-- HERO -->
+  <div style="background:#101216;color:#F4F1EA;padding:40px 6vw 88px">
+    <div style="max-width:1180px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:26px">
+        <div style="width:26px;height:26px;border-radius:50%;background:#F4F1EA;position:relative;flex:none">
+          <div style="position:absolute;inset:5px 6px auto 6px;height:15px;background:#101216;border-radius:0 0 8px 8px"></div>
+        </div>
+        <span style="font-family:'Barlow Condensed';font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:13px;color:#F4F1EA">Le Pingouin</span>
+        <span style="color:#4a4d55">/</span>
+        <span style="font-family:'Barlow Condensed';font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:13px;color:#FC5200">Strava Club</span>
+        <span style="margin-left:auto;font-family:'Space Mono';font-size:11px;color:#8A8577;border:1px solid #2a2d34;border-radius:99px;padding:5px 12px">NO TIMELINE · RANKED BY VOLUME</span>
+      </div>
+      <h1 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;letter-spacing:-.01em;line-height:.92;font-size:clamp(44px,7vw,88px);margin:0 0 14px">Club Activity Board</h1>
+      <p style="max-width:560px;margin:0;color:#B7B2A6;font-size:17px;line-height:1.5">Where the #PINGMAFIA stacks up off the pitch — every run, ride and lifting session logged by the club, ranked by who's putting in the work.</p>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Classement course à pied (activités récentes)</h2>
-    <canvas id="leaderboardChart"></canvas>
+  <!-- STAT TILES -->
+  <div style="max-width:1180px;margin:-56px auto 0;padding:0 6vw;position:relative">
+    <div id="statTilesGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px"></div>
   </div>
 
-  <div class="card">
-    <h2>Répartition par type d'activité (club entier)</h2>
-    <div class="pie-wrap"><canvas id="typeChart"></canvas></div>
-  </div>
+  <div style="max-width:1180px;margin:0 auto;padding:56px 6vw 80px">
 
-  <div class="card">
-    <h2>Évolution du classement dans le temps</h2>
-    <canvas id="trendChart"></canvas>
-  </div>
+    <!-- LEADERBOARDS -->
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px">
+      <div>
+        <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FC5200;margin-bottom:6px">01 — Standings</div>
+        <h2 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:34px;margin:0;letter-spacing:-.01em">Leaderboards</h2>
+      </div>
+      <div id="sportTabsRow" style="display:flex;gap:8px"></div>
+    </div>
 
-  <div class="card">
-    <h2>Détail par membre</h2>
-    <table>
-      <thead>
-        <tr><th>Membre</th><th>Distance totale (km)</th><th>Distance course (km)</th><th>Nb courses</th><th>Vitesse moy. (km/h)</th></tr>
-      </thead>
-      <tbody id="memberTableBody">
-        __MEMBER_ROWS__
-      </tbody>
-    </table>
+    <div style="background:#fff;border:1px solid #E7E3DA;border-radius:20px;padding:26px 28px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px">
+        <div style="font-family:'Barlow';font-weight:600;font-size:15px;color:#14161A">Ranked by <span id="boardMetricLabel" style="color:#FC5200"></span></div>
+        <div id="metricTogglesRow" style="display:flex;gap:6px"></div>
+      </div>
+      <div id="boardRows"></div>
+    </div>
+
+    <!-- ATHLETE CARDS -->
+    <div style="margin:60px 0 24px">
+      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FC5200;margin-bottom:6px">02 — Members</div>
+      <h2 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:34px;margin:0;letter-spacing:-.01em">Athletes</h2>
+    </div>
+    <div id="athleteCardsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px"></div>
+
+    <!-- COMPOSITION -->
+    <div style="margin:60px 0 24px">
+      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FC5200;margin-bottom:6px">03 — Composition</div>
+      <h2 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:34px;margin:0;letter-spacing:-.01em">How the effort splits</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:16px">
+      <div style="background:#fff;border:1px solid #E7E3DA;border-radius:18px;padding:24px">
+        <div style="font-weight:600;font-size:15px;margin-bottom:20px">By discipline <span style="color:#8A8577;font-weight:400">(total moving time)</span></div>
+        <div style="display:flex;align-items:center;gap:26px">
+          <div id="donutCircle" style="position:relative;flex:none;width:150px;height:150px;border-radius:50%">
+            <div style="position:absolute;inset:26px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span id="donutCenter" style="font-family:'Barlow Condensed';font-weight:700;font-size:28px;line-height:.9"></span>
+              <span style="font-size:10px;color:#8A8577;text-transform:uppercase;letter-spacing:.08em">total</span>
+            </div>
+          </div>
+          <div id="donutLegend" style="flex:1;display:flex;flex-direction:column;gap:12px"></div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid #E7E3DA;border-radius:18px;padding:24px">
+        <div style="font-weight:600;font-size:15px;margin-bottom:18px">Share of club time <span style="color:#8A8577;font-weight:400">(who's carrying the volume)</span></div>
+        <div id="effortRows"></div>
+      </div>
+    </div>
+
+    <!-- RECORDS -->
+    <div style="margin:60px 0 24px">
+      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FC5200;margin-bottom:6px">04 — Hall of fame</div>
+      <h2 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:34px;margin:0;letter-spacing:-.01em">Club records</h2>
+    </div>
+    <div id="recordsGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px"></div>
+
+    <div id="footerLine" style="margin-top:44px;text-align:center;font-size:12px;color:#B4AF9F;font-family:'Space Mono'"></div>
   </div>
 </div>
 
 <script>
-const historyEntries = __HISTORY_ENTRIES_JSON__;
-const allMembers = __ALL_MEMBERS_JSON__;
-const selectedMembers = new Set(allMembers);
-const latestEntry = historyEntries.length > 0
-  ? historyEntries[historyEntries.length - 1]
-  : { leaderboard: [], type_breakdown: {}, members: {} };
+const allRows = __ROWS_JSON__;
+const lastUpdated = __LAST_UPDATED_JSON__;
+const rawDataUrl = "https://github.com/locolin23/strava-club-dashboard/blob/main/data/raw_activities.json";
 
-const leaderboardChart = new Chart(document.getElementById('leaderboardChart'), {
-  type: 'bar',
-  data: { labels: [], datasets: [{ label: 'Distance course (km)', data: [], backgroundColor: '#fc4c02' }] },
-  options: { responsive: true, plugins: { legend: { display: false } } }
-});
+const COL = { Run: '#FC5200', Ride: '#1FA2C7', Weight: '#3A3D45' };
+const LABEL = { Run: 'Run', Ride: 'Ride', Weight: 'Strength' };
+const CFG = { Run: ['dist', 'time', 'elev'], Ride: ['time', 'dist', 'elev'], Weight: ['time'] };
+const METL = { dist: 'Distance', time: 'Time', elev: 'Elevation' };
+const SPORTS = ['Run', 'Ride', 'Weight'];
 
-const typeChart = new Chart(document.getElementById('typeChart'), {
-  type: 'pie',
-  data: {
-    labels: Object.keys(latestEntry.type_breakdown),
-    datasets: [{ data: Object.values(latestEntry.type_breakdown), backgroundColor: ['#fc4c02', '#2a9d8f', '#e9c46a', '#264653', '#e76f51', '#8ab17d', '#f4a261'] }]
-  },
-  options: { responsive: true, maintainAspectRatio: true }
-});
+const state = {
+  sport: 'Run',
+  metric: 'dist',
+  sportFilter: { Run: true, Ride: false, Weight: true },
+};
 
-const trendChart = new Chart(document.getElementById('trendChart'), {
-  type: 'line',
-  data: {
-    datasets: allMembers.map((name, i) => ({
-      label: name,
-      data: historyEntries.map(e => ({
-        x: e.timestamp,
-        y: e.members[name] ? e.members[name].run_km : null
-      })),
-      borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
-      fill: false,
-      tension: 0.2
-    }))
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { position: 'bottom', onClick: () => {} } },
-    scales: {
-      x: {
-        type: 'time',
-        time: { tooltipFormat: 'dd/MM/yyyy HH:mm' },
-        ticks: { color: '#9aa0ab' },
-        grid: { color: '#232733' }
-      },
-      y: {
-        ticks: { color: '#9aa0ab' },
-        grid: { color: '#232733' }
-      }
-    }
+function visibleRows() {
+  return allRows.filter(r => state.sportFilter[r.s]);
+}
+
+function ini(name) { const p = name.split(' '); return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase(); }
+function km(m) { const k = m / 1000; return k >= 100 ? Math.round(k).toString() : k.toFixed(1); }
+function hm(s) { const h = Math.floor(s / 3600), mi = Math.round((s % 3600) / 60); return h ? (mi ? h + 'h ' + mi + 'm' : h + 'h') : mi + 'm'; }
+function sig(A) {
+  const k = Object.keys(A.sports);
+  if (k.length === 1) return { Run: 'Pure runner', Ride: 'Indoor cyclist', Weight: 'Iron lover' }[k[0]];
+  if (k.length === 3) return 'Triple threat';
+  return 'Hybrid athlete';
+}
+
+function agg(rows) {
+  const byA = {};
+  for (const x of rows) {
+    const A = byA[x.a] || (byA[x.a] = { name: x.a, sports: {}, d: 0, m: 0, g: 0, c: 0 });
+    A.d += x.d; A.m += x.m; A.g += x.g; A.c++;
+    const S = A.sports[x.s] || (A.sports[x.s] = { d: 0, m: 0, g: 0, c: 0 });
+    S.d += x.d; S.m += x.m; S.g += x.g; S.c++;
   }
-});
-
-function buildMemberRows(members) {
-  const rows = Object.entries(members)
-    .filter(([name]) => selectedMembers.has(name))
-    .sort((a, b) => b[1].run_km - a[1].run_km);
-  if (rows.length === 0) return '<tr><td colspan="5">Aucune activité pour cette sélection</td></tr>';
-  return rows.map(([name, s]) =>
-    `<tr><td>${name}</td><td>${s.total_km}</td><td>${s.run_km}</td><td>${s.run_count}</td><td>${s.avg_speed_kmh}</td></tr>`
-  ).join('');
+  return byA;
 }
 
-function renderMemberList() {
-  const list = document.getElementById('memberList');
-  list.innerHTML = allMembers.map(name => {
-    const stats = latestEntry.members[name];
-    const active = stats && (stats.total_km > 0 || stats.run_km > 0);
-    const checked = selectedMembers.has(name) ? 'checked' : '';
-    const id = `member-${name.replace(/[^a-zA-Z0-9]/g, '-')}`;
-    return `<div class="member-item ${active ? '' : 'inactive'}">
-      <input type="checkbox" id="${id}" data-member="${name}" ${checked}>
-      <label for="${id}">${name}</label>
-    </div>`;
+function tabCss(active, disabled) {
+  const borderColor = disabled ? '#EFEBE2' : (active ? '#101216' : '#D9D4C8');
+  const bg = disabled ? '#F4F1EA' : (active ? '#101216' : 'transparent');
+  const color = disabled ? '#C7C2B4' : (active ? '#F4F1EA' : '#57544C');
+  return `font-family:'Barlow Condensed';font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:15px;padding:9px 20px;border-radius:99px;cursor:${disabled ? 'not-allowed' : 'pointer'};border:1px solid ${borderColor};background:${bg};color:${color}`;
+}
+function toggleCss(active) {
+  return `font-family:'Space Mono';font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:6px 12px;border-radius:8px;cursor:pointer;border:1px solid ${active ? '#FC5200' : '#E7E3DA'};background:${active ? 'rgba(252,82,0,.08)' : '#fff'};color:${active ? '#FC5200' : '#8A8577'};font-weight:${active ? '700' : '400'}`;
+}
+function filterChipCss(active, color) {
+  return `display:flex;align-items:center;gap:7px;font-family:'Space Mono';font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:6px 14px;border-radius:8px;cursor:pointer;border:1px solid ${active ? color : '#E7E3DA'};background:${active ? color + '14' : '#fff'};color:${active ? color : '#8A8577'};font-weight:${active ? '700' : '400'}`;
+}
+
+function renderSportFilter() {
+  const bar = document.getElementById('sportFilterBar');
+  bar.innerHTML = SPORTS.map(s => {
+    const active = state.sportFilter[s];
+    const id = `filter-${s}`;
+    return `<label for="${id}" class="filter-chip" style="${filterChipCss(active, COL[s])}">
+      <input type="checkbox" id="${id}" data-sport="${s}" ${active ? 'checked' : ''}>${LABEL[s]}
+    </label>`;
   }).join('');
+  bar.querySelectorAll('input[type=checkbox]').forEach(box => {
+    box.addEventListener('change', (event) => {
+      state.sportFilter[event.target.dataset.sport] = event.target.checked;
+      render();
+    });
+  });
 }
 
-function updateCharts() {
-  const filteredLeaderboard = latestEntry.leaderboard.filter(([name]) => selectedMembers.has(name));
-  leaderboardChart.data.labels = filteredLeaderboard.map(r => r[0]);
-  leaderboardChart.data.datasets[0].data = filteredLeaderboard.map(r => r[1]);
-  leaderboardChart.update();
-
-  document.getElementById('memberTableBody').innerHTML = buildMemberRows(latestEntry.members);
-
-  trendChart.data.datasets.forEach(ds => { ds.hidden = !selectedMembers.has(ds.label); });
-  trendChart.update();
+function renderStatTiles(td, tm, tg, activityCount, athleteCount) {
+  const tiles = [
+    { label: 'Total distance', value: km(td), unit: 'km', sub: 'across every logged activity' },
+    { label: 'Time moving', value: Math.round(tm / 3600), unit: 'h', sub: 'combined training hours' },
+    { label: 'Elevation gained', value: Math.round(tg).toLocaleString(), unit: 'm', sub: 'total metres climbed' },
+    { label: 'Activities', value: activityCount, unit: '', sub: athleteCount + ' active members' },
+  ];
+  document.getElementById('statTilesGrid').innerHTML = tiles.map(t => `
+    <div style="background:#fff;border:1px solid #E7E3DA;border-radius:16px;padding:22px 22px 20px;box-shadow:0 12px 30px -18px rgba(20,22,26,.25)">
+      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8A8577;margin-bottom:14px">${t.label}</div>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span style="font-family:'Barlow Condensed';font-weight:700;font-size:46px;line-height:.8;color:#14161A">${t.value}</span>
+        <span style="font-family:'Barlow Condensed';font-weight:600;font-size:18px;color:#FC5200">${t.unit}</span>
+      </div>
+      <div style="font-size:13px;color:#8A8577;margin-top:8px">${t.sub}</div>
+    </div>`).join('');
 }
 
-document.getElementById('memberList').addEventListener('change', (event) => {
-  const name = event.target.dataset.member;
-  if (!name) return;
-  if (event.target.checked) selectedMembers.add(name);
-  else selectedMembers.delete(name);
-  updateCharts();
-});
+function renderSportTabs(sport) {
+  document.getElementById('sportTabsRow').innerHTML = SPORTS.map(s => {
+    const disabled = !state.sportFilter[s];
+    return `<button data-sport="${s}" ${disabled ? 'disabled' : ''} style="${tabCss(s === sport, disabled)}">${LABEL[s]}</button>`;
+  }).join('');
+  document.querySelectorAll('#sportTabsRow button:not([disabled])').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.sport = btn.dataset.sport;
+      state.metric = CFG[state.sport][0];
+      render();
+    });
+  });
+}
 
-renderMemberList();
-updateCharts();
+function renderMetricToggles(sport, metric) {
+  document.getElementById('boardMetricLabel').textContent = METL[metric].toLowerCase();
+  document.getElementById('metricTogglesRow').innerHTML = CFG[sport].map(m =>
+    `<button data-metric="${m}" style="${toggleCss(m === metric)}">${METL[m]}</button>`
+  ).join('');
+  document.querySelectorAll('#metricTogglesRow button').forEach(btn => {
+    btn.addEventListener('click', () => { state.metric = btn.dataset.metric; render(); });
+  });
+}
+
+function renderBoard(byA, sport, metric) {
+  let board = [];
+  for (const name in byA) {
+    const S = byA[name].sports[sport];
+    if (!S) continue;
+    let v, str;
+    if (metric === 'dist') { v = S.d / 1000; str = v.toFixed(1) + ' km'; }
+    else if (metric === 'time') { v = S.m / 3600; str = hm(S.m); }
+    else { v = S.g; str = Math.round(S.g) + ' m'; }
+    board.push({ name, initials: ini(name), color: COL[sport], v, valueStr: str, sub: S.c + (S.c > 1 ? ' activities' : ' activity') });
+  }
+  board.sort((a, b) => b.v - a.v);
+  const mx = board.length ? (board[0].v || 1) : 1;
+  board.forEach((r, i) => { r.rank = i + 1; r.pct = Math.max(4, Math.round(r.v / mx * 100)); });
+
+  const container = document.getElementById('boardRows');
+  if (board.length === 0) {
+    container.innerHTML = `<div style="padding:24px 0;color:#8A8577;font-size:14px">No activities of this type are currently shown — enable it above.</div>`;
+    return;
+  }
+  container.innerHTML = board.map(row => `
+    <div style="display:grid;grid-template-columns:30px 42px 150px 1fr 92px;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #EFEBE2">
+      <div style="font-family:'Space Mono';font-size:13px;color:#B4AF9F;text-align:center">${row.rank}</div>
+      <div style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:700;font-size:16px;color:#fff;background:${row.color}">${row.initials}</div>
+      <div style="min-width:0">
+        <div style="font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${row.name}</div>
+        <div style="font-size:12px;color:#8A8577">${row.sub}</div>
+      </div>
+      <div style="height:14px;background:#F1EDE4;border-radius:8px;overflow:hidden">
+        <div style="height:100%;border-radius:8px;transform-origin:left;animation:grow .5s ease both;background:${row.color};width:${row.pct}%"></div>
+      </div>
+      <div style="font-family:'Space Mono';font-weight:700;font-size:15px;text-align:right">${row.valueStr}</div>
+    </div>`).join('');
+}
+
+function renderCards(athletes) {
+  const order = SPORTS;
+  const cards = athletes.slice().sort((a, b) => b.m - a.m).map(A => {
+    const tot = A.m || 1;
+    const mix = order.filter(s => A.sports[s]).map(s => ({ color: COL[s], pct: Math.round(A.sports[s].m / tot * 100) }));
+    let prim = order[0], pv = -1;
+    order.forEach(s => { if (A.sports[s] && A.sports[s].m > pv) { pv = A.sports[s].m; prim = s; } });
+    return {
+      name: A.name, initials: ini(A.name), primaryColor: COL[prim], primaryLabel: sig(A),
+      count: A.c, dist: km(A.d) + ' km', time: hm(A.m), elev: Math.round(A.g) + ' m', mix,
+    };
+  });
+
+  const grid = document.getElementById('athleteCardsGrid');
+  if (cards.length === 0) {
+    grid.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filter.</div>`;
+    return;
+  }
+  grid.innerHTML = cards.map(c => `
+    <div style="background:#fff;border:1px solid #E7E3DA;border-radius:18px;padding:20px">
+      <div style="display:flex;align-items:center;gap:13px;margin-bottom:18px">
+        <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:700;font-size:18px;color:#fff;flex:none;background:${c.primaryColor}">${c.initials}</div>
+        <div style="min-width:0">
+          <div style="font-family:'Barlow Condensed';font-weight:700;font-size:21px;text-transform:uppercase;line-height:1">${c.name}</div>
+          <div style="font-size:12px;color:#8A8577;margin-top:3px">${c.primaryLabel} · ${c.count} activities</div>
+        </div>
+      </div>
+      <div style="display:flex;height:8px;border-radius:6px;overflow:hidden;background:#F1EDE4;margin-bottom:16px">
+        ${c.mix.map(m => `<div style="height:100%;background:${m.color};width:${m.pct}%"></div>`).join('')}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <div><div style="font-family:'Space Mono';font-weight:700;font-size:17px">${c.dist}</div><div style="font-size:11px;color:#8A8577;text-transform:uppercase;letter-spacing:.06em">Distance</div></div>
+        <div><div style="font-family:'Space Mono';font-weight:700;font-size:17px">${c.time}</div><div style="font-size:11px;color:#8A8577;text-transform:uppercase;letter-spacing:.06em">Time</div></div>
+        <div><div style="font-family:'Space Mono';font-weight:700;font-size:17px">${c.elev}</div><div style="font-size:11px;color:#8A8577;text-transform:uppercase;letter-spacing:.06em">Climb</div></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderComposition(tS, athletes, totT, isEmpty) {
+  let acc = 0;
+  const segs = [];
+  const legend = [];
+  SPORTS.filter(s => state.sportFilter[s]).forEach(s => {
+    const pct = tS[s] / totT * 100;
+    segs.push(`${COL[s]} ${acc.toFixed(2)}% ${(acc + pct).toFixed(2)}%`);
+    acc += pct;
+    legend.push({ label: LABEL[s], color: COL[s], valueStr: hm(tS[s]), pctStr: Math.round(pct) + '%' });
+  });
+  document.getElementById('donutCircle').style.background = isEmpty ? '#F1EDE4' : `conic-gradient(${segs.join(',')})`;
+  document.getElementById('donutCenter').textContent = Math.round(totT / 3600) + 'h';
+  document.getElementById('donutLegend').innerHTML = legend.map(l => `
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:12px;height:12px;border-radius:4px;flex:none;background:${l.color}"></span>
+      <span style="font-weight:600;font-size:14px;flex:1">${l.label}</span>
+      <span style="font-family:'Space Mono';font-size:13px;color:#8A8577">${l.valueStr}</span>
+      <span style="font-family:'Space Mono';font-weight:700;font-size:14px;width:44px;text-align:right">${l.pctStr}</span>
+    </div>`).join('');
+
+  const order = SPORTS;
+  const effRaw = athletes.slice().sort((a, b) => b.m - a.m);
+  const effMax = effRaw.length ? effRaw[0].m : 1;
+  const effort = effRaw.map(A => {
+    let prim = order[0], pv = -1;
+    order.forEach(s => { if (A.sports[s] && A.sports[s].m > pv) { pv = A.sports[s].m; prim = s; } });
+    return { name: A.name, color: COL[prim], pct: Math.max(4, Math.round(A.m / effMax * 100)), valueStr: Math.round(A.m / totT * 100) + '%' };
+  });
+  const effortContainer = document.getElementById('effortRows');
+  if (effort.length === 0) {
+    effortContainer.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filter.</div>`;
+  } else {
+    effortContainer.innerHTML = effort.map(e => `
+      <div style="display:grid;grid-template-columns:120px 1fr 64px;align-items:center;gap:12px;padding:7px 0">
+        <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.name}</div>
+        <div style="height:12px;background:#F1EDE4;border-radius:7px;overflow:hidden">
+          <div style="height:100%;border-radius:7px;transform-origin:left;animation:grow .5s ease both;background:${e.color};width:${e.pct}%"></div>
+        </div>
+        <div style="font-family:'Space Mono';font-size:13px;text-align:right;color:#14161A">${e.valueStr}</div>
+      </div>`).join('');
+  }
+}
+
+function renderRecords(rows) {
+  let lr = null, lride = null, climb = null, longest = null;
+  rows.forEach(x => {
+    if (x.s === 'Run' && (!lr || x.d > lr.d)) lr = x;
+    if (x.s === 'Ride' && (!lride || x.d > lride.d)) lride = x;
+    if (!climb || x.g > climb.g) climb = x;
+    if (!longest || x.m > longest.m) longest = x;
+  });
+  const records = [
+    lr ? { label: 'Longest run', value: km(lr.d) + ' km', who: lr.a, note: lr.t, color: COL.Run } : null,
+    lride ? { label: 'Longest ride', value: km(lride.d) + ' km', who: lride.a, note: lride.t, color: COL.Ride } : null,
+    climb ? { label: 'Biggest climb', value: Math.round(climb.g) + ' m', who: climb.a, note: climb.t, color: '#FC5200' } : null,
+    longest ? { label: 'Longest session', value: hm(longest.m), who: longest.a, note: longest.t, color: COL.Weight } : null,
+  ].filter(Boolean);
+
+  const grid = document.getElementById('recordsGrid');
+  if (records.length === 0) {
+    grid.style.gridTemplateColumns = '1fr';
+    grid.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filter.</div>`;
+    return;
+  }
+  grid.style.gridTemplateColumns = `repeat(${records.length}, 1fr)`;
+  grid.innerHTML = records.map(r => `
+    <div style="background:#101216;color:#F4F1EA;border-radius:18px;padding:22px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:4px;background:${r.color}"></div>
+      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577;margin-bottom:16px">${r.label}</div>
+      <div style="font-family:'Barlow Condensed';font-weight:700;font-size:38px;line-height:.9;margin-bottom:12px">${r.value}</div>
+      <div style="font-weight:600;font-size:14px">${r.who}</div>
+      <div style="font-size:12px;color:#8A8577;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.note}</div>
+    </div>`).join('');
+}
+
+function render() {
+  if (!state.sportFilter[state.sport]) {
+    const firstEnabled = SPORTS.find(s => state.sportFilter[s]);
+    if (firstEnabled) { state.sport = firstEnabled; state.metric = CFG[firstEnabled][0]; }
+  }
+  if (!CFG[state.sport].includes(state.metric)) state.metric = CFG[state.sport][0];
+
+  const rows = visibleRows();
+  const byA = agg(rows);
+  const athletes = Object.values(byA);
+
+  let td = 0, tm = 0, tg = 0;
+  const tS = { Run: 0, Ride: 0, Weight: 0 };
+  rows.forEach(x => { td += x.d; tm += x.m; tg += x.g; tS[x.s] += x.m; });
+
+  renderSportFilter();
+  renderStatTiles(td, tm, tg, rows.length, athletes.length);
+  renderSportTabs(state.sport);
+  renderMetricToggles(state.sport, state.metric);
+  renderBoard(byA, state.sport, state.metric);
+  renderCards(athletes);
+  renderComposition(tS, athletes, tS.Run + tS.Ride + tS.Weight || 1, rows.length === 0);
+  renderRecords(rows);
+
+  document.getElementById('footerLine').innerHTML =
+    `Strava Club API · ${rows.length} activities shown · ${athletes.length} members · ` +
+    `dernière synchro ${lastUpdated} · réponse brute avant agrégation : ` +
+    `<a href="${rawDataUrl}" style="color:#B4AF9F">data/raw_activities.json</a>`;
+}
+
+render();
 </script>
 </body>
 </html>
 """
 
 
-def build_member_rows(members):
+def build_rows(raw_activities):
     rows = []
-    for name, stats in sorted(members.items(), key=lambda item: item[1]["run_km"], reverse=True):
+    for activity in raw_activities:
+        athlete = activity.get("athlete", {})
+        firstname = (athlete.get("firstname") or "").strip()
+        lastname = (athlete.get("lastname") or "").strip()
+        name = f"{firstname} {lastname}".strip()
+        if not name:
+            continue
+
+        sport_key = SPORT_KEY_BY_TYPE.get(activity.get("type"))
+        if sport_key is None:
+            continue
+
         rows.append(
-            f"<tr><td>{name}</td><td>{stats['total_km']}</td><td>{stats['run_km']}</td>"
-            f"<td>{stats['run_count']}</td><td>{stats['avg_speed_kmh']}</td></tr>"
+            {
+                "a": name,
+                "s": sport_key,
+                "d": activity.get("distance", 0) or 0,
+                "m": activity.get("moving_time", 0) or 0,
+                "g": activity.get("total_elevation_gain", 0) or 0,
+                "t": activity.get("name", ""),
+            }
         )
-    return "\n        ".join(rows) if rows else "<tr><td colspan=\"5\">Aucune activité récente</td></tr>"
-
-
-def build_all_members(history):
-    members = set()
-    for entry in history:
-        members.update(entry.get("members", {}).keys())
-    return sorted(members)
+    return rows
 
 
 def main():
-    data = json.loads(HISTORY_PATH.read_text()) if HISTORY_PATH.exists() else {"history": []}
-    history = data.get("history", [])
+    raw_activities = json.loads(RAW_PATH.read_text()) if RAW_PATH.exists() else []
+    rows = build_rows(raw_activities)
 
-    if not history:
-        latest = {"timestamp": "jamais", "members": {}, "type_breakdown": {}, "leaderboard": []}
+    if RAW_PATH.exists():
+        last_updated = datetime.fromtimestamp(RAW_PATH.stat().st_mtime, tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     else:
-        latest = history[-1]
-
-    all_members = build_all_members(history)
-
-    history_entries = [
-        {
-            "timestamp": entry["timestamp"],
-            "leaderboard": entry["leaderboard"],
-            "type_breakdown": entry["type_breakdown"],
-            "members": entry["members"],
-        }
-        for entry in history
-    ]
-
-    replacements = {
-        "__LAST_UPDATE__": latest["timestamp"],
-        "__MEMBER_ROWS__": build_member_rows(latest["members"]),
-        "__HISTORY_ENTRIES_JSON__": json.dumps(history_entries, ensure_ascii=False),
-        "__ALL_MEMBERS_JSON__": json.dumps(all_members, ensure_ascii=False),
-        "__MEMBER_SLICER_DISPLAY__": "block" if all_members else "none",
-    }
+        last_updated = "jamais"
 
     html = PAGE_TEMPLATE
-    for placeholder, value in replacements.items():
-        html = html.replace(placeholder, value)
+    html = html.replace("__ROWS_JSON__", json.dumps(rows, ensure_ascii=False))
+    html = html.replace("__LAST_UPDATED_JSON__", json.dumps(last_updated, ensure_ascii=False))
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(html, encoding="utf-8")
