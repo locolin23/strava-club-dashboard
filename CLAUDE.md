@@ -9,7 +9,7 @@ Créer un dashboard HTML statique qui résume les activités récentes des membr
 L'API utilisée (`GET /clubs/{id}/activities`) sera **supprimée par Strava le 1er septembre 2026**. Ce projet a donc une durée de vie garantie d'environ 2 mois à partir d'aujourd'hui (3 juillet 2026). C'est un choix assumé pour aller vite — si le projet doit vivre plus longtemps, il faudra migrer vers une authentification OAuth par membre (`activity:read`) avant cette date.
 
 Autres limites à accepter dès le départ :
-- **Pas de date par activité** : l'endpoint ne renvoie aucun timestamp. Impossible d'avoir une vue "jour par jour" fiable. On simule une notion de fraîcheur en horodatant chaque exécution du script (heure du refresh).
+- **Pas de date par activité** : l'endpoint ne renvoie aucun timestamp. Impossible d'avoir une vue "jour par jour" fiable. On simule une notion de fraîcheur en horodatant chaque exécution du script (heure du refresh). → Voir Étape 9 pour le plan de contournement (empreinte de contenu + date de première détection).
 - **Pas d'identifiant d'athlète unique** : seuls prénom + nom sont fournis. Deux membres homonymes seront confondus. On agrège donc par nom complet.
 - **Pas de champ `average_speed` direct** : à calculer soi-même (`distance / moving_time`).
 - **Rate limit** : 100 requêtes / 15 min, 1000 / jour (lecture). Largement suffisant pour un refresh horaire.
@@ -24,9 +24,15 @@ strava-club-dashboard/
 ├── scripts/
 │   ├── fetch_strava.py          # appelle l'API, gère le refresh token
 │   ├── aggregate.py             # calcule les stats (par membre, par type, cumulés)
-│   └── generate_html.py         # génère index.html à partir des stats
+│   ├── generate_html.py         # génère index.html à partir des stats
+│   └── excluded_activities.json # (V2, Étape 9) liste statique de hashs à exclure
+├── data/
+│   ├── raw_activities.json      # (V2) dernier instantané brut, écrasé à chaque run
+│   └── raw_snapshots/           # (V2, Étape 9) archive de chaque instantané, jamais écrasée
 ├── docs/                        # dossier publié par GitHub Pages
-│   └── index.html               # fichier généré, écrasé à chaque run
+│   ├── index.html               # fichier généré, écrasé à chaque run
+│   ├── data.json                # historique par instantané (V1, voir Étape 9 pour son statut)
+│   └── activities_seen.json     # (V2, Étape 9) ledger hash -> date de première détection
 ├── requirements.txt
 └── README.md
 ```
@@ -110,6 +116,79 @@ python scripts/aggregate.py
 python scripts/generate_html.py
 open docs/index.html
 ```
+
+## Étape 9 — Reconstruction d'un historique daté via empreintes d'activité (V2)
+
+**Statut : plan validé, pas encore implémenté.**
+
+Constat : `raw_activities.json` ne fournit ni identifiant, ni date par activité (confirmé en
+inspectant la réponse réelle de l'API — le champ n'existe tout simplement pas). Sans ID, deux
+exécutions successives ne peuvent pas savoir si elles voient la même activité ou une nouvelle.
+Le plan ci-dessous transforme "la première fois que notre cron a vu cette activité" en une
+approximation de sa date de création, ce qui permet de reconstruire une vraie série temporelle —
+chose jugée impossible dans les limitations initiales de ce projet (voir plus haut).
+
+Au passage, le dashboard actuel (généré par `generate_html.py`) a été entièrement reconstruit
+sur un design "Club Activity Board" (classements par sport, cartes athlètes, composition de
+l'effort, records — voir `design_handoff_club_dashboard/`), lu directement depuis
+`data/raw_activities.json` plutôt que depuis `docs/data.json`. C'est une vue "instantané", sans
+dimension temporelle, cohérente avec le fait qu'on ne pouvait alors pas dater les activités.
+L'étape 9 lève cette contrainte.
+
+### 1. Empreinte d'activité (hash)
+
+Puisqu'il n'y a pas d'ID Strava, on calcule un hash de contenu (sha256 tronqué) à partir de :
+nom complet de l'athlète, `type`, `distance`, `moving_time`, `elapsed_time`,
+`total_elevation_gain`, `name` (titre de l'activité).
+
+**Limite acceptée** : deux activités strictement identiques sur tous ces champs (même athlète,
+mêmes valeurs, même titre) seraient fusionnées à tort. Risque jugé faible en pratique, mais pas
+nul — même famille de compromis que la limite "homonymes" déjà acceptée pour les noms d'athlètes.
+
+### 2. Archive brute — ne jamais rien perdre
+
+`fetch_strava.py` doit, en plus d'écraser `data/raw_activities.json` (dernier instantané, utilisé
+tel quel par la vue "Agrégation"), archiver **chaque** réponse brute dans
+`data/raw_snapshots/<timestamp>.json` (fichier jamais écrasé, jamais supprimé). Objectif : ne
+perdre aucune donnée, et pouvoir reconstruire le ledger ci-dessous depuis zéro en rejouant tout
+l'historique brut si jamais sa logique doit être corrigée ou refaite.
+
+### 3. Ledger `docs/activities_seen.json`
+
+`aggregate.py` maintient un fichier `docs/activities_seen.json` :
+`hash -> { first_seen, athlete, sport, distance, moving_time, elevation, title }`.
+
+- Un hash déjà présent n'est **jamais** réécrit (son `first_seen` reste la première détection).
+- Un hash absent du ledger et absent de la liste d'exclusion est ajouté avec
+  `first_seen` = horodatage de ce run.
+- Ce ledger devient la source d'une vraie vue "série temporelle" (groupement par date réelle
+  approximative, par jour ou semaine, par membre) — enfin possible malgré l'absence de date
+  native dans l'API.
+
+### 4. Liste d'exclusion statique
+
+`scripts/excluded_activities.json` : simple tableau de hashs, maintenu à la main, pour retirer
+définitivement une activité précise du dashboard (test, doublon, activité à ne pas montrer).
+Filtré avant tout calcul dans `aggregate.py` — un hash exclu n'entre jamais dans le ledger.
+
+### 5. Toggle sur le dashboard
+
+`generate_html.py` ajoute un bouton en haut de page pour basculer entre deux vues :
+- **Agrégation** — la vue actuelle "Club Activity Board", construite à partir de
+  `data/raw_activities.json` (fenêtre récente glissante de l'API, sans dimension temporelle).
+- **Série temporelle** — nouvelle vue construite à partir de `docs/activities_seen.json`,
+  groupée par `first_seen`, avec un vrai graphe d'évolution jour/semaine par membre.
+
+### Limites à garder en tête
+
+- `first_seen` approxime la date de création à la précision du cron (± 1h), et seulement à
+  partir du déploiement de ce système — impossible de dater rétroactivement des activités qui
+  auraient disparu de la fenêtre récente de l'API avant ce déploiement.
+- `data/raw_snapshots/` grossit indéfiniment (quelques dizaines de Mo estimées sur les ~2 mois de
+  vie restants du projet avant la suppression de l'endpoint) — jugé acceptable vu la taille.
+- `docs/data.json` (l'ancien historique par instantané agrégé, V1) devient obsolète une fois ce
+  ledger en place. Conservé pour l'instant (le workflow continue à l'alimenter) mais plus lu par
+  le dashboard — à supprimer plus tard s'il reste inutilisé.
 
 ## Checklist finale
 
