@@ -14,6 +14,8 @@ FR_MONTHS = [
     "juil.", "août", "sept.", "oct.", "nov.", "déc.",
 ]
 
+# Le template utilise des placeholders __XXX__ remplacés par de simples .replace()
+# plutôt que str.format(), pour éviter d'avoir à échapper les accolades dans le JS.
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -21,18 +23,19 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Strava Club</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
-  body {{
+  body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: #0f1117;
     color: #e6e6e6;
     margin: 0;
     padding: 2rem 1rem 4rem;
-  }}
-  .container {{ max-width: 960px; margin: 0 auto; }}
-  h1 {{ font-size: 1.6rem; margin-bottom: 0.25rem; }}
-  .meta {{ color: #9aa0ab; font-size: 0.9rem; margin-bottom: 1.5rem; }}
-  .note {{
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .meta { color: #9aa0ab; font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .note {
     background: #1b1e27;
     border-left: 3px solid #fc4c02;
     padding: 0.75rem 1rem;
@@ -40,96 +43,80 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     color: #b8bec9;
     border-radius: 4px;
     margin-bottom: 2rem;
-  }}
-  .card {{
+  }
+  .card {
     background: #171a22;
     border-radius: 8px;
     padding: 1.25rem;
     margin-bottom: 1.5rem;
-  }}
-  .card h2 {{ margin-top: 0; font-size: 1.1rem; color: #fc4c02; }}
-  table {{ width: 100%; border-collapse: collapse; font-size: 0.9rem; }}
-  th, td {{ text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid #262a35; }}
-  th {{ color: #9aa0ab; font-weight: 500; }}
+  }
+  .card h2 { margin-top: 0; font-size: 1.1rem; color: #fc4c02; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid #262a35; }
+  th { color: #9aa0ab; font-weight: 500; }
 
-  .week-label {{
+  .pie-wrap { max-width: 280px; margin: 0 auto; }
+
+  .week-label {
     font-size: 0.95rem;
     font-weight: 600;
     color: #fc4c02;
     text-align: center;
-    margin-bottom: 0.5rem;
-  }}
-  .range-slider {{
+    margin-bottom: 0.75rem;
+  }
+  .range-slider {
     position: relative;
-    height: 2.2rem;
-    margin: 0.5rem 0.5rem 0;
-  }}
-  .range-slider .range-track {{
+    height: 1.5rem;
+    margin: 0.5rem 0.75rem 0;
+  }
+  .range-track {
     position: absolute;
     left: 0; right: 0; top: 50%;
     transform: translateY(-50%);
     height: 4px;
     background: #262a35;
     border-radius: 2px;
-  }}
-  .range-slider .range-fill {{
+  }
+  .range-fill {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     height: 4px;
     background: #fc4c02;
     border-radius: 2px;
-  }}
-  .range-slider input[type=range] {{
+  }
+  .range-handle {
     position: absolute;
-    left: 0; right: 0; top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
-    margin: 0;
-    background: transparent;
-    pointer-events: none;
-    -webkit-appearance: none;
-    appearance: none;
-  }}
-  .range-slider input[type=range]::-webkit-slider-runnable-track {{ background: transparent; }}
-  .range-slider input[type=range]::-webkit-slider-thumb {{
-    pointer-events: all;
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px; height: 18px;
+    top: 50%;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: #fc4c02;
-    cursor: pointer;
     border: 2px solid #0f1117;
-  }}
-  .range-slider input[type=range]::-moz-range-thumb {{
-    pointer-events: all;
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: #fc4c02;
-    cursor: pointer;
-    border: 2px solid #0f1117;
-  }}
-  .range-slider input[type=range]:disabled::-webkit-slider-thumb {{ background: #5a5f6b; }}
-  .range-slider input[type=range]:disabled::-moz-range-thumb {{ background: #5a5f6b; }}
-  .range-ticks {{
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    touch-action: none;
+  }
+  .range-handle:active { cursor: grabbing; }
+  .range-handle.disabled { background: #5a5f6b; cursor: default; }
+  .range-ticks {
     display: flex;
     justify-content: space-between;
     font-size: 0.75rem;
     color: #6d7280;
-    margin-top: 0.3rem;
-  }}
+    margin-top: 0.5rem;
+  }
 
-  .member-list {{ display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }}
-  .member-item {{ display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }}
-  .member-item input {{ accent-color: #fc4c02; }}
-  .member-item.inactive label {{ color: #5a5f6b; font-style: italic; }}
+  .member-list { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+  .member-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
+  .member-item input { accent-color: #fc4c02; }
+  .member-item.inactive label { color: #5a5f6b; font-style: italic; }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>🏃 Dashboard Strava Club</h1>
-  <div class="meta">Dernière mise à jour : {last_update}</div>
+  <div class="meta">Dernière mise à jour : __LAST_UPDATE__</div>
   <div class="note">
     Les données proviennent de l'API club Strava, qui ne renvoie qu'un instantané des activités
     récentes sans date précise ni identifiant unique. Les chiffres reflètent donc ce qui était
@@ -137,22 +124,22 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     ci-dessous regroupent les rafraîchissements par semaine calendaire (lundi à dimanche).
   </div>
 
-  <div class="card" id="weekRangeCard" style="display: {slicer_display};">
+  <div class="card" id="weekRangeCard" style="display: __SLICER_DISPLAY__;">
     <h2>Période sélectionnée</h2>
-    <div class="week-label" id="weekLabel">{initial_week_label}</div>
-    <div class="range-slider">
+    <div class="week-label" id="weekLabel">__INITIAL_WEEK_LABEL__</div>
+    <div class="range-slider" id="weekRangeSlider">
       <div class="range-track"></div>
       <div class="range-fill" id="weekRangeFill"></div>
-      <input type="range" id="weekMin" min="0" max="{max_week_idx}" value="0" step="1">
-      <input type="range" id="weekMax" min="0" max="{max_week_idx}" value="{max_week_idx}" step="1">
+      <div class="range-handle" id="weekHandleMin" tabindex="0" role="slider" aria-label="Début de la période"></div>
+      <div class="range-handle" id="weekHandleMax" tabindex="0" role="slider" aria-label="Fin de la période"></div>
     </div>
     <div class="range-ticks">
-      <span>{first_week_tick}</span>
-      <span>{last_week_tick}</span>
+      <span>__FIRST_WEEK_TICK__</span>
+      <span>__LAST_WEEK_TICK__</span>
     </div>
   </div>
 
-  <div class="card" id="memberSlicerCard" style="display: {member_slicer_display};">
+  <div class="card" id="memberSlicerCard" style="display: __MEMBER_SLICER_DISPLAY__;">
     <h2>Membres affichés</h2>
     <div class="member-list" id="memberList"></div>
   </div>
@@ -164,7 +151,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 
   <div class="card">
     <h2>Répartition par type d'activité (club entier)</h2>
-    <canvas id="typeChart"></canvas>
+    <div class="pie-wrap"><canvas id="typeChart"></canvas></div>
   </div>
 
   <div class="card">
@@ -179,104 +166,94 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         <tr><th>Membre</th><th>Distance totale (km)</th><th>Distance course (km)</th><th>Nb courses</th><th>Vitesse moy. (km/h)</th></tr>
       </thead>
       <tbody id="memberTableBody">
-        {member_rows}
+        __MEMBER_ROWS__
       </tbody>
     </table>
   </div>
 </div>
 
 <script>
-const weeks = {weeks_json};
-const historyEntries = {history_entries_json};
-const allMembers = {all_members_json};
+const weeks = __WEEKS_JSON__;
+const historyEntries = __HISTORY_ENTRIES_JSON__;
+const allMembers = __ALL_MEMBERS_JSON__;
 const selectedMembers = new Set(allMembers);
+const weekCount = weeks.length;
 
-const leaderboardChart = new Chart(document.getElementById('leaderboardChart'), {{
+const leaderboardChart = new Chart(document.getElementById('leaderboardChart'), {
   type: 'bar',
-  data: {{ labels: [], datasets: [{{ label: 'Distance course (km)', data: [], backgroundColor: '#fc4c02' }}] }},
-  options: {{ responsive: true, plugins: {{ legend: {{ display: false }} }} }}
-}});
+  data: { labels: [], datasets: [{ label: 'Distance course (km)', data: [], backgroundColor: '#fc4c02' }] },
+  options: { responsive: true, plugins: { legend: { display: false } } }
+});
 
-const typeChart = new Chart(document.getElementById('typeChart'), {{
+const typeChart = new Chart(document.getElementById('typeChart'), {
   type: 'pie',
-  data: {{ labels: [], datasets: [{{ data: [], backgroundColor: ['#fc4c02', '#2a9d8f', '#e9c46a', '#264653', '#e76f51', '#8ab17d', '#f4a261'] }}] }},
-  options: {{ responsive: true }}
-}});
+  data: { labels: [], datasets: [{ data: [], backgroundColor: ['#fc4c02', '#2a9d8f', '#e9c46a', '#264653', '#e76f51', '#8ab17d', '#f4a261'] }] },
+  options: { responsive: true, maintainAspectRatio: true }
+});
 
-const weekHighlightPlugin = {{
-  id: 'weekHighlight',
-  beforeDatasetsDraw(chart) {{
-    const range = chart._weekHighlight;
-    if (!range) return;
-    const {{ ctx, chartArea, scales }} = chart;
-    const xScale = scales.x;
-    const x0 = xScale.getPixelForValue(range.startIdx);
-    const x1 = xScale.getPixelForValue(range.endIdx);
-    ctx.save();
-    ctx.fillStyle = 'rgba(252, 76, 2, 0.18)';
-    ctx.fillRect(Math.min(x0, x1), chartArea.top, Math.max(2, Math.abs(x1 - x0)), chartArea.bottom - chartArea.top);
-    ctx.restore();
-  }}
-}};
-
-const trendChart = new Chart(document.getElementById('trendChart'), {{
+const trendChart = new Chart(document.getElementById('trendChart'), {
   type: 'line',
-  data: {{
-    labels: historyEntries.map(e => e.timestamp),
-    datasets: allMembers.map((name, i) => ({{
-      label: name,
-      data: historyEntries.map(e => (e.members[name] ? e.members[name].run_km : null)),
-      borderColor: `hsl(${{i * 47 % 360}}, 70%, 55%)`,
-      fill: false,
-      tension: 0.2
-    }}))
-  }},
-  options: {{
+  data: { datasets: allMembers.map((name, i) => ({
+    label: name,
+    data: [],
+    borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
+    fill: false,
+    tension: 0.2
+  })) },
+  options: {
     responsive: true,
-    plugins: {{ legend: {{ position: 'bottom', onClick: () => {{}} }} }}
-  }},
-  plugins: [weekHighlightPlugin]
-}});
+    plugins: { legend: { position: 'bottom', onClick: () => {} } },
+    scales: {
+      x: {
+        type: 'time',
+        time: { tooltipFormat: 'dd/MM/yyyy HH:mm' },
+        ticks: { color: '#9aa0ab' },
+        grid: { color: '#232733' }
+      },
+      y: {
+        ticks: { color: '#9aa0ab' },
+        grid: { color: '#232733' }
+      }
+    }
+  }
+});
 
-function buildMemberRows(members) {{
+function snapshotIndexForWeek(weekIdx) {
+  return weeks[weekIdx].end_idx;
+}
+
+function currentSnapshot(maxWeek) {
+  return historyEntries[snapshotIndexForWeek(maxWeek)];
+}
+
+function buildMemberRows(members) {
   const rows = Object.entries(members)
     .filter(([name]) => selectedMembers.has(name))
     .sort((a, b) => b[1].run_km - a[1].run_km);
   if (rows.length === 0) return '<tr><td colspan="5">Aucune activité pour cette sélection</td></tr>';
   return rows.map(([name, s]) =>
-    `<tr><td>${{name}}</td><td>${{s.total_km}}</td><td>${{s.run_km}}</td><td>${{s.run_count}}</td><td>${{s.avg_speed_kmh}}</td></tr>`
+    `<tr><td>${name}</td><td>${s.total_km}</td><td>${s.run_km}</td><td>${s.run_count}</td><td>${s.avg_speed_kmh}</td></tr>`
   ).join('');
-}}
+}
 
-function snapshotIndexForWeek(weekIdx) {{
-  return weeks[weekIdx].end_idx;
-}}
-
-function currentSnapshot() {{
-  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
-  return historyEntries[snapshotIndexForWeek(maxWeek)];
-}}
-
-function renderMemberList() {{
-  const snapshot = weeks.length > 0 ? currentSnapshot() : {{ members: {{}} }};
+function renderMemberList(maxWeek) {
+  const snapshot = weekCount > 0 ? currentSnapshot(maxWeek) : { members: {} };
   const list = document.getElementById('memberList');
-  list.innerHTML = allMembers.map(name => {{
+  list.innerHTML = allMembers.map(name => {
     const stats = snapshot.members[name];
     const active = stats && (stats.total_km > 0 || stats.run_km > 0);
     const checked = selectedMembers.has(name) ? 'checked' : '';
-    const id = `member-${{name.replace(/[^a-zA-Z0-9]/g, '-')}}`;
-    return `<div class="member-item ${{active ? '' : 'inactive'}}">
-      <input type="checkbox" id="${{id}}" data-member="${{name}}" ${{checked}}>
-      <label for="${{id}}">${{name}}</label>
+    const id = `member-${name.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    return `<div class="member-item ${active ? '' : 'inactive'}">
+      <input type="checkbox" id="${id}" data-member="${name}" ${checked}>
+      <label for="${id}">${name}</label>
     </div>`;
-  }}).join('');
-}}
+  }).join('');
+}
 
-function updateCharts() {{
-  if (weeks.length === 0) return;
-  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
-  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
-  const snapshot = historyEntries[snapshotIndexForWeek(maxWeek)];
+function updateCharts(minWeek, maxWeek) {
+  if (weekCount === 0) return;
+  const snapshot = currentSnapshot(maxWeek);
 
   const filteredLeaderboard = snapshot.leaderboard.filter(([name]) => selectedMembers.has(name));
   leaderboardChart.data.labels = filteredLeaderboard.map(r => r[0]);
@@ -289,71 +266,117 @@ function updateCharts() {{
 
   document.getElementById('memberTableBody').innerHTML = buildMemberRows(snapshot.members);
 
-  trendChart.data.datasets.forEach(ds => {{ ds.hidden = !selectedMembers.has(ds.label); }});
-  trendChart._weekHighlight = {{ startIdx: weeks[minWeek].start_idx, endIdx: weeks[maxWeek].end_idx }};
+  const rangeStart = weeks[minWeek].start_idx;
+  const rangeEnd = weeks[maxWeek].end_idx;
+  const rangeEntries = historyEntries.slice(rangeStart, rangeEnd + 1);
+  trendChart.data.datasets.forEach(ds => {
+    ds.hidden = !selectedMembers.has(ds.label);
+    ds.data = rangeEntries.map(e => ({
+      x: e.timestamp,
+      y: e.members[ds.label] ? e.members[ds.label].run_km : null
+    }));
+  });
   trendChart.update();
-}}
+}
 
-function updateWeekLabel() {{
-  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
-  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
+function updateWeekLabel(minWeek, maxWeek) {
   const label = document.getElementById('weekLabel');
-  if (minWeek === maxWeek) {{
-    label.textContent = `Semaine du ${{weeks[minWeek].label}}`;
-  }} else {{
-    label.textContent = `Du ${{weeks[minWeek].label}} au ${{weeks[maxWeek].label}}`;
-  }}
-}}
+  if (minWeek === maxWeek) {
+    label.textContent = `Semaine du ${weeks[minWeek].label}`;
+  } else {
+    label.textContent = `Du ${weeks[minWeek].label} au ${weeks[maxWeek].label}`;
+  }
+}
 
-function updateRangeFill() {{
-  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
-  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
-  const count = weeks.length;
+let currentMinWeek = 0;
+let currentMaxWeek = Math.max(weekCount - 1, 0);
+
+function setupWeekSlider() {
+  const track = document.getElementById('weekRangeSlider');
   const fill = document.getElementById('weekRangeFill');
-  if (count <= 1) {{
-    fill.style.left = '0%';
-    fill.style.width = '100%';
-    return;
-  }}
-  const pctMin = (minWeek / (count - 1)) * 100;
-  const pctMax = (maxWeek / (count - 1)) * 100;
-  fill.style.left = `${{pctMin}}%`;
-  fill.style.width = `${{pctMax - pctMin}}%`;
-}}
+  const handleMin = document.getElementById('weekHandleMin');
+  const handleMax = document.getElementById('weekHandleMax');
 
-function onRangeChange() {{
-  updateRangeFill();
-  updateWeekLabel();
-  updateCharts();
-  renderMemberList();
-}}
+  function idxToPercent(idx) {
+    return weekCount > 1 ? (idx / (weekCount - 1)) * 100 : (idx === 0 ? 0 : 100);
+  }
 
-const weekMin = document.getElementById('weekMin');
-const weekMax = document.getElementById('weekMax');
+  function render() {
+    const minPct = weekCount > 1 ? idxToPercent(currentMinWeek) : 0;
+    const maxPct = weekCount > 1 ? idxToPercent(currentMaxWeek) : 100;
+    handleMin.style.left = `${minPct}%`;
+    handleMax.style.left = `${maxPct}%`;
+    fill.style.left = `${minPct}%`;
+    fill.style.width = `${Math.max(0, maxPct - minPct)}%`;
+    updateWeekLabel(currentMinWeek, currentMaxWeek);
+    updateCharts(currentMinWeek, currentMaxWeek);
+    renderMemberList(currentMaxWeek);
+  }
 
-if (weeks.length > 0) {{
-  weekMin.addEventListener('input', () => {{
-    if (parseInt(weekMin.value, 10) > parseInt(weekMax.value, 10)) weekMin.value = weekMax.value;
-    onRangeChange();
-  }});
-  weekMax.addEventListener('input', () => {{
-    if (parseInt(weekMax.value, 10) < parseInt(weekMin.value, 10)) weekMax.value = weekMin.value;
-    onRangeChange();
-  }});
-}} else {{
-  weekMin.disabled = true;
-  weekMax.disabled = true;
-}}
+  function percentToIdx(pct) {
+    if (weekCount <= 1) return 0;
+    return Math.round((pct / 100) * (weekCount - 1));
+  }
 
-document.getElementById('memberList').addEventListener('change', (event) => {{
+  function bindHandle(handle, isMin) {
+    handle.addEventListener('pointerdown', (event) => {
+      if (weekCount <= 1) return;
+      handle.setPointerCapture(event.pointerId);
+
+      const move = (moveEvent) => {
+        const rect = track.getBoundingClientRect();
+        let pct = ((moveEvent.clientX - rect.left) / rect.width) * 100;
+        pct = Math.max(0, Math.min(100, pct));
+        let idx = percentToIdx(pct);
+        if (isMin) {
+          currentMinWeek = Math.min(idx, currentMaxWeek);
+        } else {
+          currentMaxWeek = Math.max(idx, currentMinWeek);
+        }
+        render();
+      };
+      const up = () => {
+        handle.removeEventListener('pointermove', move);
+        handle.removeEventListener('pointerup', up);
+      };
+      handle.addEventListener('pointermove', move);
+      handle.addEventListener('pointerup', up);
+    });
+
+    handle.addEventListener('keydown', (event) => {
+      if (weekCount <= 1) return;
+      let idx = isMin ? currentMinWeek : currentMaxWeek;
+      if (event.key === 'ArrowLeft') idx -= 1;
+      else if (event.key === 'ArrowRight') idx += 1;
+      else return;
+      event.preventDefault();
+      idx = Math.max(0, Math.min(weekCount - 1, idx));
+      if (isMin) currentMinWeek = Math.min(idx, currentMaxWeek);
+      else currentMaxWeek = Math.max(idx, currentMinWeek);
+      render();
+    });
+  }
+
+  if (weekCount <= 1) {
+    handleMin.classList.add('disabled');
+    handleMax.classList.add('disabled');
+  } else {
+    bindHandle(handleMin, true);
+    bindHandle(handleMax, false);
+  }
+
+  render();
+}
+
+document.getElementById('memberList').addEventListener('change', (event) => {
   const name = event.target.dataset.member;
   if (!name) return;
   if (event.target.checked) selectedMembers.add(name);
   else selectedMembers.delete(name);
-  updateCharts();
-}});
+  updateCharts(currentMinWeek, currentMaxWeek);
+});
 
-onRangeChange();
+setupWeekSlider();
 </script>
 </body>
 </html>
@@ -384,9 +407,9 @@ def build_weeks(history):
     """Groupe les entrées d'historique par semaine calendaire (lundi à dimanche).
 
     Chaque semaine référence les index de début/fin dans le tableau `history` complet
-    (même ordre que les timestamps du graphique d'évolution), pour permettre de
-    surligner la période correspondante dans ce graphique et de retrouver l'instantané
-    le plus récent de la semaine (l'API ne renvoie pas de cumul, seulement un instantané).
+    (même ordre que les entrées passées au graphique d'évolution), pour retrouver
+    l'instantané le plus récent de la semaine (l'API ne renvoie pas de cumul, seulement
+    un instantané) et pour borner la plage affichée dans ce graphique.
     """
     weeks = []
     index_by_key = {}
@@ -428,7 +451,6 @@ def main():
         latest = history[-1]
 
     weeks = build_weeks(history)
-    max_week_idx = max(len(weeks) - 1, 0)
     initial_week_label = f"Semaine du {weeks[-1]['label']}" if weeks else "Pas encore de données"
     all_members = build_all_members(history)
 
@@ -442,19 +464,22 @@ def main():
         for entry in history
     ]
 
-    html = PAGE_TEMPLATE.format(
-        last_update=latest["timestamp"],
-        member_rows=build_member_rows(latest["members"]),
-        weeks_json=json.dumps(weeks, ensure_ascii=False),
-        history_entries_json=json.dumps(history_entries, ensure_ascii=False),
-        all_members_json=json.dumps(all_members, ensure_ascii=False),
-        max_week_idx=max_week_idx,
-        initial_week_label=initial_week_label,
-        first_week_tick=weeks[0]["label"] if weeks else "",
-        last_week_tick=weeks[-1]["label"] if weeks else "",
-        slicer_display="block" if weeks else "none",
-        member_slicer_display="block" if all_members else "none",
-    )
+    replacements = {
+        "__LAST_UPDATE__": latest["timestamp"],
+        "__MEMBER_ROWS__": build_member_rows(latest["members"]),
+        "__WEEKS_JSON__": json.dumps(weeks, ensure_ascii=False),
+        "__HISTORY_ENTRIES_JSON__": json.dumps(history_entries, ensure_ascii=False),
+        "__ALL_MEMBERS_JSON__": json.dumps(all_members, ensure_ascii=False),
+        "__INITIAL_WEEK_LABEL__": initial_week_label,
+        "__FIRST_WEEK_TICK__": weeks[0]["label"] if weeks else "",
+        "__LAST_WEEK_TICK__": weeks[-1]["label"] if weeks else "",
+        "__SLICER_DISPLAY__": "block" if weeks else "none",
+        "__MEMBER_SLICER_DISPLAY__": "block" if all_members else "none",
+    }
+
+    html = PAGE_TEMPLATE
+    for placeholder, value in replacements.items():
+        html = html.replace(placeholder, value)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(html, encoding="utf-8")

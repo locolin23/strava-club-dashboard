@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Strava Club</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -36,19 +37,21 @@
   th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid #262a35; }
   th { color: #9aa0ab; font-weight: 500; }
 
+  .pie-wrap { max-width: 280px; margin: 0 auto; }
+
   .week-label {
     font-size: 0.95rem;
     font-weight: 600;
     color: #fc4c02;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
   .range-slider {
     position: relative;
-    height: 2.2rem;
-    margin: 0.5rem 0.5rem 0;
+    height: 1.5rem;
+    margin: 0.5rem 0.75rem 0;
   }
-  .range-slider .range-track {
+  .range-track {
     position: absolute;
     left: 0; right: 0; top: 50%;
     transform: translateY(-50%);
@@ -56,7 +59,7 @@
     background: #262a35;
     border-radius: 2px;
   }
-  .range-slider .range-fill {
+  .range-fill {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -64,44 +67,26 @@
     background: #fc4c02;
     border-radius: 2px;
   }
-  .range-slider input[type=range] {
+  .range-handle {
     position: absolute;
-    left: 0; right: 0; top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
-    margin: 0;
-    background: transparent;
-    pointer-events: none;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .range-slider input[type=range]::-webkit-slider-runnable-track { background: transparent; }
-  .range-slider input[type=range]::-webkit-slider-thumb {
-    pointer-events: all;
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px; height: 18px;
+    top: 50%;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: #fc4c02;
-    cursor: pointer;
     border: 2px solid #0f1117;
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    touch-action: none;
   }
-  .range-slider input[type=range]::-moz-range-thumb {
-    pointer-events: all;
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: #fc4c02;
-    cursor: pointer;
-    border: 2px solid #0f1117;
-  }
-  .range-slider input[type=range]:disabled::-webkit-slider-thumb { background: #5a5f6b; }
-  .range-slider input[type=range]:disabled::-moz-range-thumb { background: #5a5f6b; }
+  .range-handle:active { cursor: grabbing; }
+  .range-handle.disabled { background: #5a5f6b; cursor: default; }
   .range-ticks {
     display: flex;
     justify-content: space-between;
     font-size: 0.75rem;
     color: #6d7280;
-    margin-top: 0.3rem;
+    margin-top: 0.5rem;
   }
 
   .member-list { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
@@ -124,11 +109,11 @@
   <div class="card" id="weekRangeCard" style="display: block;">
     <h2>Période sélectionnée</h2>
     <div class="week-label" id="weekLabel">Semaine du 29 juin – 5 juil. 2026</div>
-    <div class="range-slider">
+    <div class="range-slider" id="weekRangeSlider">
       <div class="range-track"></div>
       <div class="range-fill" id="weekRangeFill"></div>
-      <input type="range" id="weekMin" min="0" max="0" value="0" step="1">
-      <input type="range" id="weekMax" min="0" max="0" value="0" step="1">
+      <div class="range-handle" id="weekHandleMin" tabindex="0" role="slider" aria-label="Début de la période"></div>
+      <div class="range-handle" id="weekHandleMax" tabindex="0" role="slider" aria-label="Fin de la période"></div>
     </div>
     <div class="range-ticks">
       <span>29 juin – 5 juil. 2026</span>
@@ -148,7 +133,7 @@
 
   <div class="card">
     <h2>Répartition par type d'activité (club entier)</h2>
-    <canvas id="typeChart"></canvas>
+    <div class="pie-wrap"><canvas id="typeChart"></canvas></div>
   </div>
 
   <div class="card">
@@ -180,6 +165,7 @@ const weeks = [{"label": "29 juin – 5 juil. 2026", "start_idx": 0, "end_idx": 
 const historyEntries = [{"timestamp": "2026-07-03T12:37:40Z", "leaderboard": [["Elisa W.", 56.95], ["Louis C.", 32.07], ["Lou B.", 10.19], ["Elsa B.", 5.26], ["Julianne V.", 5.03], ["Maureen B.", 0.0], ["Manu V.", 0.0]], "type_breakdown": {"Run": 20, "WeightTraining": 11, "Ride": 26}, "members": {"Julianne V.": {"total_km": 5.03, "run_km": 5.03, "run_count": 1, "avg_speed_kmh": 8.84}, "Louis C.": {"total_km": 155.38, "run_km": 32.07, "run_count": 5, "avg_speed_kmh": 10.1}, "Maureen B.": {"total_km": 0.0, "run_km": 0.0, "run_count": 0, "avg_speed_kmh": 0.0}, "Elsa B.": {"total_km": 5.26, "run_km": 5.26, "run_count": 3, "avg_speed_kmh": 10.55}, "Lou B.": {"total_km": 10.19, "run_km": 10.19, "run_count": 2, "avg_speed_kmh": 10.03}, "Elisa W.": {"total_km": 56.95, "run_km": 56.95, "run_count": 9, "avg_speed_kmh": 11.27}, "Manu V.": {"total_km": 0.0, "run_km": 0.0, "run_count": 0, "avg_speed_kmh": 0.0}}}, {"timestamp": "2026-07-03T13:03:51Z", "leaderboard": [["Elisa W.", 56.95], ["Louis C.", 32.07], ["Lou B.", 10.19], ["Elsa B.", 5.26], ["Julianne V.", 5.03], ["Maureen B.", 0.0], ["Manu V.", 0.0]], "type_breakdown": {"Run": 20, "WeightTraining": 11, "Ride": 26}, "members": {"Julianne V.": {"total_km": 5.03, "run_km": 5.03, "run_count": 1, "avg_speed_kmh": 8.84}, "Louis C.": {"total_km": 155.38, "run_km": 32.07, "run_count": 5, "avg_speed_kmh": 10.1}, "Maureen B.": {"total_km": 0.0, "run_km": 0.0, "run_count": 0, "avg_speed_kmh": 0.0}, "Elsa B.": {"total_km": 5.26, "run_km": 5.26, "run_count": 3, "avg_speed_kmh": 10.55}, "Lou B.": {"total_km": 10.19, "run_km": 10.19, "run_count": 2, "avg_speed_kmh": 10.03}, "Elisa W.": {"total_km": 56.95, "run_km": 56.95, "run_count": 9, "avg_speed_kmh": 11.27}, "Manu V.": {"total_km": 0.0, "run_km": 0.0, "run_count": 0, "avg_speed_kmh": 0.0}}}];
 const allMembers = ["Elisa W.", "Elsa B.", "Julianne V.", "Lou B.", "Louis C.", "Manu V.", "Maureen B."];
 const selectedMembers = new Set(allMembers);
+const weekCount = weeks.length;
 
 const leaderboardChart = new Chart(document.getElementById('leaderboardChart'), {
   type: 'bar',
@@ -190,43 +176,43 @@ const leaderboardChart = new Chart(document.getElementById('leaderboardChart'), 
 const typeChart = new Chart(document.getElementById('typeChart'), {
   type: 'pie',
   data: { labels: [], datasets: [{ data: [], backgroundColor: ['#fc4c02', '#2a9d8f', '#e9c46a', '#264653', '#e76f51', '#8ab17d', '#f4a261'] }] },
-  options: { responsive: true }
+  options: { responsive: true, maintainAspectRatio: true }
 });
-
-const weekHighlightPlugin = {
-  id: 'weekHighlight',
-  beforeDatasetsDraw(chart) {
-    const range = chart._weekHighlight;
-    if (!range) return;
-    const { ctx, chartArea, scales } = chart;
-    const xScale = scales.x;
-    const x0 = xScale.getPixelForValue(range.startIdx);
-    const x1 = xScale.getPixelForValue(range.endIdx);
-    ctx.save();
-    ctx.fillStyle = 'rgba(252, 76, 2, 0.18)';
-    ctx.fillRect(Math.min(x0, x1), chartArea.top, Math.max(2, Math.abs(x1 - x0)), chartArea.bottom - chartArea.top);
-    ctx.restore();
-  }
-};
 
 const trendChart = new Chart(document.getElementById('trendChart'), {
   type: 'line',
-  data: {
-    labels: historyEntries.map(e => e.timestamp),
-    datasets: allMembers.map((name, i) => ({
-      label: name,
-      data: historyEntries.map(e => (e.members[name] ? e.members[name].run_km : null)),
-      borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
-      fill: false,
-      tension: 0.2
-    }))
-  },
+  data: { datasets: allMembers.map((name, i) => ({
+    label: name,
+    data: [],
+    borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
+    fill: false,
+    tension: 0.2
+  })) },
   options: {
     responsive: true,
-    plugins: { legend: { position: 'bottom', onClick: () => {} } }
-  },
-  plugins: [weekHighlightPlugin]
+    plugins: { legend: { position: 'bottom', onClick: () => {} } },
+    scales: {
+      x: {
+        type: 'time',
+        time: { tooltipFormat: 'dd/MM/yyyy HH:mm' },
+        ticks: { color: '#9aa0ab' },
+        grid: { color: '#232733' }
+      },
+      y: {
+        ticks: { color: '#9aa0ab' },
+        grid: { color: '#232733' }
+      }
+    }
+  }
 });
+
+function snapshotIndexForWeek(weekIdx) {
+  return weeks[weekIdx].end_idx;
+}
+
+function currentSnapshot(maxWeek) {
+  return historyEntries[snapshotIndexForWeek(maxWeek)];
+}
 
 function buildMemberRows(members) {
   const rows = Object.entries(members)
@@ -238,17 +224,8 @@ function buildMemberRows(members) {
   ).join('');
 }
 
-function snapshotIndexForWeek(weekIdx) {
-  return weeks[weekIdx].end_idx;
-}
-
-function currentSnapshot() {
-  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
-  return historyEntries[snapshotIndexForWeek(maxWeek)];
-}
-
-function renderMemberList() {
-  const snapshot = weeks.length > 0 ? currentSnapshot() : { members: {} };
+function renderMemberList(maxWeek) {
+  const snapshot = weekCount > 0 ? currentSnapshot(maxWeek) : { members: {} };
   const list = document.getElementById('memberList');
   list.innerHTML = allMembers.map(name => {
     const stats = snapshot.members[name];
@@ -262,11 +239,9 @@ function renderMemberList() {
   }).join('');
 }
 
-function updateCharts() {
-  if (weeks.length === 0) return;
-  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
-  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
-  const snapshot = historyEntries[snapshotIndexForWeek(maxWeek)];
+function updateCharts(minWeek, maxWeek) {
+  if (weekCount === 0) return;
+  const snapshot = currentSnapshot(maxWeek);
 
   const filteredLeaderboard = snapshot.leaderboard.filter(([name]) => selectedMembers.has(name));
   leaderboardChart.data.labels = filteredLeaderboard.map(r => r[0]);
@@ -279,14 +254,20 @@ function updateCharts() {
 
   document.getElementById('memberTableBody').innerHTML = buildMemberRows(snapshot.members);
 
-  trendChart.data.datasets.forEach(ds => { ds.hidden = !selectedMembers.has(ds.label); });
-  trendChart._weekHighlight = { startIdx: weeks[minWeek].start_idx, endIdx: weeks[maxWeek].end_idx };
+  const rangeStart = weeks[minWeek].start_idx;
+  const rangeEnd = weeks[maxWeek].end_idx;
+  const rangeEntries = historyEntries.slice(rangeStart, rangeEnd + 1);
+  trendChart.data.datasets.forEach(ds => {
+    ds.hidden = !selectedMembers.has(ds.label);
+    ds.data = rangeEntries.map(e => ({
+      x: e.timestamp,
+      y: e.members[ds.label] ? e.members[ds.label].run_km : null
+    }));
+  });
   trendChart.update();
 }
 
-function updateWeekLabel() {
-  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
-  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
+function updateWeekLabel(minWeek, maxWeek) {
   const label = document.getElementById('weekLabel');
   if (minWeek === maxWeek) {
     label.textContent = `Semaine du ${weeks[minWeek].label}`;
@@ -295,44 +276,84 @@ function updateWeekLabel() {
   }
 }
 
-function updateRangeFill() {
-  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
-  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
-  const count = weeks.length;
+let currentMinWeek = 0;
+let currentMaxWeek = Math.max(weekCount - 1, 0);
+
+function setupWeekSlider() {
+  const track = document.getElementById('weekRangeSlider');
   const fill = document.getElementById('weekRangeFill');
-  if (count <= 1) {
-    fill.style.left = '0%';
-    fill.style.width = '100%';
-    return;
+  const handleMin = document.getElementById('weekHandleMin');
+  const handleMax = document.getElementById('weekHandleMax');
+
+  function idxToPercent(idx) {
+    return weekCount > 1 ? (idx / (weekCount - 1)) * 100 : (idx === 0 ? 0 : 100);
   }
-  const pctMin = (minWeek / (count - 1)) * 100;
-  const pctMax = (maxWeek / (count - 1)) * 100;
-  fill.style.left = `${pctMin}%`;
-  fill.style.width = `${pctMax - pctMin}%`;
-}
 
-function onRangeChange() {
-  updateRangeFill();
-  updateWeekLabel();
-  updateCharts();
-  renderMemberList();
-}
+  function render() {
+    const minPct = weekCount > 1 ? idxToPercent(currentMinWeek) : 0;
+    const maxPct = weekCount > 1 ? idxToPercent(currentMaxWeek) : 100;
+    handleMin.style.left = `${minPct}%`;
+    handleMax.style.left = `${maxPct}%`;
+    fill.style.left = `${minPct}%`;
+    fill.style.width = `${Math.max(0, maxPct - minPct)}%`;
+    updateWeekLabel(currentMinWeek, currentMaxWeek);
+    updateCharts(currentMinWeek, currentMaxWeek);
+    renderMemberList(currentMaxWeek);
+  }
 
-const weekMin = document.getElementById('weekMin');
-const weekMax = document.getElementById('weekMax');
+  function percentToIdx(pct) {
+    if (weekCount <= 1) return 0;
+    return Math.round((pct / 100) * (weekCount - 1));
+  }
 
-if (weeks.length > 0) {
-  weekMin.addEventListener('input', () => {
-    if (parseInt(weekMin.value, 10) > parseInt(weekMax.value, 10)) weekMin.value = weekMax.value;
-    onRangeChange();
-  });
-  weekMax.addEventListener('input', () => {
-    if (parseInt(weekMax.value, 10) < parseInt(weekMin.value, 10)) weekMax.value = weekMin.value;
-    onRangeChange();
-  });
-} else {
-  weekMin.disabled = true;
-  weekMax.disabled = true;
+  function bindHandle(handle, isMin) {
+    handle.addEventListener('pointerdown', (event) => {
+      if (weekCount <= 1) return;
+      handle.setPointerCapture(event.pointerId);
+
+      const move = (moveEvent) => {
+        const rect = track.getBoundingClientRect();
+        let pct = ((moveEvent.clientX - rect.left) / rect.width) * 100;
+        pct = Math.max(0, Math.min(100, pct));
+        let idx = percentToIdx(pct);
+        if (isMin) {
+          currentMinWeek = Math.min(idx, currentMaxWeek);
+        } else {
+          currentMaxWeek = Math.max(idx, currentMinWeek);
+        }
+        render();
+      };
+      const up = () => {
+        handle.removeEventListener('pointermove', move);
+        handle.removeEventListener('pointerup', up);
+      };
+      handle.addEventListener('pointermove', move);
+      handle.addEventListener('pointerup', up);
+    });
+
+    handle.addEventListener('keydown', (event) => {
+      if (weekCount <= 1) return;
+      let idx = isMin ? currentMinWeek : currentMaxWeek;
+      if (event.key === 'ArrowLeft') idx -= 1;
+      else if (event.key === 'ArrowRight') idx += 1;
+      else return;
+      event.preventDefault();
+      idx = Math.max(0, Math.min(weekCount - 1, idx));
+      if (isMin) currentMinWeek = Math.min(idx, currentMaxWeek);
+      else currentMaxWeek = Math.max(idx, currentMinWeek);
+      render();
+    });
+  }
+
+  if (weekCount <= 1) {
+    handleMin.classList.add('disabled');
+    handleMax.classList.add('disabled');
+  } else {
+    bindHandle(handleMin, true);
+    bindHandle(handleMax, false);
+  }
+
+  render();
 }
 
 document.getElementById('memberList').addEventListener('change', (event) => {
@@ -340,10 +361,10 @@ document.getElementById('memberList').addEventListener('change', (event) => {
   if (!name) return;
   if (event.target.checked) selectedMembers.add(name);
   else selectedMembers.delete(name);
-  updateCharts();
+  updateCharts(currentMinWeek, currentMaxWeek);
 });
 
-onRangeChange();
+setupWeekSlider();
 </script>
 </body>
 </html>
