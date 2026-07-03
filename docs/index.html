@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   body { margin:0; }
   @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -21,8 +23,11 @@
     <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">Show activities</span>
       <div id="sportFilterBar" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <div id="viewToggleBar" style="display:flex;gap:8px;margin-left:auto"></div>
     </div>
   </div>
+
+  <div id="aggregationView">
 
   <!-- HERO -->
   <div style="background:#101216;color:#F4F1EA;padding:40px 6vw 88px">
@@ -105,23 +110,49 @@
 
     <div id="footerLine" style="margin-top:44px;text-align:center;font-size:12px;color:#B4AF9F;font-family:'Space Mono'"></div>
   </div>
-</div>
+  </div>
+
+  <!-- TIME SERIES VIEW (Étape 9) -->
+  <div id="timeSeriesView" style="display:none;max-width:1180px;margin:0 auto;padding:56px 6vw 80px">
+    <div style="margin-bottom:24px">
+      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FC5200;margin-bottom:6px">05 — Historique</div>
+      <h2 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:34px;margin:0 0 12px;letter-spacing:-.01em">Série temporelle</h2>
+      <p style="max-width:640px;color:#57544C;font-size:14px;line-height:1.5;margin:0">
+        L'API Strava ne fournit ni date ni identifiant par activité. Cette vue reconstruit un
+        historique approximatif en retenant, pour chaque activité, la première fois où ce
+        dashboard l'a détectée (empreinte de contenu) -- une approximation à la précision du
+        cron, valable seulement depuis le déploiement de ce système. Voir CLAUDE.md Étape 9.
+      </p>
+    </div>
+    <div style="background:#fff;border:1px solid #E7E3DA;border-radius:20px;padding:26px 28px;margin-bottom:16px">
+      <div style="font-family:'Barlow';font-weight:600;font-size:15px;color:#14161A;margin-bottom:16px">Distance cumulée par membre (km)</div>
+      <canvas id="timeSeriesChart" height="90"></canvas>
+    </div>
+    <div id="timelineFootnote" style="text-align:center;font-size:12px;color:#B4AF9F;font-family:'Space Mono'"></div>
+  </div>
 
 <script>
 const allRows = [{"a": "Julianne V.", "s": "Run", "d": 5034.0, "m": 2049, "g": 41.6, "t": "Course à pied du midi"}, {"a": "Louis C.", "s": "Run", "d": 4986.4, "m": 1627, "g": 14.6, "t": "Course à pied le midi"}, {"a": "Julianne V.", "s": "Weight", "d": 0, "m": 2625, "g": 0, "t": "Entraînement aux poids le midi"}, {"a": "Maureen B.", "s": "Weight", "d": 0, "m": 3840, "g": 0, "t": "Entraînement aux poids le matin"}, {"a": "Elsa B.", "s": "Run", "d": 969.5, "m": 354, "g": 15.9, "t": "pas cool le chien 😔"}, {"a": "Elsa B.", "s": "Run", "d": 2068.3, "m": 720, "g": 4.4, "t": "partie 2"}, {"a": "Elsa B.", "s": "Run", "d": 2221.8, "m": 721, "g": 16.7, "t": "partie 1"}, {"a": "Maureen B.", "s": "Weight", "d": 0, "m": 3782, "g": 0, "t": "programme muscu 🏋️‍♀️💪🏽"}, {"a": "Lou B.", "s": "Run", "d": 6655.0, "m": 2288, "g": 67.1, "t": "Course à pied du midi"}, {"a": "Julianne V.", "s": "Weight", "d": 0, "m": 2534, "g": 0, "t": "Entraînement aux poids l'après-midi"}, {"a": "Elisa W.", "s": "Weight", "d": 0, "m": 2682, "g": 0, "t": "Muscu 1 semaine 2"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3667, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Elisa W.", "s": "Run", "d": 8357.5, "m": 2701, "g": 52.7, "t": "Run 3 semaine 2"}, {"a": "Lou B.", "s": "Run", "d": 3532.8, "m": 1369, "g": 35.9, "t": "Course à pied dans l'après-midi"}, {"a": "Elisa W.", "s": "Run", "d": 6587.5, "m": 2121, "g": 46.2, "t": "Semaine 2 Run 2"}, {"a": "Elisa W.", "s": "Run", "d": 7455.2, "m": 2404, "g": 46.2, "t": "Run 1 semaine 2"}, {"a": "Elisa W.", "s": "Weight", "d": 0, "m": 3600, "g": 0, "t": "Muscu 2"}, {"a": "Louis C.", "s": "Run", "d": 5025.2, "m": 2332, "g": 186.4, "t": "Course à pied le matin"}, {"a": "Elisa W.", "s": "Run", "d": 5800.0, "m": 1860, "g": 0, "t": "Run 3 sur tapis"}, {"a": "Elisa W.", "s": "Run", "d": 7309.9, "m": 2406, "g": 46.1, "t": "Run 2 avec les jambes bien lourde"}, {"a": "Elisa W.", "s": "Weight", "d": 0, "m": 3306, "g": 0, "t": "Muscu 1"}, {"a": "Elisa W.", "s": "Run", "d": 5715.2, "m": 1807, "g": 46.2, "t": "Run 1"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 4566, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 4987, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Elisa W.", "s": "Run", "d": 5212.9, "m": 1653, "g": 46.1, "t": "Run \n(Je me suis pas arrêtée j’ai juste pas arrêtez mon chrono à la fin de mon run donc le temps écoulé n’est pas bon )"}, {"a": "Elisa W.", "s": "Weight", "d": 0, "m": 3609, "g": 0, "t": "Entraînement aux poids le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3301, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 4406, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Elisa W.", "s": "Ride", "d": 0, "m": 2400, "g": 0, "t": "Velo + renfo"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3131, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Louis C.", "s": "Ride", "d": 24823.8, "m": 3192, "g": 115.6, "t": "Sortie vélo en soirée"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 2101, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Elisa W.", "s": "Weight", "d": 0, "m": 3869, "g": 0, "t": "Entraînement aux poids l'après-midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 4050, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Louis C.", "s": "Run", "d": 5784.5, "m": 1851, "g": 34.8, "t": "Course à pied le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3151, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Elisa W.", "s": "Run", "d": 5306.5, "m": 1650, "g": 39.5, "t": "Mes chaussures n’ont pas survécu"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 2767, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Louis C.", "s": "Ride", "d": 98490.4, "m": 13847, "g": 197.0, "t": "Afternoon Ride"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3447, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3185, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Elisa W.", "s": "Run", "d": 5205.6, "m": 1590, "g": 46.2, "t": "Course à pied matinale"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 2461, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 796, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Louis C.", "s": "Run", "d": 10210.8, "m": 3670, "g": 212.4, "t": "Course à pied dans l'après-midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3617, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Louis C.", "s": "Run", "d": 6062.5, "m": 1948, "g": 123.2, "t": "Course à pied le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 2883, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3001, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Elisa W.", "s": "Weight", "d": 0, "m": 3469, "g": 0, "t": "Entraînement aux poids l'après-midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3879, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 2896, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Elisa W.", "s": "Weight", "d": 0, "m": 3543, "g": 0, "t": "Entraînement aux poids l'après-midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3352, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 2466, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 566, "g": 0, "t": "Sortie vélo le midi"}, {"a": "Manu V.", "s": "Ride", "d": 0, "m": 3522, "g": 0, "t": "Sortie vélo le midi"}];
+const timeline = [];
 const lastUpdated = "2026-07-03 14:32 UTC";
 const rawDataUrl = "https://github.com/locolin23/strava-club-dashboard/blob/main/data/raw_activities.json";
+const ledgerUrl = "https://github.com/locolin23/strava-club-dashboard/blob/main/docs/activities_seen.json";
 
 const COL = { Run: '#FC5200', Ride: '#1FA2C7', Weight: '#3A3D45' };
 const LABEL = { Run: 'Run', Ride: 'Ride', Weight: 'Strength' };
 const CFG = { Run: ['dist', 'time', 'elev'], Ride: ['time', 'dist', 'elev'], Weight: ['time'] };
 const METL = { dist: 'Distance', time: 'Time', elev: 'Elevation' };
 const SPORTS = ['Run', 'Ride', 'Weight'];
+const VIEWS = [
+  { key: 'aggregation', label: 'Agrégation' },
+  { key: 'timeseries', label: 'Série temporelle' },
+];
 
 const state = {
   sport: 'Run',
   metric: 'dist',
   sportFilter: { Run: true, Ride: false, Weight: true },
+  view: 'aggregation',
 };
 
 function visibleRows() {
@@ -176,6 +207,14 @@ function renderSportFilter() {
       state.sportFilter[event.target.dataset.sport] = event.target.checked;
       render();
     });
+  });
+}
+
+function renderViewToggle() {
+  const bar = document.getElementById('viewToggleBar');
+  bar.innerHTML = VIEWS.map(v => `<button data-view="${v.key}" style="${tabCss(state.view === v.key, false)}">${v.label}</button>`).join('');
+  bar.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => { state.view = btn.dataset.view; render(); });
   });
 }
 
@@ -369,6 +408,64 @@ function renderRecords(rows) {
     </div>`).join('');
 }
 
+const timeSeriesChart = new Chart(document.getElementById('timeSeriesChart'), {
+  type: 'line',
+  data: { datasets: [] },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', onClick: () => {} } },
+    scales: {
+      x: {
+        type: 'time',
+        time: { tooltipFormat: 'dd/MM/yyyy HH:mm' },
+        ticks: { color: '#8A8577' },
+        grid: { color: '#EFEBE2' },
+      },
+      y: {
+        ticks: { color: '#8A8577' },
+        grid: { color: '#EFEBE2' },
+      },
+    },
+  },
+});
+
+function visibleTimeline() {
+  return timeline.filter(e => state.sportFilter[e.s]);
+}
+
+function renderTimeSeries() {
+  const entries = visibleTimeline();
+  const athletes = [...new Set(entries.map(e => e.a))];
+  const cumByAthlete = {};
+  const pointsByAthlete = {};
+  athletes.forEach(a => { cumByAthlete[a] = 0; pointsByAthlete[a] = []; });
+
+  entries.forEach(e => {
+    cumByAthlete[e.a] += e.d / 1000;
+    pointsByAthlete[e.a].push({ x: e.first_seen, y: Math.round(cumByAthlete[e.a] * 10) / 10 });
+  });
+
+  timeSeriesChart.data.datasets = athletes.map((a, i) => ({
+    label: a,
+    data: pointsByAthlete[a],
+    borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
+    fill: false,
+    stepped: true,
+    tension: 0,
+  }));
+  timeSeriesChart.update();
+
+  const footnote = document.getElementById('timelineFootnote');
+  if (entries.length === 0) {
+    footnote.innerHTML = `Aucune activité suivie pour cette sélection. Ledger complet : <a href="${ledgerUrl}" style="color:#B4AF9F">docs/activities_seen.json</a>`;
+    return;
+  }
+  const firstSeenDate = entries[0].first_seen.slice(0, 10);
+  footnote.innerHTML =
+    `${entries.length} activités suivies depuis le ${firstSeenDate} · ${athletes.length} membres · ` +
+    `ledger complet : <a href="${ledgerUrl}" style="color:#B4AF9F">docs/activities_seen.json</a>`;
+}
+
 function render() {
   if (!state.sportFilter[state.sport]) {
     const firstEnabled = SPORTS.find(s => state.sportFilter[s]);
@@ -385,6 +482,7 @@ function render() {
   rows.forEach(x => { td += x.d; tm += x.m; tg += x.g; tS[x.s] += x.m; });
 
   renderSportFilter();
+  renderViewToggle();
   renderStatTiles(td, tm, tg, rows.length, athletes.length);
   renderSportTabs(state.sport);
   renderMetricToggles(state.sport, state.metric);
@@ -392,11 +490,15 @@ function render() {
   renderCards(athletes);
   renderComposition(tS, athletes, tS.Run + tS.Ride + tS.Weight || 1, rows.length === 0);
   renderRecords(rows);
+  renderTimeSeries();
 
   document.getElementById('footerLine').innerHTML =
     `Strava Club API · ${rows.length} activities shown · ${athletes.length} members · ` +
     `dernière synchro ${lastUpdated} · réponse brute avant agrégation : ` +
     `<a href="${rawDataUrl}" style="color:#B4AF9F">data/raw_activities.json</a>`;
+
+  document.getElementById('aggregationView').style.display = state.view === 'aggregation' ? '' : 'none';
+  document.getElementById('timeSeriesView').style.display = state.view === 'timeseries' ? '' : 'none';
 }
 
 render();

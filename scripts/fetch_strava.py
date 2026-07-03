@@ -1,5 +1,9 @@
 """Récupère les activités récentes du club Strava et les écrit dans data/raw_activities.json.
 
+Archive aussi chaque réponse brute dans data/raw_snapshots/<timestamp>.json (jamais écrasé,
+jamais supprimé) -- voir CLAUDE.md Étape 9. Objectif : ne jamais perdre de donnée, et pouvoir
+reconstruire le ledger d'activités (docs/activities_seen.json) depuis zéro si besoin.
+
 Variables d'environnement requises : STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET,
 STRAVA_REFRESH_TOKEN, STRAVA_CLUB_ID.
 """
@@ -7,12 +11,15 @@ STRAVA_REFRESH_TOKEN, STRAVA_CLUB_ID.
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
 
 TOKEN_URL = "https://www.strava.com/oauth/token"
-RAW_OUTPUT_PATH = Path(__file__).resolve().parent.parent / "data" / "raw_activities.json"
+BASE_DIR = Path(__file__).resolve().parent.parent
+RAW_OUTPUT_PATH = BASE_DIR / "data" / "raw_activities.json"
+RAW_SNAPSHOTS_DIR = BASE_DIR / "data" / "raw_snapshots"
 
 
 def get_access_token(client_id, client_secret, refresh_token):
@@ -50,10 +57,17 @@ def main():
 
     access_token = get_access_token(client_id, client_secret, refresh_token)
     activities = fetch_club_activities(access_token, club_id)
+    payload = json.dumps(activities, ensure_ascii=False, indent=2)
 
     RAW_OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    RAW_OUTPUT_PATH.write_text(json.dumps(activities, ensure_ascii=False, indent=2))
-    print(f"{len(activities)} activités récupérées -> {RAW_OUTPUT_PATH}")
+    RAW_OUTPUT_PATH.write_text(payload)
+
+    RAW_SNAPSHOTS_DIR.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M%SZ")
+    snapshot_path = RAW_SNAPSHOTS_DIR / f"{timestamp}.json"
+    snapshot_path.write_text(payload)
+
+    print(f"{len(activities)} activités récupérées -> {RAW_OUTPUT_PATH} (archivé -> {snapshot_path})")
 
 
 if __name__ == "__main__":

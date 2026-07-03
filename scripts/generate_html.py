@@ -13,6 +13,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 RAW_PATH = BASE_DIR / "data" / "raw_activities.json"
+LEDGER_PATH = BASE_DIR / "docs" / "activities_seen.json"
 OUTPUT_PATH = BASE_DIR / "docs" / "index.html"
 
 # Le design ne définit des couleurs/labels que pour ces 3 types ; les autres types
@@ -30,6 +31,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   body { margin:0; }
   @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -44,8 +47,11 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">Show activities</span>
       <div id="sportFilterBar" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <div id="viewToggleBar" style="display:flex;gap:8px;margin-left:auto"></div>
     </div>
   </div>
+
+  <div id="aggregationView">
 
   <!-- HERO -->
   <div style="background:#101216;color:#F4F1EA;padding:40px 6vw 88px">
@@ -128,23 +134,49 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 
     <div id="footerLine" style="margin-top:44px;text-align:center;font-size:12px;color:#B4AF9F;font-family:'Space Mono'"></div>
   </div>
-</div>
+  </div>
+
+  <!-- TIME SERIES VIEW (Étape 9) -->
+  <div id="timeSeriesView" style="display:none;max-width:1180px;margin:0 auto;padding:56px 6vw 80px">
+    <div style="margin-bottom:24px">
+      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FC5200;margin-bottom:6px">05 — Historique</div>
+      <h2 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:34px;margin:0 0 12px;letter-spacing:-.01em">Série temporelle</h2>
+      <p style="max-width:640px;color:#57544C;font-size:14px;line-height:1.5;margin:0">
+        L'API Strava ne fournit ni date ni identifiant par activité. Cette vue reconstruit un
+        historique approximatif en retenant, pour chaque activité, la première fois où ce
+        dashboard l'a détectée (empreinte de contenu) -- une approximation à la précision du
+        cron, valable seulement depuis le déploiement de ce système. Voir CLAUDE.md Étape 9.
+      </p>
+    </div>
+    <div style="background:#fff;border:1px solid #E7E3DA;border-radius:20px;padding:26px 28px;margin-bottom:16px">
+      <div style="font-family:'Barlow';font-weight:600;font-size:15px;color:#14161A;margin-bottom:16px">Distance cumulée par membre (km)</div>
+      <canvas id="timeSeriesChart" height="90"></canvas>
+    </div>
+    <div id="timelineFootnote" style="text-align:center;font-size:12px;color:#B4AF9F;font-family:'Space Mono'"></div>
+  </div>
 
 <script>
 const allRows = __ROWS_JSON__;
+const timeline = __TIMELINE_JSON__;
 const lastUpdated = __LAST_UPDATED_JSON__;
 const rawDataUrl = "https://github.com/locolin23/strava-club-dashboard/blob/main/data/raw_activities.json";
+const ledgerUrl = "https://github.com/locolin23/strava-club-dashboard/blob/main/docs/activities_seen.json";
 
 const COL = { Run: '#FC5200', Ride: '#1FA2C7', Weight: '#3A3D45' };
 const LABEL = { Run: 'Run', Ride: 'Ride', Weight: 'Strength' };
 const CFG = { Run: ['dist', 'time', 'elev'], Ride: ['time', 'dist', 'elev'], Weight: ['time'] };
 const METL = { dist: 'Distance', time: 'Time', elev: 'Elevation' };
 const SPORTS = ['Run', 'Ride', 'Weight'];
+const VIEWS = [
+  { key: 'aggregation', label: 'Agrégation' },
+  { key: 'timeseries', label: 'Série temporelle' },
+];
 
 const state = {
   sport: 'Run',
   metric: 'dist',
   sportFilter: { Run: true, Ride: false, Weight: true },
+  view: 'aggregation',
 };
 
 function visibleRows() {
@@ -199,6 +231,14 @@ function renderSportFilter() {
       state.sportFilter[event.target.dataset.sport] = event.target.checked;
       render();
     });
+  });
+}
+
+function renderViewToggle() {
+  const bar = document.getElementById('viewToggleBar');
+  bar.innerHTML = VIEWS.map(v => `<button data-view="${v.key}" style="${tabCss(state.view === v.key, false)}">${v.label}</button>`).join('');
+  bar.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => { state.view = btn.dataset.view; render(); });
   });
 }
 
@@ -392,6 +432,64 @@ function renderRecords(rows) {
     </div>`).join('');
 }
 
+const timeSeriesChart = new Chart(document.getElementById('timeSeriesChart'), {
+  type: 'line',
+  data: { datasets: [] },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', onClick: () => {} } },
+    scales: {
+      x: {
+        type: 'time',
+        time: { tooltipFormat: 'dd/MM/yyyy HH:mm' },
+        ticks: { color: '#8A8577' },
+        grid: { color: '#EFEBE2' },
+      },
+      y: {
+        ticks: { color: '#8A8577' },
+        grid: { color: '#EFEBE2' },
+      },
+    },
+  },
+});
+
+function visibleTimeline() {
+  return timeline.filter(e => state.sportFilter[e.s]);
+}
+
+function renderTimeSeries() {
+  const entries = visibleTimeline();
+  const athletes = [...new Set(entries.map(e => e.a))];
+  const cumByAthlete = {};
+  const pointsByAthlete = {};
+  athletes.forEach(a => { cumByAthlete[a] = 0; pointsByAthlete[a] = []; });
+
+  entries.forEach(e => {
+    cumByAthlete[e.a] += e.d / 1000;
+    pointsByAthlete[e.a].push({ x: e.first_seen, y: Math.round(cumByAthlete[e.a] * 10) / 10 });
+  });
+
+  timeSeriesChart.data.datasets = athletes.map((a, i) => ({
+    label: a,
+    data: pointsByAthlete[a],
+    borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
+    fill: false,
+    stepped: true,
+    tension: 0,
+  }));
+  timeSeriesChart.update();
+
+  const footnote = document.getElementById('timelineFootnote');
+  if (entries.length === 0) {
+    footnote.innerHTML = `Aucune activité suivie pour cette sélection. Ledger complet : <a href="${ledgerUrl}" style="color:#B4AF9F">docs/activities_seen.json</a>`;
+    return;
+  }
+  const firstSeenDate = entries[0].first_seen.slice(0, 10);
+  footnote.innerHTML =
+    `${entries.length} activités suivies depuis le ${firstSeenDate} · ${athletes.length} membres · ` +
+    `ledger complet : <a href="${ledgerUrl}" style="color:#B4AF9F">docs/activities_seen.json</a>`;
+}
+
 function render() {
   if (!state.sportFilter[state.sport]) {
     const firstEnabled = SPORTS.find(s => state.sportFilter[s]);
@@ -408,6 +506,7 @@ function render() {
   rows.forEach(x => { td += x.d; tm += x.m; tg += x.g; tS[x.s] += x.m; });
 
   renderSportFilter();
+  renderViewToggle();
   renderStatTiles(td, tm, tg, rows.length, athletes.length);
   renderSportTabs(state.sport);
   renderMetricToggles(state.sport, state.metric);
@@ -415,11 +514,15 @@ function render() {
   renderCards(athletes);
   renderComposition(tS, athletes, tS.Run + tS.Ride + tS.Weight || 1, rows.length === 0);
   renderRecords(rows);
+  renderTimeSeries();
 
   document.getElementById('footerLine').innerHTML =
     `Strava Club API · ${rows.length} activities shown · ${athletes.length} members · ` +
     `dernière synchro ${lastUpdated} · réponse brute avant agrégation : ` +
     `<a href="${rawDataUrl}" style="color:#B4AF9F">data/raw_activities.json</a>`;
+
+  document.getElementById('aggregationView').style.display = state.view === 'aggregation' ? '' : 'none';
+  document.getElementById('timeSeriesView').style.display = state.view === 'timeseries' ? '' : 'none';
 }
 
 render();
@@ -456,9 +559,36 @@ def build_rows(raw_activities):
     return rows
 
 
+def build_timeline_entries(ledger):
+    """Convertit le ledger (docs/activities_seen.json, Étape 9) en points datés pour la vue
+    "Série temporelle" : chaque activité porte sa date de première détection, pas sa vraie date
+    de création (inconnue), mais c'est la meilleure approximation disponible."""
+    entries = []
+    for data in ledger.values():
+        sport_key = SPORT_KEY_BY_TYPE.get(data.get("sport"))
+        if sport_key is None:
+            continue
+        entries.append(
+            {
+                "first_seen": data.get("first_seen", ""),
+                "a": data.get("athlete", ""),
+                "s": sport_key,
+                "d": data.get("distance", 0) or 0,
+                "m": data.get("moving_time", 0) or 0,
+                "g": data.get("elevation", 0) or 0,
+                "t": data.get("title", ""),
+            }
+        )
+    entries.sort(key=lambda e: e["first_seen"])
+    return entries
+
+
 def main():
     raw_activities = json.loads(RAW_PATH.read_text()) if RAW_PATH.exists() else []
     rows = build_rows(raw_activities)
+
+    ledger = json.loads(LEDGER_PATH.read_text()) if LEDGER_PATH.exists() else {}
+    timeline = build_timeline_entries(ledger)
 
     if RAW_PATH.exists():
         last_updated = datetime.fromtimestamp(RAW_PATH.stat().st_mtime, tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
@@ -467,6 +597,7 @@ def main():
 
     html = PAGE_TEMPLATE
     html = html.replace("__ROWS_JSON__", json.dumps(rows, ensure_ascii=False))
+    html = html.replace("__TIMELINE_JSON__", json.dumps(timeline, ensure_ascii=False))
     html = html.replace("__LAST_UPDATED_JSON__", json.dumps(last_updated, ensure_ascii=False))
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
