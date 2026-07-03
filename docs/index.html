@@ -35,6 +35,79 @@
   table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
   th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid #262a35; }
   th { color: #9aa0ab; font-weight: 500; }
+
+  .week-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fc4c02;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .range-slider {
+    position: relative;
+    height: 2.2rem;
+    margin: 0.5rem 0.5rem 0;
+  }
+  .range-slider .range-track {
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    background: #262a35;
+    border-radius: 2px;
+  }
+  .range-slider .range-fill {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    background: #fc4c02;
+    border-radius: 2px;
+  }
+  .range-slider input[type=range] {
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    margin: 0;
+    background: transparent;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .range-slider input[type=range]::-webkit-slider-runnable-track { background: transparent; }
+  .range-slider input[type=range]::-webkit-slider-thumb {
+    pointer-events: all;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #fc4c02;
+    cursor: pointer;
+    border: 2px solid #0f1117;
+  }
+  .range-slider input[type=range]::-moz-range-thumb {
+    pointer-events: all;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #fc4c02;
+    cursor: pointer;
+    border: 2px solid #0f1117;
+  }
+  .range-slider input[type=range]:disabled::-webkit-slider-thumb { background: #5a5f6b; }
+  .range-slider input[type=range]:disabled::-moz-range-thumb { background: #5a5f6b; }
+  .range-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #6d7280;
+    margin-top: 0.3rem;
+  }
+
+  .member-list { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+  .member-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
+  .member-item input { accent-color: #fc4c02; }
+  .member-item.inactive label { color: #5a5f6b; font-style: italic; }
 </style>
 </head>
 <body>
@@ -44,7 +117,28 @@
   <div class="note">
     Les données proviennent de l'API club Strava, qui ne renvoie qu'un instantané des activités
     récentes sans date précise ni identifiant unique. Les chiffres reflètent donc ce qui était
-    visible à chaque rafraîchissement, pas un cumul garanti sans doublon.
+    visible à chaque rafraîchissement, pas un cumul garanti sans doublon. Les "semaines"
+    ci-dessous regroupent les rafraîchissements par semaine calendaire (lundi à dimanche).
+  </div>
+
+  <div class="card" id="weekRangeCard" style="display: block;">
+    <h2>Période sélectionnée</h2>
+    <div class="week-label" id="weekLabel">Semaine du 29 juin – 5 juil. 2026</div>
+    <div class="range-slider">
+      <div class="range-track"></div>
+      <div class="range-fill" id="weekRangeFill"></div>
+      <input type="range" id="weekMin" min="0" max="0" value="0" step="1">
+      <input type="range" id="weekMax" min="0" max="0" value="0" step="1">
+    </div>
+    <div class="range-ticks">
+      <span>29 juin – 5 juil. 2026</span>
+      <span>29 juin – 5 juil. 2026</span>
+    </div>
+  </div>
+
+  <div class="card" id="memberSlicerCard" style="display: block;">
+    <h2>Membres affichés</h2>
+    <div class="member-list" id="memberList"></div>
   </div>
 
   <div class="card">
@@ -53,7 +147,7 @@
   </div>
 
   <div class="card">
-    <h2>Répartition par type d'activité</h2>
+    <h2>Répartition par type d'activité (club entier)</h2>
     <canvas id="typeChart"></canvas>
   </div>
 
@@ -68,7 +162,7 @@
       <thead>
         <tr><th>Membre</th><th>Distance totale (km)</th><th>Distance course (km)</th><th>Nb courses</th><th>Vitesse moy. (km/h)</th></tr>
       </thead>
-      <tbody>
+      <tbody id="memberTableBody">
         <tr><td>Elisa W.</td><td>56.95</td><td>56.95</td><td>9</td><td>11.27</td></tr>
         <tr><td>Louis C.</td><td>155.38</td><td>32.07</td><td>5</td><td>10.1</td></tr>
         <tr><td>Lou B.</td><td>10.19</td><td>10.19</td><td>2</td><td>10.03</td></tr>
@@ -82,41 +176,174 @@
 </div>
 
 <script>
-const leaderboard = [["Elisa W.", 56.95], ["Louis C.", 32.07], ["Lou B.", 10.19], ["Elsa B.", 5.26], ["Julianne V.", 5.03], ["Maureen B.", 0.0], ["Manu V.", 0.0]];
-new Chart(document.getElementById('leaderboardChart'), {
+const weeks = [{"label": "29 juin – 5 juil. 2026", "start_idx": 0, "end_idx": 0}];
+const historyEntries = [{"timestamp": "2026-07-03T12:37:40Z", "leaderboard": [["Elisa W.", 56.95], ["Louis C.", 32.07], ["Lou B.", 10.19], ["Elsa B.", 5.26], ["Julianne V.", 5.03], ["Maureen B.", 0.0], ["Manu V.", 0.0]], "type_breakdown": {"Run": 20, "WeightTraining": 11, "Ride": 26}, "members": {"Julianne V.": {"total_km": 5.03, "run_km": 5.03, "run_count": 1, "avg_speed_kmh": 8.84}, "Louis C.": {"total_km": 155.38, "run_km": 32.07, "run_count": 5, "avg_speed_kmh": 10.1}, "Maureen B.": {"total_km": 0.0, "run_km": 0.0, "run_count": 0, "avg_speed_kmh": 0.0}, "Elsa B.": {"total_km": 5.26, "run_km": 5.26, "run_count": 3, "avg_speed_kmh": 10.55}, "Lou B.": {"total_km": 10.19, "run_km": 10.19, "run_count": 2, "avg_speed_kmh": 10.03}, "Elisa W.": {"total_km": 56.95, "run_km": 56.95, "run_count": 9, "avg_speed_kmh": 11.27}, "Manu V.": {"total_km": 0.0, "run_km": 0.0, "run_count": 0, "avg_speed_kmh": 0.0}}}];
+const allMembers = ["Elisa W.", "Elsa B.", "Julianne V.", "Lou B.", "Louis C.", "Manu V.", "Maureen B."];
+const selectedMembers = new Set(allMembers);
+
+const leaderboardChart = new Chart(document.getElementById('leaderboardChart'), {
   type: 'bar',
-  data: {
-    labels: leaderboard.map(r => r[0]),
-    datasets: [{ label: 'Distance course (km)', data: leaderboard.map(r => r[1]), backgroundColor: '#fc4c02' }]
-  },
+  data: { labels: [], datasets: [{ label: 'Distance course (km)', data: [], backgroundColor: '#fc4c02' }] },
   options: { responsive: true, plugins: { legend: { display: false } } }
 });
 
-const typeBreakdown = {"Run": 20, "WeightTraining": 11, "Ride": 26};
-new Chart(document.getElementById('typeChart'), {
+const typeChart = new Chart(document.getElementById('typeChart'), {
   type: 'pie',
-  data: {
-    labels: Object.keys(typeBreakdown),
-    datasets: [{ data: Object.values(typeBreakdown), backgroundColor: ['#fc4c02', '#2a9d8f', '#e9c46a', '#264653', '#e76f51', '#8ab17d', '#f4a261'] }]
-  },
+  data: { labels: [], datasets: [{ data: [], backgroundColor: ['#fc4c02', '#2a9d8f', '#e9c46a', '#264653', '#e76f51', '#8ab17d', '#f4a261'] }] },
   options: { responsive: true }
 });
 
-const trend = {"labels": ["2026-07-03T12:37:40Z"], "datasets": [{"name": "Elisa W.", "values": [56.95]}, {"name": "Louis C.", "values": [32.07]}, {"name": "Lou B.", "values": [10.19]}, {"name": "Elsa B.", "values": [5.26]}, {"name": "Julianne V.", "values": [5.03]}, {"name": "Maureen B.", "values": [0.0]}, {"name": "Manu V.", "values": [0.0]}]};
-new Chart(document.getElementById('trendChart'), {
+const weekHighlightPlugin = {
+  id: 'weekHighlight',
+  beforeDatasetsDraw(chart) {
+    const range = chart._weekHighlight;
+    if (!range) return;
+    const { ctx, chartArea, scales } = chart;
+    const xScale = scales.x;
+    const x0 = xScale.getPixelForValue(range.startIdx);
+    const x1 = xScale.getPixelForValue(range.endIdx);
+    ctx.save();
+    ctx.fillStyle = 'rgba(252, 76, 2, 0.18)';
+    ctx.fillRect(Math.min(x0, x1), chartArea.top, Math.max(2, Math.abs(x1 - x0)), chartArea.bottom - chartArea.top);
+    ctx.restore();
+  }
+};
+
+const trendChart = new Chart(document.getElementById('trendChart'), {
   type: 'line',
   data: {
-    labels: trend.labels,
-    datasets: trend.datasets.map((d, i) => ({
-      label: d.name,
-      data: d.values,
+    labels: historyEntries.map(e => e.timestamp),
+    datasets: allMembers.map((name, i) => ({
+      label: name,
+      data: historyEntries.map(e => (e.members[name] ? e.members[name].run_km : null)),
       borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
       fill: false,
       tension: 0.2
     }))
   },
-  options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', onClick: () => {} } }
+  },
+  plugins: [weekHighlightPlugin]
 });
+
+function buildMemberRows(members) {
+  const rows = Object.entries(members)
+    .filter(([name]) => selectedMembers.has(name))
+    .sort((a, b) => b[1].run_km - a[1].run_km);
+  if (rows.length === 0) return '<tr><td colspan="5">Aucune activité pour cette sélection</td></tr>';
+  return rows.map(([name, s]) =>
+    `<tr><td>${name}</td><td>${s.total_km}</td><td>${s.run_km}</td><td>${s.run_count}</td><td>${s.avg_speed_kmh}</td></tr>`
+  ).join('');
+}
+
+function snapshotIndexForWeek(weekIdx) {
+  return weeks[weekIdx].end_idx;
+}
+
+function currentSnapshot() {
+  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
+  return historyEntries[snapshotIndexForWeek(maxWeek)];
+}
+
+function renderMemberList() {
+  const snapshot = weeks.length > 0 ? currentSnapshot() : { members: {} };
+  const list = document.getElementById('memberList');
+  list.innerHTML = allMembers.map(name => {
+    const stats = snapshot.members[name];
+    const active = stats && (stats.total_km > 0 || stats.run_km > 0);
+    const checked = selectedMembers.has(name) ? 'checked' : '';
+    const id = `member-${name.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    return `<div class="member-item ${active ? '' : 'inactive'}">
+      <input type="checkbox" id="${id}" data-member="${name}" ${checked}>
+      <label for="${id}">${name}</label>
+    </div>`;
+  }).join('');
+}
+
+function updateCharts() {
+  if (weeks.length === 0) return;
+  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
+  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
+  const snapshot = historyEntries[snapshotIndexForWeek(maxWeek)];
+
+  const filteredLeaderboard = snapshot.leaderboard.filter(([name]) => selectedMembers.has(name));
+  leaderboardChart.data.labels = filteredLeaderboard.map(r => r[0]);
+  leaderboardChart.data.datasets[0].data = filteredLeaderboard.map(r => r[1]);
+  leaderboardChart.update();
+
+  typeChart.data.labels = Object.keys(snapshot.type_breakdown);
+  typeChart.data.datasets[0].data = Object.values(snapshot.type_breakdown);
+  typeChart.update();
+
+  document.getElementById('memberTableBody').innerHTML = buildMemberRows(snapshot.members);
+
+  trendChart.data.datasets.forEach(ds => { ds.hidden = !selectedMembers.has(ds.label); });
+  trendChart._weekHighlight = { startIdx: weeks[minWeek].start_idx, endIdx: weeks[maxWeek].end_idx };
+  trendChart.update();
+}
+
+function updateWeekLabel() {
+  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
+  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
+  const label = document.getElementById('weekLabel');
+  if (minWeek === maxWeek) {
+    label.textContent = `Semaine du ${weeks[minWeek].label}`;
+  } else {
+    label.textContent = `Du ${weeks[minWeek].label} au ${weeks[maxWeek].label}`;
+  }
+}
+
+function updateRangeFill() {
+  const minWeek = parseInt(document.getElementById('weekMin').value, 10);
+  const maxWeek = parseInt(document.getElementById('weekMax').value, 10);
+  const count = weeks.length;
+  const fill = document.getElementById('weekRangeFill');
+  if (count <= 1) {
+    fill.style.left = '0%';
+    fill.style.width = '100%';
+    return;
+  }
+  const pctMin = (minWeek / (count - 1)) * 100;
+  const pctMax = (maxWeek / (count - 1)) * 100;
+  fill.style.left = `${pctMin}%`;
+  fill.style.width = `${pctMax - pctMin}%`;
+}
+
+function onRangeChange() {
+  updateRangeFill();
+  updateWeekLabel();
+  updateCharts();
+  renderMemberList();
+}
+
+const weekMin = document.getElementById('weekMin');
+const weekMax = document.getElementById('weekMax');
+
+if (weeks.length > 0) {
+  weekMin.addEventListener('input', () => {
+    if (parseInt(weekMin.value, 10) > parseInt(weekMax.value, 10)) weekMin.value = weekMax.value;
+    onRangeChange();
+  });
+  weekMax.addEventListener('input', () => {
+    if (parseInt(weekMax.value, 10) < parseInt(weekMin.value, 10)) weekMax.value = weekMin.value;
+    onRangeChange();
+  });
+} else {
+  weekMin.disabled = true;
+  weekMax.disabled = true;
+}
+
+document.getElementById('memberList').addEventListener('change', (event) => {
+  const name = event.target.dataset.member;
+  if (!name) return;
+  if (event.target.checked) selectedMembers.add(name);
+  else selectedMembers.delete(name);
+  updateCharts();
+});
+
+onRangeChange();
 </script>
 </body>
 </html>
