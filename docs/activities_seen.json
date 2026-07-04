@@ -1,40 +1,4 @@
 {
-  "0172f484c9cb3901": {
-    "athlete": "Elisa W.",
-    "distance": 7309.9,
-    "elevation": 46.1,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2406,
-    "sport": "Run",
-    "title": "Run 2 avec les jambes bien lourde"
-  },
-  "04e28c79e3aea4f4": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2101,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "072b0f3b97babadf": {
-    "athlete": "Elisa W.",
-    "distance": 5205.6,
-    "elevation": 46.2,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 1590,
-    "sport": "Run",
-    "title": "Course à pied matinale"
-  },
-  "0b08bcb7fc558e89": {
-    "athlete": "Louis C.",
-    "distance": 98490.4,
-    "elevation": 197.0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 13847,
-    "sport": "Ride",
-    "title": "Afternoon Ride"
-  },
   "0d86e855290875e4": {
     "athlete": "Maureen B.",
     "distance": 0.0,
@@ -44,24 +8,6 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le matin"
   },
-  "1bb1ff44c121b370": {
-    "athlete": "Louis C.",
-    "distance": 5784.5,
-    "elevation": 34.8,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 1851,
-    "sport": "Run",
-    "title": "Course à pied le midi"
-  },
-  "1e0734a4f2a8d104": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2767,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
   "25dd97d21b5ff07c": {
     "athlete": "Julianne V.",
     "distance": 0.0,
@@ -70,33 +16,6 @@
     "moving_time": 2625,
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le midi"
-  },
-  "263766568c1391ee": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 566,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "267fc17fe6ba96a4": {
-    "athlete": "Elisa W.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3469,
-    "sport": "WeightTraining",
-    "title": "Entraînement aux poids l'après-midi"
-  },
-  "2e32108227cd7386": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3301,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
   },
   "2ea1685b2ec0adc0": {
     "athlete": "Elisa W.",
@@ -116,15 +35,6 @@
     "sport": "Run",
     "title": "Semaine 3 Run 1 au camps"
   },
-  "322592e530520f2e": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3522,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
   "3ceee02ddd698ee2": {
     "athlete": "Lou B.",
     "distance": 6655.0,
@@ -133,15 +43,6 @@
     "moving_time": 2288,
     "sport": "Run",
     "title": "Course à pied du midi"
-  },
-  "455220a6a20d8dcb": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3001,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
   },
   "4643f4c5867aefc5": {
     "athlete": "Maureen B.",
@@ -170,114 +71,6 @@
     "sport": "Run",
     "title": "partie 2"
   },
-  "63c0ed7cca550798": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3352,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "6400775cc18f5a2c": {
-    "athlete": "Elisa W.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3609,
-    "sport": "WeightTraining",
-    "title": "Entraînement aux poids le midi"
-  },
-  "645b3049e2a54a95": {
-    "athlete": "Elisa W.",
-    "distance": 5306.5,
-    "elevation": 39.5,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 1650,
-    "sport": "Run",
-    "title": "Mes chaussures n’ont pas survécu"
-  },
-  "6480541243463268": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2466,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "6616872150061702": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 4406,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "6f367c4a8cd7cd13": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3151,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "71eab0f9cd86209a": {
-    "athlete": "Louis C.",
-    "distance": 10210.8,
-    "elevation": 212.4,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3670,
-    "sport": "Run",
-    "title": "Course à pied dans l'après-midi"
-  },
-  "72d74e676089281a": {
-    "athlete": "Elisa W.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3306,
-    "sport": "WeightTraining",
-    "title": "Muscu 1"
-  },
-  "7e60954bbf6bbd02": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3667,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "8700cd29364a6a19": {
-    "athlete": "Elisa W.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3600,
-    "sport": "WeightTraining",
-    "title": "Muscu 2"
-  },
-  "906e06349f3e8fa6": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3131,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "9670d8548fadba1e": {
-    "athlete": "Louis C.",
-    "distance": 6062.5,
-    "elevation": 123.2,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 1948,
-    "sport": "Run",
-    "title": "Course à pied le midi"
-  },
   "9dceaa2280e6077f": {
     "athlete": "Julianne V.",
     "distance": 5034.0,
@@ -286,15 +79,6 @@
     "moving_time": 2049,
     "sport": "Run",
     "title": "Course à pied du midi"
-  },
-  "a2d21324c322f858": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 4050,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
   },
   "a4a1992634352ff2": {
     "athlete": "Elisa W.",
@@ -314,33 +98,6 @@
     "sport": "WeightTraining",
     "title": "Muscu 1 semaine 2"
   },
-  "b7f3c859b1818179": {
-    "athlete": "Louis C.",
-    "distance": 24823.8,
-    "elevation": 115.6,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3192,
-    "sport": "Ride",
-    "title": "Sortie vélo en soirée"
-  },
-  "baecc2e513db8832": {
-    "athlete": "Louis C.",
-    "distance": 5025.2,
-    "elevation": 186.4,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2332,
-    "sport": "Run",
-    "title": "Course à pied le matin"
-  },
-  "be8bdb25b008d71d": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3879,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
   "bfa8de91d029847b": {
     "athlete": "Elsa B.",
     "distance": 969.5,
@@ -349,87 +106,6 @@
     "moving_time": 354,
     "sport": "Run",
     "title": "pas cool le chien 😔"
-  },
-  "c43d85017427b9d7": {
-    "athlete": "Elisa W.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3869,
-    "sport": "WeightTraining",
-    "title": "Entraînement aux poids l'après-midi"
-  },
-  "c529b90656171911": {
-    "athlete": "Elisa W.",
-    "distance": 7455.2,
-    "elevation": 46.2,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2404,
-    "sport": "Run",
-    "title": "Run 1 semaine 2"
-  },
-  "c5b48a19c400217c": {
-    "athlete": "Elisa W.",
-    "distance": 5715.2,
-    "elevation": 46.2,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 1807,
-    "sport": "Run",
-    "title": "Run 1"
-  },
-  "ca891ac524c59b29": {
-    "athlete": "Elisa W.",
-    "distance": 5212.9,
-    "elevation": 46.1,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 1653,
-    "sport": "Run",
-    "title": "Run \n(Je me suis pas arrêtée j’ai juste pas arrêtez mon chrono à la fin de mon run donc le temps écoulé n’est pas bon )"
-  },
-  "ccdf99f70d76f3a1": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2461,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "d20688dce549231e": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3185,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "d33506c86e1881fa": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3447,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "d929224d6fc5472d": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3617,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "dd01a1f80b14a24e": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2883,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
   },
   "de9e934f39fe0994": {
     "athlete": "Elsa B.",
@@ -440,51 +116,6 @@
     "sport": "Run",
     "title": "partie 1"
   },
-  "dfa1949831b67162": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 4987,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "e02774db93c1ee5a": {
-    "athlete": "Elisa W.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 3543,
-    "sport": "WeightTraining",
-    "title": "Entraînement aux poids l'après-midi"
-  },
-  "e45f36e0d92dbdb0": {
-    "athlete": "Elisa W.",
-    "distance": 5800.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 1860,
-    "sport": "Run",
-    "title": "Run 3 sur tapis"
-  },
-  "e991e4164bcd63d2": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2896,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
-  "eb3f7b9a4fc04243": {
-    "athlete": "Elisa W.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 2400,
-    "sport": "Ride",
-    "title": "Velo + renfo"
-  },
   "eb76f651b214f9a6": {
     "athlete": "Louis C.",
     "distance": 4986.4,
@@ -494,15 +125,6 @@
     "sport": "Run",
     "title": "Course à pied le midi"
   },
-  "ee86c5860c4fc156": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 796,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
-  },
   "f6e1a5e769bb4f4d": {
     "athlete": "Lou B.",
     "distance": 3532.8,
@@ -511,14 +133,5 @@
     "moving_time": 1369,
     "sport": "Run",
     "title": "Course à pied dans l'après-midi"
-  },
-  "fb0bcdb30f3086d1": {
-    "athlete": "Manu V.",
-    "distance": 0.0,
-    "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
-    "moving_time": 4566,
-    "sport": "Ride",
-    "title": "Sortie vélo le midi"
   }
 }
