@@ -33,10 +33,28 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  * { box-sizing: border-box; }
   body { margin:0; }
   @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   .filter-chip input { accent-color: currentColor; cursor: pointer; }
   #weekSlicerSegments button { user-select: none; }
+
+  /* Mobile: reflow the multi-column grids that assume desktop width, and let the
+     chip rows scroll horizontally instead of overflowing the page. */
+  @media (max-width: 720px) {
+    .hero-badge { margin-left: 0 !important; }
+    #statTilesGrid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+    #recordsGrid { grid-template-columns: repeat(2, 1fr) !important; }
+    #compositionGrid { grid-template-columns: 1fr !important; }
+    .board-row { grid-template-columns: 22px 34px 1fr 72px !important; gap: 10px !important; }
+    .board-row .board-bar { display: none !important; }
+  }
+  @media (max-width: 560px) {
+    #viewToggleBar { margin-left: 0 !important; width: 100%; }
+    #viewToggleBar button { flex: 1; }
+    #sportFilterBar, #memberFilterBar { flex-wrap: nowrap !important; overflow-x: auto; padding-bottom: 4px; }
+    .filter-chip { flex: none; }
+  }
 </style>
 </head>
 <body>
@@ -76,14 +94,14 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   <!-- HERO -->
   <div style="background:#101216;color:#F4F1EA;padding:40px 6vw 88px">
     <div style="max-width:1180px;margin:0 auto">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:26px">
+      <div class="hero-topbar" style="display:flex;align-items:center;gap:12px;margin-bottom:26px;flex-wrap:wrap">
         <div style="width:26px;height:26px;border-radius:50%;background:#F4F1EA;position:relative;flex:none">
           <div style="position:absolute;inset:5px 6px auto 6px;height:15px;background:#101216;border-radius:0 0 8px 8px"></div>
         </div>
         <span style="font-family:'Barlow Condensed';font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:13px;color:#F4F1EA">Le Pingouin</span>
         <span style="color:#4a4d55">/</span>
         <span style="font-family:'Barlow Condensed';font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:13px;color:#FC5200">Strava Club</span>
-        <span style="margin-left:auto;font-family:'Space Mono';font-size:11px;color:#8A8577;border:1px solid #2a2d34;border-radius:99px;padding:5px 12px">SLICE BY WEEK · RANKED BY VOLUME</span>
+        <span class="hero-badge" style="margin-left:auto;font-family:'Space Mono';font-size:11px;color:#8A8577;border:1px solid #2a2d34;border-radius:99px;padding:5px 12px;white-space:nowrap">SLICE BY WEEK · RANKED BY VOLUME</span>
       </div>
       <h1 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;letter-spacing:-.01em;line-height:.92;font-size:clamp(44px,7vw,88px);margin:0 0 14px">Club Activity Board</h1>
       <p style="max-width:560px;margin:0;color:#B7B2A6;font-size:17px;line-height:1.5">Where the #PINGMAFIA stacks up off the pitch — every run, ride and lifting session logged by the club, ranked by who's putting in the work.</p>
@@ -126,7 +144,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FC5200;margin-bottom:6px">03 — Composition</div>
       <h2 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:34px;margin:0;letter-spacing:-.01em">How the effort splits</h2>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:16px">
+    <div id="compositionGrid" style="display:grid;grid-template-columns:1fr 1.4fr;gap:16px">
       <div style="background:#fff;border:1px solid #E7E3DA;border-radius:18px;padding:24px">
         <div style="font-weight:600;font-size:15px;margin-bottom:20px">By discipline <span style="color:#8A8577;font-weight:400">(total moving time)</span></div>
         <div style="display:flex;align-items:center;gap:26px">
@@ -380,14 +398,14 @@ function renderBoard(byA, sport, metric) {
     return;
   }
   container.innerHTML = board.map(row => `
-    <div style="display:grid;grid-template-columns:30px 42px 150px 1fr 92px;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #EFEBE2">
+    <div class="board-row" style="display:grid;grid-template-columns:30px 42px 150px 1fr 92px;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #EFEBE2">
       <div style="font-family:'Space Mono';font-size:13px;color:#B4AF9F;text-align:center">${row.rank}</div>
       <div style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:700;font-size:16px;color:#fff;background:${row.color}">${row.initials}</div>
       <div style="min-width:0">
         <div style="font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${row.name}</div>
         <div style="font-size:12px;color:#8A8577">${row.sub}</div>
       </div>
-      <div style="height:14px;background:#F1EDE4;border-radius:8px;overflow:hidden">
+      <div class="board-bar" style="height:14px;background:#F1EDE4;border-radius:8px;overflow:hidden">
         <div style="height:100%;border-radius:8px;transform-origin:left;animation:grow .5s ease both;background:${row.color};width:${row.pct}%"></div>
       </div>
       <div style="font-family:'Space Mono';font-weight:700;font-size:15px;text-align:right">${row.valueStr}</div>
