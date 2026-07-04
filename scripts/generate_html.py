@@ -95,10 +95,11 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         </div>
         <div style="position:relative;height:320px">
           <canvas id="leaderboardChart"></canvas>
-          <div id="tsEmptyMsg" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#8A8577;font-size:13px;text-align:center">
-            Pas assez de données datées pour tracer une évolution.
+          <div id="tsEmptyMsg" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#8A8577;font-size:13px;text-align:center;padding:0 20px">
+            Pas encore de données datées -- l'historique se construit à partir des activités détectées par ce dashboard.
           </div>
         </div>
+        <div id="tsSparseNote" style="display:none;font-size:11px;color:#B4AF9F;margin-top:10px"></div>
       </div>
     </div>
   </div>
@@ -357,19 +358,27 @@ function renderLeaderboardChart() {
   if (!state.sliceVisible) return;
   const canvas = document.getElementById('leaderboardChart');
   const emptyMsg = document.getElementById('tsEmptyMsg');
+  const sparseNote = document.getElementById('tsSparseNote');
   document.getElementById('tsMetricLabel').textContent = `${LABEL[state.sport]} · ${METL[state.metric].toLowerCase()}`;
 
   const rows = allRows.filter(r => r.s === state.sport && state.memberFilter.has(r.a) && r.day);
   const days = Array.from(new Set(rows.map(r => r.day))).sort();
 
-  if (days.length < 2) {
+  if (days.length === 0) {
     if (lbChart) { lbChart.destroy(); lbChart = null; }
     canvas.style.display = 'none';
     emptyMsg.style.display = 'flex';
+    sparseNote.style.display = 'none';
     return;
   }
   canvas.style.display = '';
   emptyMsg.style.display = 'none';
+  if (days.length < 4) {
+    sparseNote.style.display = '';
+    sparseNote.textContent = `Historique en cours de constitution (${days.length} jour${days.length > 1 ? 's' : ''} détecté${days.length > 1 ? 's' : ''}) -- la tendance s'affinera au fil des prochains jours.`;
+  } else {
+    sparseNote.style.display = 'none';
+  }
 
   const athletes = Array.from(new Set(rows.map(r => r.a))).sort();
   const byAthleteDay = {};
@@ -378,13 +387,15 @@ function renderLeaderboardChart() {
     byAthleteDay[r.a][r.day] = (byAthleteDay[r.a][r.day] || 0) + metricValue(r, state.metric);
   });
 
+  const singleDay = days.length === 1;
   const datasets = athletes.map(a => {
     let running = 0;
     const data = days.map(day => { running += (byAthleteDay[a][day] || 0); return running; });
     const color = athleteColor(a);
     return {
       label: a, data, borderColor: color, backgroundColor: color,
-      pointRadius: 2.5, pointHoverRadius: 5, borderWidth: 2.5, tension: 0.25, fill: false,
+      pointRadius: singleDay ? 6 : 2.5, pointHoverRadius: singleDay ? 8 : 5,
+      borderWidth: 2.5, tension: 0.25, fill: false,
     };
   });
 
@@ -406,6 +417,7 @@ function renderLeaderboardChart() {
       },
       scales: {
         x: {
+          offset: true,
           ticks: { autoSkip: false, maxRotation: 60, minRotation: days.length > 10 ? 45 : 0, font: { family: "'Space Mono'", size: 10 } },
           grid: { display: false },
         },
