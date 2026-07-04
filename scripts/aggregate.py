@@ -102,12 +102,21 @@ def activity_hash(activity):
     return digest[:16]
 
 
-def update_ledger(activities, excluded_hashes, now_iso):
+def update_ledger(visible_activities, excluded_hashes, now_iso):
+    """`visible_activities` doit déjà exclure les activités listées dans excluded_hashes --
+    voir `main()`. En plus de ne pas en ajouter de nouvelles, purge aussi toute activité déjà
+    présente dans le ledger si son hash a été ajouté à la liste d'exclusion depuis : c'est ce qui
+    permet de retirer rétroactivement une activité déjà suivie, pas seulement d'en bloquer de
+    futures."""
     ledger = load_json(LEDGER_PATH, {})
+
+    for excluded_hash in excluded_hashes:
+        ledger.pop(excluded_hash, None)
+
     added = 0
-    for activity in activities:
+    for activity in visible_activities:
         activity_id = activity_hash(activity)
-        if activity_id in excluded_hashes or activity_id in ledger:
+        if activity_id in ledger:
             continue
         ledger[activity_id] = {
             "first_seen": now_iso,
@@ -126,13 +135,16 @@ def main():
     activities = json.loads(RAW_PATH.read_text())
     now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    excluded_hashes = set(load_json(EXCLUDED_PATH, []))
+    visible_activities = [a for a in activities if activity_hash(a) not in excluded_hashes]
+
     # V1 -- historique par instantané agrégé (docs/data.json), conservé tel quel.
-    members = aggregate_members(activities)
+    members = aggregate_members(visible_activities)
     entry = {
         "timestamp": now_iso,
-        "activity_count": len(activities),
+        "activity_count": len(visible_activities),
         "members": members,
-        "type_breakdown": aggregate_type_breakdown(activities),
+        "type_breakdown": aggregate_type_breakdown(visible_activities),
         "leaderboard": build_leaderboard(members),
     }
     history = load_json(HISTORY_PATH, {"history": []})
@@ -143,8 +155,7 @@ def main():
     print(f"Historique mis à jour ({len(history['history'])} entrées) -> {HISTORY_PATH}")
 
     # V2 (Étape 9) -- ledger d'activités par empreinte, avec date de première détection.
-    excluded_hashes = set(load_json(EXCLUDED_PATH, []))
-    ledger, added = update_ledger(activities, excluded_hashes, now_iso)
+    ledger, added = update_ledger(visible_activities, excluded_hashes, now_iso)
     LEDGER_PATH.write_text(json.dumps(ledger, ensure_ascii=False, indent=2, sort_keys=True))
     print(f"Ledger mis à jour : {added} nouvelle(s) activité(s), {len(ledger)} au total -> {LEDGER_PATH}")
 
