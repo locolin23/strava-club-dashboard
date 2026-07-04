@@ -1,14 +1,15 @@
-"""Génère docs/index.html à partir de data/raw_activities.json (la réponse brute de l'API).
+"""Génère docs/index.html : un seul dashboard "Club Activity Board" construit à partir du
+ledger daté (docs/activities_seen.json, voir CLAUDE.md Étape 9), pas de la réponse brute de
+l'API (data/raw_activities.json) qui ne couvre qu'une fenêtre glissante récente.
 
-Ce dashboard reprend le design "Club Activity Board" (voir design_handoff_club_dashboard/) :
-puisque l'API club ne renvoie aucune date par activité, il n'y a pas de dimension temporelle
--- la page montre un classement/une composition d'effort à partir du dernier instantané
-récupéré, pas une évolution dans le temps.
+Le ledger porte une date de première détection par activité (approximation de sa date de
+création réelle, l'API n'en fournissant aucune), ce qui permet de trancher ("slice") le
+dashboard par semaine directement dans la page -- pas besoin d'une page séparée.
 """
 
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,27 +32,46 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   body { margin:0; }
   @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   .filter-chip input { accent-color: currentColor; cursor: pointer; }
+  #weekSlicerSegments button { user-select: none; }
 </style>
 </head>
 <body>
 <div style="font-family:'Barlow',system-ui,sans-serif;background:#F4F1EA;color:#14161A;min-height:100vh;-webkit-font-smoothing:antialiased">
 
-  <!-- ACTIVITY FILTER -->
+  <!-- ACTIVITY + MEMBER FILTER -->
   <div style="background:#F4F1EA;border-bottom:1px solid #E7E3DA;padding:14px 6vw">
-    <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">Show activities</span>
-      <div id="sportFilterBar" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-      <div id="viewToggleBar" style="display:flex;gap:8px;margin-left:auto"></div>
+    <div style="max-width:1180px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+        <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">Show activities</span>
+        <div id="sportFilterBar" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+        <div id="viewToggleBar" style="display:flex;gap:8px;margin-left:auto"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">Members</span>
+        <div id="memberFilterBar" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      </div>
     </div>
   </div>
 
-  <div id="aggregationView">
+  <!-- WEEK SLICER (Étape 9) -->
+  <div id="weekSlicerCard" style="display:none;background:#fff;border-bottom:1px solid #E7E3DA;padding:14px 6vw">
+    <div style="max-width:1180px;margin:0 auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+        <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">
+          Semaines (lundi) — clic, glisser, ou maj+clic pour une plage
+        </span>
+        <button id="weekSlicerClear" style="font-family:'Space Mono';font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:5px 12px;border-radius:8px;cursor:pointer;border:1px solid #D9D4C8;background:#fff;color:#57544C">Réinitialiser</button>
+      </div>
+      <div id="weekSlicerSegments" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+      <div style="font-size:11px;color:#B4AF9F;margin-top:8px">
+        Dates approximatives (première détection par ce dashboard, pas la date réelle de l'activité) -- voir CLAUDE.md Étape 9.
+      </div>
+    </div>
+  </div>
 
   <!-- HERO -->
   <div style="background:#101216;color:#F4F1EA;padding:40px 6vw 88px">
@@ -63,7 +83,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         <span style="font-family:'Barlow Condensed';font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:13px;color:#F4F1EA">Le Pingouin</span>
         <span style="color:#4a4d55">/</span>
         <span style="font-family:'Barlow Condensed';font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:13px;color:#FC5200">Strava Club</span>
-        <span style="margin-left:auto;font-family:'Space Mono';font-size:11px;color:#8A8577;border:1px solid #2a2d34;border-radius:99px;padding:5px 12px">NO TIMELINE · RANKED BY VOLUME</span>
+        <span style="margin-left:auto;font-family:'Space Mono';font-size:11px;color:#8A8577;border:1px solid #2a2d34;border-radius:99px;padding:5px 12px">SLICE BY WEEK · RANKED BY VOLUME</span>
       </div>
       <h1 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;letter-spacing:-.01em;line-height:.92;font-size:clamp(44px,7vw,88px);margin:0 0 14px">Club Activity Board</h1>
       <p style="max-width:560px;margin:0;color:#B7B2A6;font-size:17px;line-height:1.5">Where the #PINGMAFIA stacks up off the pitch — every run, ride and lifting session logged by the club, ranked by who's putting in the work.</p>
@@ -134,30 +154,12 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 
     <div id="footerLine" style="margin-top:44px;text-align:center;font-size:12px;color:#B4AF9F;font-family:'Space Mono'"></div>
   </div>
-  </div>
-
-  <!-- TIME SERIES VIEW (Étape 9) -->
-  <div id="timeSeriesView" style="display:none;max-width:1180px;margin:0 auto;padding:56px 6vw 80px">
-    <div style="margin-bottom:24px">
-      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FC5200;margin-bottom:6px">05 — Historique</div>
-      <h2 style="font-family:'Barlow Condensed';font-weight:700;text-transform:uppercase;font-size:34px;margin:0 0 12px;letter-spacing:-.01em">Série temporelle</h2>
-      <p style="max-width:640px;color:#57544C;font-size:14px;line-height:1.5;margin:0">
-        L'API Strava ne fournit ni date ni identifiant par activité. Cette vue reconstruit un
-        historique approximatif en retenant, pour chaque activité, la première fois où ce
-        dashboard l'a détectée (empreinte de contenu) -- une approximation à la précision du
-        cron, valable seulement depuis le déploiement de ce système. Voir CLAUDE.md Étape 9.
-      </p>
-    </div>
-    <div style="background:#fff;border:1px solid #E7E3DA;border-radius:20px;padding:26px 28px;margin-bottom:16px">
-      <div style="font-family:'Barlow';font-weight:600;font-size:15px;color:#14161A;margin-bottom:16px">Distance cumulée par membre (km)</div>
-      <canvas id="timeSeriesChart" height="90"></canvas>
-    </div>
-    <div id="timelineFootnote" style="text-align:center;font-size:12px;color:#B4AF9F;font-family:'Space Mono'"></div>
-  </div>
+</div>
 
 <script>
 const allRows = __ROWS_JSON__;
-const timeline = __TIMELINE_JSON__;
+const weekLabels = __WEEK_LABELS_JSON__;
+const allMembers = __ALL_MEMBERS_JSON__;
 const lastUpdated = __LAST_UPDATED_JSON__;
 const rawDataUrl = "https://github.com/locolin23/strava-club-dashboard/blob/main/data/raw_activities.json";
 const ledgerUrl = "https://github.com/locolin23/strava-club-dashboard/blob/main/docs/activities_seen.json";
@@ -167,20 +169,25 @@ const LABEL = { Run: 'Run', Ride: 'Ride', Weight: 'Strength' };
 const CFG = { Run: ['dist', 'time', 'elev'], Ride: ['time', 'dist', 'elev'], Weight: ['time'] };
 const METL = { dist: 'Distance', time: 'Time', elev: 'Elevation' };
 const SPORTS = ['Run', 'Ride', 'Weight'];
-const VIEWS = [
-  { key: 'aggregation', label: 'Agrégation' },
-  { key: 'timeseries', label: 'Série temporelle' },
-];
 
 const state = {
   sport: 'Run',
   metric: 'dist',
   sportFilter: { Run: true, Ride: false, Weight: true },
-  view: 'aggregation',
+  memberFilter: new Set(allMembers),
+  sliceVisible: false,
+  weekRange: null,
 };
 
+let weekAnchorIdx = null;
+let isWeekDragging = false;
+
 function visibleRows() {
-  return allRows.filter(r => state.sportFilter[r.s]);
+  return allRows.filter(r =>
+    state.sportFilter[r.s] &&
+    state.memberFilter.has(r.a) &&
+    (!state.weekRange || (r.w >= state.weekRange[0] && r.w <= state.weekRange[1]))
+  );
 }
 
 function ini(name) { const p = name.split(' '); return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase(); }
@@ -216,6 +223,9 @@ function toggleCss(active) {
 function filterChipCss(active, color) {
   return `display:flex;align-items:center;gap:7px;font-family:'Space Mono';font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:6px 14px;border-radius:8px;cursor:pointer;border:1px solid ${active ? color : '#E7E3DA'};background:${active ? color + '14' : '#fff'};color:${active ? color : '#8A8577'};font-weight:${active ? '700' : '400'}`;
 }
+function weekSegmentCss(selected) {
+  return `font-family:'Space Mono';font-size:12px;padding:8px 10px;border-radius:6px;cursor:pointer;border:1px solid ${selected ? '#FC5200' : '#D9D4C8'};background:${selected ? '#FC5200' : '#fff'};color:${selected ? '#fff' : '#57544C'};min-width:48px;text-align:center`;
+}
 
 function renderSportFilter() {
   const bar = document.getElementById('sportFilterBar');
@@ -234,11 +244,76 @@ function renderSportFilter() {
   });
 }
 
+function renderMemberFilter() {
+  const bar = document.getElementById('memberFilterBar');
+  bar.innerHTML = allMembers.map(name => {
+    const active = state.memberFilter.has(name);
+    const id = `memberfilter-${name.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    return `<label for="${id}" class="filter-chip" style="${filterChipCss(active, '#14161A')}">
+      <input type="checkbox" id="${id}" data-member="${name}" ${active ? 'checked' : ''}>${name}
+    </label>`;
+  }).join('');
+  bar.querySelectorAll('input[type=checkbox]').forEach(box => {
+    box.addEventListener('change', (event) => {
+      const name = event.target.dataset.member;
+      if (event.target.checked) state.memberFilter.add(name);
+      else state.memberFilter.delete(name);
+      render();
+    });
+  });
+}
+
 function renderViewToggle() {
   const bar = document.getElementById('viewToggleBar');
-  bar.innerHTML = VIEWS.map(v => `<button data-view="${v.key}" style="${tabCss(state.view === v.key, false)}">${v.label}</button>`).join('');
-  bar.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => { state.view = btn.dataset.view; render(); });
+  bar.innerHTML =
+    `<button data-mode="agg" style="${tabCss(!state.sliceVisible, false)}">Agrégation</button>` +
+    `<button data-mode="series" style="${tabCss(state.sliceVisible, false)}">Série temporelle</button>`;
+  bar.querySelector('[data-mode="agg"]').addEventListener('click', () => {
+    state.sliceVisible = false;
+    state.weekRange = null;
+    render();
+  });
+  bar.querySelector('[data-mode="series"]').addEventListener('click', () => {
+    state.sliceVisible = true;
+    render();
+  });
+}
+
+function initWeekSlicer() {
+  const bar = document.getElementById('weekSlicerSegments');
+  bar.innerHTML = weekLabels.map((label, idx) => `<button data-idx="${idx}">${label}</button>`).join('');
+  bar.querySelectorAll('button').forEach((btn) => {
+    const idx = parseInt(btn.dataset.idx, 10);
+    btn.addEventListener('mousedown', (event) => {
+      event.preventDefault();
+      isWeekDragging = true;
+      if (event.shiftKey && weekAnchorIdx !== null) {
+        state.weekRange = [Math.min(weekAnchorIdx, idx), Math.max(weekAnchorIdx, idx)];
+      } else {
+        weekAnchorIdx = idx;
+        state.weekRange = [idx, idx];
+      }
+      render();
+    });
+    btn.addEventListener('mouseenter', () => {
+      if (isWeekDragging && weekAnchorIdx !== null) {
+        state.weekRange = [Math.min(weekAnchorIdx, idx), Math.max(weekAnchorIdx, idx)];
+        render();
+      }
+    });
+  });
+  document.addEventListener('mouseup', () => { isWeekDragging = false; });
+  document.getElementById('weekSlicerClear').addEventListener('click', () => {
+    state.weekRange = null;
+    render();
+  });
+}
+
+function updateWeekSlicer() {
+  document.getElementById('weekSlicerCard').style.display = state.sliceVisible ? '' : 'none';
+  document.querySelectorAll('#weekSlicerSegments button').forEach((btn, idx) => {
+    const selected = !!state.weekRange && idx >= state.weekRange[0] && idx <= state.weekRange[1];
+    btn.style.cssText = weekSegmentCss(selected);
   });
 }
 
@@ -301,7 +376,7 @@ function renderBoard(byA, sport, metric) {
 
   const container = document.getElementById('boardRows');
   if (board.length === 0) {
-    container.innerHTML = `<div style="padding:24px 0;color:#8A8577;font-size:14px">No activities of this type are currently shown — enable it above.</div>`;
+    container.innerHTML = `<div style="padding:24px 0;color:#8A8577;font-size:14px">No activities match the current filters.</div>`;
     return;
   }
   container.innerHTML = board.map(row => `
@@ -334,7 +409,7 @@ function renderCards(athletes) {
 
   const grid = document.getElementById('athleteCardsGrid');
   if (cards.length === 0) {
-    grid.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filter.</div>`;
+    grid.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filters.</div>`;
     return;
   }
   grid.innerHTML = cards.map(c => `
@@ -387,7 +462,7 @@ function renderComposition(tS, athletes, totT, isEmpty) {
   });
   const effortContainer = document.getElementById('effortRows');
   if (effort.length === 0) {
-    effortContainer.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filter.</div>`;
+    effortContainer.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filters.</div>`;
   } else {
     effortContainer.innerHTML = effort.map(e => `
       <div style="display:grid;grid-template-columns:120px 1fr 64px;align-items:center;gap:12px;padding:7px 0">
@@ -418,7 +493,7 @@ function renderRecords(rows) {
   const grid = document.getElementById('recordsGrid');
   if (records.length === 0) {
     grid.style.gridTemplateColumns = '1fr';
-    grid.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filter.</div>`;
+    grid.innerHTML = `<div style="color:#8A8577;font-size:14px">No activities match the current filters.</div>`;
     return;
   }
   grid.style.gridTemplateColumns = `repeat(${records.length}, 1fr)`;
@@ -430,64 +505,6 @@ function renderRecords(rows) {
       <div style="font-weight:600;font-size:14px">${r.who}</div>
       <div style="font-size:12px;color:#8A8577;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.note}</div>
     </div>`).join('');
-}
-
-const timeSeriesChart = new Chart(document.getElementById('timeSeriesChart'), {
-  type: 'line',
-  data: { datasets: [] },
-  options: {
-    responsive: true,
-    plugins: { legend: { position: 'bottom', onClick: () => {} } },
-    scales: {
-      x: {
-        type: 'time',
-        time: { tooltipFormat: 'dd/MM/yyyy HH:mm' },
-        ticks: { color: '#8A8577' },
-        grid: { color: '#EFEBE2' },
-      },
-      y: {
-        ticks: { color: '#8A8577' },
-        grid: { color: '#EFEBE2' },
-      },
-    },
-  },
-});
-
-function visibleTimeline() {
-  return timeline.filter(e => state.sportFilter[e.s]);
-}
-
-function renderTimeSeries() {
-  const entries = visibleTimeline();
-  const athletes = [...new Set(entries.map(e => e.a))];
-  const cumByAthlete = {};
-  const pointsByAthlete = {};
-  athletes.forEach(a => { cumByAthlete[a] = 0; pointsByAthlete[a] = []; });
-
-  entries.forEach(e => {
-    cumByAthlete[e.a] += e.d / 1000;
-    pointsByAthlete[e.a].push({ x: e.first_seen, y: Math.round(cumByAthlete[e.a] * 10) / 10 });
-  });
-
-  timeSeriesChart.data.datasets = athletes.map((a, i) => ({
-    label: a,
-    data: pointsByAthlete[a],
-    borderColor: `hsl(${i * 47 % 360}, 70%, 55%)`,
-    fill: false,
-    stepped: true,
-    tension: 0,
-  }));
-  timeSeriesChart.update();
-
-  const footnote = document.getElementById('timelineFootnote');
-  if (entries.length === 0) {
-    footnote.innerHTML = `Aucune activité suivie pour cette sélection. Ledger complet : <a href="${ledgerUrl}" style="color:#B4AF9F">docs/activities_seen.json</a>`;
-    return;
-  }
-  const firstSeenDate = entries[0].first_seen.slice(0, 10);
-  footnote.innerHTML =
-    `${entries.length} activités suivies depuis le ${firstSeenDate} · ${athletes.length} membres · ` +
-    `ledger complet : <a href="${ledgerUrl}" style="color:#B4AF9F">docs/activities_seen.json</a>`;
 }
 
 function render() {
@@ -506,7 +523,9 @@ function render() {
   rows.forEach(x => { td += x.d; tm += x.m; tg += x.g; tS[x.s] += x.m; });
 
   renderSportFilter();
+  renderMemberFilter();
   renderViewToggle();
+  updateWeekSlicer();
   renderStatTiles(td, tm, tg, rows.length, athletes.length);
   renderSportTabs(state.sport);
   renderMetricToggles(state.sport, state.metric);
@@ -514,17 +533,14 @@ function render() {
   renderCards(athletes);
   renderComposition(tS, athletes, tS.Run + tS.Ride + tS.Weight || 1, rows.length === 0);
   renderRecords(rows);
-  renderTimeSeries();
 
   document.getElementById('footerLine').innerHTML =
     `Strava Club API · ${rows.length} activities shown · ${athletes.length} members · ` +
-    `dernière synchro ${lastUpdated} · réponse brute avant agrégation : ` +
-    `<a href="${rawDataUrl}" style="color:#B4AF9F">data/raw_activities.json</a>`;
-
-  document.getElementById('aggregationView').style.display = state.view === 'aggregation' ? '' : 'none';
-  document.getElementById('timeSeriesView').style.display = state.view === 'timeseries' ? '' : 'none';
+    `dernier instantané brut : <a href="${rawDataUrl}" style="color:#B4AF9F">data/raw_activities.json</a> · ` +
+    `historique cumulatif : <a href="${ledgerUrl}" style="color:#B4AF9F">docs/activities_seen.json</a>`;
 }
 
+initWeekSlicer();
 render();
 </script>
 </body>
@@ -533,6 +549,9 @@ render();
 
 
 def build_rows(raw_activities):
+    """Repli utilisé seulement si le ledger n'existe pas encore : construit les lignes à partir
+    de la réponse brute de l'API (pas de date, donc pas d'indice de semaine -> le slicer sera
+    vide)."""
     rows = []
     for activity in raw_activities:
         athlete = activity.get("athlete", {})
@@ -559,10 +578,10 @@ def build_rows(raw_activities):
     return rows
 
 
-def build_timeline_entries(ledger):
-    """Convertit le ledger (docs/activities_seen.json, Étape 9) en points datés pour la vue
-    "Série temporelle" : chaque activité porte sa date de première détection, pas sa vraie date
-    de création (inconnue), mais c'est la meilleure approximation disponible."""
+def build_rows_from_ledger(ledger):
+    """Source principale du dashboard (Étape 9) : le ledger porte une date de première
+    détection par activité, ce qui permet d'attacher à chaque ligne l'indice de la semaine
+    calendaire (lundi à dimanche) à laquelle elle appartient, pour le slicer."""
     entries = []
     for data in ledger.values():
         sport_key = SPORT_KEY_BY_TYPE.get(data.get("sport"))
@@ -570,25 +589,43 @@ def build_timeline_entries(ledger):
             continue
         entries.append(
             {
-                "first_seen": data.get("first_seen", ""),
                 "a": data.get("athlete", ""),
                 "s": sport_key,
                 "d": data.get("distance", 0) or 0,
                 "m": data.get("moving_time", 0) or 0,
                 "g": data.get("elevation", 0) or 0,
                 "t": data.get("title", ""),
+                "_first_seen": data.get("first_seen", ""),
             }
         )
-    entries.sort(key=lambda e: e["first_seen"])
-    return entries
+    entries.sort(key=lambda e: e["_first_seen"])
+
+    week_mondays = []
+    index_by_key = {}
+    for entry in entries:
+        dt = datetime.strptime(entry["_first_seen"], "%Y-%m-%dT%H:%M:%SZ")
+        monday = dt.date() - timedelta(days=dt.weekday())
+        key = monday.isoformat()
+        if key not in index_by_key:
+            index_by_key[key] = len(week_mondays)
+            week_mondays.append(monday)
+        entry["w"] = index_by_key[key]
+        del entry["_first_seen"]
+
+    week_labels = [monday.strftime("%d/%m") for monday in week_mondays]
+    return entries, week_labels
 
 
 def main():
-    raw_activities = json.loads(RAW_PATH.read_text()) if RAW_PATH.exists() else []
-    rows = build_rows(raw_activities)
-
     ledger = json.loads(LEDGER_PATH.read_text()) if LEDGER_PATH.exists() else {}
-    timeline = build_timeline_entries(ledger)
+    if ledger:
+        rows, week_labels = build_rows_from_ledger(ledger)
+    else:
+        raw_activities = json.loads(RAW_PATH.read_text()) if RAW_PATH.exists() else []
+        rows = build_rows(raw_activities)
+        week_labels = []
+
+    all_members = sorted({row["a"] for row in rows})
 
     if RAW_PATH.exists():
         last_updated = datetime.fromtimestamp(RAW_PATH.stat().st_mtime, tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
@@ -597,7 +634,8 @@ def main():
 
     html = PAGE_TEMPLATE
     html = html.replace("__ROWS_JSON__", json.dumps(rows, ensure_ascii=False))
-    html = html.replace("__TIMELINE_JSON__", json.dumps(timeline, ensure_ascii=False))
+    html = html.replace("__WEEK_LABELS_JSON__", json.dumps(week_labels, ensure_ascii=False))
+    html = html.replace("__ALL_MEMBERS_JSON__", json.dumps(all_members, ensure_ascii=False))
     html = html.replace("__LAST_UPDATED_JSON__", json.dumps(last_updated, ensure_ascii=False))
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
