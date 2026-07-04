@@ -17,6 +17,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le midi"
   },
+  "25ecc6da1ae9f5c9": {
+    "athlete": "Maureen B.",
+    "distance": 1277.8,
+    "elevation": 0.0,
+    "first_seen": "2026-07-04T17:52:47Z",
+    "moving_time": 430,
+    "sport": "Run",
+    "title": "intervalle partie 2"
+  },
   "2ea1685b2ec0adc0": {
     "athlete": "Elisa W.",
     "distance": 6587.5,
@@ -106,6 +115,15 @@
     "moving_time": 2682,
     "sport": "WeightTraining",
     "title": "Muscu 1 semaine 2"
+  },
+  "b41905ba3e9082c5": {
+    "athlete": "Maureen B.",
+    "distance": 1773.8,
+    "elevation": 0.0,
+    "first_seen": "2026-07-04T17:52:47Z",
+    "moving_time": 605,
+    "sport": "Run",
+    "title": "intervalle parti 1/2"
   },
   "bfa8de91d029847b": {
     "athlete": "Elsa B.",
