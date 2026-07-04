@@ -21,6 +21,10 @@ OUTPUT_PATH = BASE_DIR / "docs" / "index.html"
 # d'activité (ex. Swim) sont ignorés du dashboard plutôt que d'inventer une catégorie.
 SPORT_KEY_BY_TYPE = {"Run": "Run", "Ride": "Ride", "WeightTraining": "Weight"}
 
+# Membres exclus du dashboard affiché (non destructif : le ledger/les snapshots bruts
+# conservent leurs activités intactes, seul l'affichage généré ici les filtre).
+EXCLUDED_ATHLETES = {"Louis C."}
+
 # Le template utilise des placeholders __XXX__ remplacés par de simples .replace()
 # plutôt que str.format(), pour éviter d'avoir à échapper les accolades dans le JS.
 PAGE_TEMPLATE = """<!DOCTYPE html>
@@ -50,8 +54,6 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     .board-row .board-bar { display: none !important; }
   }
   @media (max-width: 560px) {
-    #viewToggleBar { margin-left: 0 !important; width: 100%; }
-    #viewToggleBar button { flex: 1; }
     #sportFilterBar, #memberFilterBar { flex-wrap: nowrap !important; overflow-x: auto; padding-bottom: 4px; }
     .filter-chip { flex: none; }
   }
@@ -66,7 +68,6 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
         <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">Show activities</span>
         <div id="sportFilterBar" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-        <div id="viewToggleBar" style="display:flex;gap:8px;margin-left:auto"></div>
       </div>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">Members</span>
@@ -76,7 +77,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   </div>
 
   <!-- WEEK SLICER (Étape 9) -->
-  <div id="weekSlicerCard" style="display:none;background:#fff;border-bottom:1px solid #E7E3DA;padding:14px 6vw">
+  <div id="weekSlicerCard" style="background:#fff;border-bottom:1px solid #E7E3DA;padding:14px 6vw">
     <div style="max-width:1180px;margin:0 auto">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px">
         <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577">
@@ -207,7 +208,6 @@ const state = {
   metric: 'dist',
   sportFilter: { Run: true, Ride: false, Weight: true },
   memberFilter: new Set(allMembers),
-  sliceVisible: false,
   weekRange: null,
 };
 
@@ -300,22 +300,6 @@ function renderMemberFilter() {
   });
 }
 
-function renderViewToggle() {
-  const bar = document.getElementById('viewToggleBar');
-  bar.innerHTML =
-    `<button data-mode="agg" style="${tabCss(!state.sliceVisible, false)}">Agrégation</button>` +
-    `<button data-mode="series" style="${tabCss(state.sliceVisible, false)}">Série temporelle</button>`;
-  bar.querySelector('[data-mode="agg"]').addEventListener('click', () => {
-    state.sliceVisible = false;
-    state.weekRange = null;
-    render();
-  });
-  bar.querySelector('[data-mode="series"]').addEventListener('click', () => {
-    state.sliceVisible = true;
-    render();
-  });
-}
-
 function initWeekSlicer() {
   const bar = document.getElementById('weekSlicerSegments');
   bar.innerHTML = weekLabels.map((label, idx) => `<button data-idx="${idx}">${label}</button>`).join('');
@@ -347,7 +331,6 @@ function initWeekSlicer() {
 }
 
 function updateWeekSlicer() {
-  document.getElementById('weekSlicerCard').style.display = state.sliceVisible ? '' : 'none';
   document.querySelectorAll('#weekSlicerSegments button').forEach((btn, idx) => {
     const selected = !!state.weekRange && idx >= state.weekRange[0] && idx <= state.weekRange[1];
     btn.style.cssText = weekSegmentCss(selected);
@@ -355,7 +338,6 @@ function updateWeekSlicer() {
 }
 
 function renderLeaderboardChart() {
-  if (!state.sliceVisible) return;
   const canvas = document.getElementById('leaderboardChart');
   const emptyMsg = document.getElementById('tsEmptyMsg');
   const sparseNote = document.getElementById('tsSparseNote');
@@ -646,7 +628,6 @@ function render() {
 
   renderSportFilter();
   renderMemberFilter();
-  renderViewToggle();
   updateWeekSlicer();
   renderLeaderboardChart();
   renderStatTiles(td, tm, tg, rows.length, athletes.length);
@@ -681,7 +662,7 @@ def build_rows(raw_activities):
         firstname = (athlete.get("firstname") or "").strip()
         lastname = (athlete.get("lastname") or "").strip()
         name = f"{firstname} {lastname}".strip()
-        if not name:
+        if not name or name in EXCLUDED_ATHLETES:
             continue
 
         sport_key = SPORT_KEY_BY_TYPE.get(activity.get("type"))
@@ -707,6 +688,8 @@ def build_rows_from_ledger(ledger):
     calendaire (lundi à dimanche) à laquelle elle appartient, pour le slicer."""
     entries = []
     for data in ledger.values():
+        if data.get("athlete", "") in EXCLUDED_ATHLETES:
+            continue
         sport_key = SPORT_KEY_BY_TYPE.get(data.get("sport"))
         if sport_key is None:
             continue
