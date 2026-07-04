@@ -88,6 +88,18 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       <div style="font-size:11px;color:#B4AF9F;margin-top:8px">
         Dates approximatives (première détection par ce dashboard, pas la date réelle de l'activité) -- voir CLAUDE.md Étape 9.
       </div>
+
+      <div style="margin-top:22px;padding-top:18px;border-top:1px solid #EFEBE2">
+        <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577;margin-bottom:12px">
+          Leaderboard evolution — <span id="tsMetricLabel" style="color:#FC5200"></span>
+        </div>
+        <div style="position:relative;height:320px">
+          <canvas id="leaderboardChart"></canvas>
+          <div id="tsEmptyMsg" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#8A8577;font-size:13px;text-align:center">
+            Pas assez de données datées pour tracer une évolution.
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -174,6 +186,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
 const allRows = __ROWS_JSON__;
 const weekLabels = __WEEK_LABELS_JSON__;
@@ -199,6 +212,11 @@ const state = {
 
 let weekAnchorIdx = null;
 let isWeekDragging = false;
+let lbChart = null;
+const ATHLETE_COLORS = ['#FC5200', '#1FA2C7', '#3A3D45', '#8E44AD', '#16A085', '#D4AC0D', '#C0392B', '#2E86C1', '#E67E22', '#7F8C8D'];
+function athleteColor(name) { return ATHLETE_COLORS[Math.max(0, allMembers.indexOf(name)) % ATHLETE_COLORS.length]; }
+function metricUnit(metric) { return metric === 'dist' ? ' km' : metric === 'time' ? ' h' : ' m'; }
+function metricValue(row, metric) { return metric === 'dist' ? row.d / 1000 : metric === 'time' ? row.m / 3600 : row.g; }
 
 function visibleRows() {
   return allRows.filter(r =>
@@ -333,6 +351,80 @@ function updateWeekSlicer() {
     const selected = !!state.weekRange && idx >= state.weekRange[0] && idx <= state.weekRange[1];
     btn.style.cssText = weekSegmentCss(selected);
   });
+}
+
+function renderLeaderboardChart() {
+  if (!state.sliceVisible) return;
+  const canvas = document.getElementById('leaderboardChart');
+  const emptyMsg = document.getElementById('tsEmptyMsg');
+  document.getElementById('tsMetricLabel').textContent = `${LABEL[state.sport]} · ${METL[state.metric].toLowerCase()}`;
+
+  const rows = allRows.filter(r => r.s === state.sport && state.memberFilter.has(r.a) && r.day);
+  const days = Array.from(new Set(rows.map(r => r.day))).sort();
+
+  if (days.length < 2) {
+    if (lbChart) { lbChart.destroy(); lbChart = null; }
+    canvas.style.display = 'none';
+    emptyMsg.style.display = 'flex';
+    return;
+  }
+  canvas.style.display = '';
+  emptyMsg.style.display = 'none';
+
+  const athletes = Array.from(new Set(rows.map(r => r.a))).sort();
+  const byAthleteDay = {};
+  athletes.forEach(a => { byAthleteDay[a] = {}; });
+  rows.forEach(r => {
+    byAthleteDay[r.a][r.day] = (byAthleteDay[r.a][r.day] || 0) + metricValue(r, state.metric);
+  });
+
+  const datasets = athletes.map(a => {
+    let running = 0;
+    const data = days.map(day => { running += (byAthleteDay[a][day] || 0); return running; });
+    const color = athleteColor(a);
+    return {
+      label: a, data, borderColor: color, backgroundColor: color,
+      pointRadius: 2.5, pointHoverRadius: 5, borderWidth: 2.5, tension: 0.25, fill: false,
+    };
+  });
+
+  const dayLabels = days.map(d => { const [, m, dd] = d.split('-'); return `${dd}/${m}`; });
+  const unit = metricUnit(state.metric);
+
+  const chartConfig = {
+    type: 'line',
+    data: { labels: dayLabels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, font: { family: "'Barlow'", size: 11 } } },
+        tooltip: {
+          callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}${unit}` },
+        },
+      },
+      scales: {
+        x: {
+          ticks: { autoSkip: false, maxRotation: 60, minRotation: days.length > 10 ? 45 : 0, font: { family: "'Space Mono'", size: 10 } },
+          grid: { display: false },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: { font: { family: "'Space Mono'", size: 10 }, callback: (v) => v + unit },
+          grid: { color: '#EFEBE2' },
+        },
+      },
+    },
+  };
+
+  if (lbChart) {
+    lbChart.data = chartConfig.data;
+    lbChart.options = chartConfig.options;
+    lbChart.update();
+  } else {
+    lbChart = new Chart(canvas.getContext('2d'), chartConfig);
+  }
 }
 
 function renderStatTiles(td, tm, tg, activityCount, athleteCount) {
@@ -544,6 +636,7 @@ function render() {
   renderMemberFilter();
   renderViewToggle();
   updateWeekSlicer();
+  renderLeaderboardChart();
   renderStatTiles(td, tm, tg, rows.length, athletes.length);
   renderSportTabs(state.sport);
   renderMetricToggles(state.sport, state.metric);
@@ -628,6 +721,7 @@ def build_rows_from_ledger(ledger):
             index_by_key[key] = len(week_mondays)
             week_mondays.append(monday)
         entry["w"] = index_by_key[key]
+        entry["day"] = dt.date().isoformat()
         del entry["_first_seen"]
 
     week_labels = [monday.strftime("%d/%m") for monday in week_mondays]
