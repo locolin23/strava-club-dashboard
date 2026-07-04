@@ -89,19 +89,6 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       <div style="font-size:11px;color:#B4AF9F;margin-top:8px">
         Dates approximatives (première détection par ce dashboard, pas la date réelle de l'activité) -- voir CLAUDE.md Étape 9.
       </div>
-
-      <div style="margin-top:22px;padding-top:18px;border-top:1px solid #EFEBE2">
-        <div style="font-family:'Space Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8577;margin-bottom:12px">
-          Leaderboard evolution — <span id="tsMetricLabel" style="color:#FC5200"></span>
-        </div>
-        <div style="position:relative;height:320px">
-          <canvas id="leaderboardChart"></canvas>
-          <div id="tsEmptyMsg" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#8A8577;font-size:13px;text-align:center;padding:0 20px">
-            Pas encore de données datées -- l'historique se construit à partir des activités détectées par ce dashboard.
-          </div>
-        </div>
-        <div id="tsSparseNote" style="display:none;font-size:11px;color:#B4AF9F;margin-top:10px"></div>
-      </div>
     </div>
   </div>
 
@@ -144,6 +131,21 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         <div id="metricTogglesRow" style="display:flex;gap:6px"></div>
       </div>
       <div id="boardRows"></div>
+    </div>
+
+    <!-- LEADERBOARD EVOLUTION -->
+    <div style="background:#fff;border:1px solid #E7E3DA;border-radius:20px;padding:26px 28px;margin-top:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+        <div style="font-family:'Barlow';font-weight:600;font-size:15px;color:#14161A">Leaderboard evolution</div>
+        <div id="tsModeToggleRow" style="display:flex;gap:6px"></div>
+      </div>
+      <div style="position:relative;height:320px">
+        <canvas id="leaderboardChart"></canvas>
+        <div id="tsEmptyMsg" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#8A8577;font-size:13px;text-align:center;padding:0 20px">
+          Pas encore de données datées -- l'historique se construit à partir des activités détectées par ce dashboard.
+        </div>
+      </div>
+      <div id="tsSparseNote" style="display:none;font-size:11px;color:#B4AF9F;margin-top:10px"></div>
     </div>
 
     <!-- ATHLETE CARDS -->
@@ -202,6 +204,16 @@ const LABEL = { Run: 'Run', Ride: 'Ride', Weight: 'Strength' };
 const CFG = { Run: ['dist', 'time', 'elev'], Ride: ['time', 'dist', 'elev'], Weight: ['time'] };
 const METL = { dist: 'Distance', time: 'Time', elev: 'Elevation' };
 const SPORTS = ['Run', 'Ride', 'Weight'];
+const TS_MODES = {
+  run: { sport: 'Run', metric: 'dist', label: 'Run · Distance (km)' },
+  strength: { sport: 'Weight', metric: 'time', label: 'Strength · Duration (h)' },
+};
+const CROWN_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" style="flex:none">
+  <path d="M2 20h20l-2-9-4 3-4-6-4 6-4-3-2 9z" fill="#FFC94A"/>
+  <rect x="11" y="7" width="2.4" height="2.4" fill="#FC5200" transform="rotate(45 12 8)"/>
+  <rect x="3" y="10" width="2.4" height="2.4" fill="#FC5200" transform="rotate(45 4 11)"/>
+  <rect x="19" y="10" width="2.4" height="2.4" fill="#FC5200" transform="rotate(45 20 11)"/>
+</svg>`;
 
 const state = {
   sport: 'Run',
@@ -209,6 +221,7 @@ const state = {
   sportFilter: { Run: true, Ride: false, Weight: true },
   memberFilter: new Set(allMembers),
   weekRange: null,
+  tsMode: 'run',
 };
 
 let weekAnchorIdx = null;
@@ -337,13 +350,24 @@ function updateWeekSlicer() {
   });
 }
 
+function renderTsModeToggle() {
+  const bar = document.getElementById('tsModeToggleRow');
+  bar.innerHTML = Object.keys(TS_MODES).map(key =>
+    `<button data-mode="${key}" style="${toggleCss(state.tsMode === key)}">${TS_MODES[key].label}</button>`
+  ).join('');
+  bar.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => { state.tsMode = btn.dataset.mode; render(); });
+  });
+}
+
 function renderLeaderboardChart() {
+  renderTsModeToggle();
+  const mode = TS_MODES[state.tsMode];
   const canvas = document.getElementById('leaderboardChart');
   const emptyMsg = document.getElementById('tsEmptyMsg');
   const sparseNote = document.getElementById('tsSparseNote');
-  document.getElementById('tsMetricLabel').textContent = `${LABEL[state.sport]} · ${METL[state.metric].toLowerCase()}`;
 
-  const rows = allRows.filter(r => r.s === state.sport && state.memberFilter.has(r.a) && r.day);
+  const rows = allRows.filter(r => r.s === mode.sport && state.memberFilter.has(r.a) && r.day);
   const days = Array.from(new Set(rows.map(r => r.day))).sort();
 
   if (days.length === 0) {
@@ -366,7 +390,7 @@ function renderLeaderboardChart() {
   const byAthleteDay = {};
   athletes.forEach(a => { byAthleteDay[a] = {}; });
   rows.forEach(r => {
-    byAthleteDay[r.a][r.day] = (byAthleteDay[r.a][r.day] || 0) + metricValue(r, state.metric);
+    byAthleteDay[r.a][r.day] = (byAthleteDay[r.a][r.day] || 0) + metricValue(r, mode.metric);
   });
 
   const singleDay = days.length === 1;
@@ -382,7 +406,7 @@ function renderLeaderboardChart() {
   });
 
   const dayLabels = days.map(d => { const [, m, dd] = d.split('-'); return `${dd}/${m}`; });
-  const unit = metricUnit(state.metric);
+  const unit = metricUnit(mode.metric);
 
   const chartConfig = {
     type: 'line',
@@ -488,7 +512,10 @@ function renderBoard(byA, sport, metric) {
       <div style="font-family:'Space Mono';font-size:13px;color:#B4AF9F;text-align:center">${row.rank}</div>
       <div style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:700;font-size:16px;color:#fff;background:${row.color}">${row.initials}</div>
       <div style="min-width:0">
-        <div style="font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${row.name}</div>
+        <div style="display:flex;align-items:center;gap:6px;min-width:0">
+          ${row.rank === 1 ? CROWN_SVG : ''}
+          <span style="font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">${row.name}</span>
+        </div>
         <div style="font-size:12px;color:#8A8577">${row.sub}</div>
       </div>
       <div class="board-bar" style="height:14px;background:#F1EDE4;border-radius:8px;overflow:hidden">

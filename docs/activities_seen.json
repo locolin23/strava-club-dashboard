@@ -3,7 +3,7 @@
     "athlete": "Maureen B.",
     "distance": 0.0,
     "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-03T12:00:00Z",
     "moving_time": 3840,
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le matin"
@@ -12,7 +12,7 @@
     "athlete": "Julianne V.",
     "distance": 0.0,
     "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-03T12:00:00Z",
     "moving_time": 2625,
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le midi"
@@ -21,7 +21,7 @@
     "athlete": "Elisa W.",
     "distance": 6587.5,
     "elevation": 46.2,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-06-29T12:00:00Z",
     "moving_time": 2121,
     "sport": "Run",
     "title": "Semaine 2 Run 2"
@@ -30,7 +30,7 @@
     "athlete": "Elisa W.",
     "distance": 6327.8,
     "elevation": 67.9,
-    "first_seen": "2026-07-03T18:06:22Z",
+    "first_seen": "2026-07-03T12:00:00Z",
     "moving_time": 2102,
     "sport": "Run",
     "title": "Semaine 3 Run 1 au camps"
@@ -39,7 +39,7 @@
     "athlete": "Lou B.",
     "distance": 6655.0,
     "elevation": 67.1,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-02T12:00:00Z",
     "moving_time": 2288,
     "sport": "Run",
     "title": "Course à pied du midi"
@@ -48,7 +48,7 @@
     "athlete": "Maureen B.",
     "distance": 0.0,
     "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-02T12:00:00Z",
     "moving_time": 3782,
     "sport": "WeightTraining",
     "title": "programme muscu 🏋️‍♀️💪🏽"
@@ -66,7 +66,7 @@
     "athlete": "Julianne V.",
     "distance": 0.0,
     "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-01T12:00:00Z",
     "moving_time": 2534,
     "sport": "WeightTraining",
     "title": "Entraînement aux poids l'après-midi"
@@ -75,7 +75,7 @@
     "athlete": "Elsa B.",
     "distance": 2068.3,
     "elevation": 4.4,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-02T12:00:00Z",
     "moving_time": 720,
     "sport": "Run",
     "title": "partie 2"
@@ -84,7 +84,7 @@
     "athlete": "Julianne V.",
     "distance": 5034.0,
     "elevation": 41.6,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-03T12:00:00Z",
     "moving_time": 2049,
     "sport": "Run",
     "title": "Course à pied du midi"
@@ -93,7 +93,7 @@
     "athlete": "Elisa W.",
     "distance": 8357.5,
     "elevation": 52.7,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-06-30T12:00:00Z",
     "moving_time": 2701,
     "sport": "Run",
     "title": "Run 3 semaine 2"
@@ -102,7 +102,7 @@
     "athlete": "Elisa W.",
     "distance": 0.0,
     "elevation": 0,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-01T12:00:00Z",
     "moving_time": 2682,
     "sport": "WeightTraining",
     "title": "Muscu 1 semaine 2"
@@ -111,7 +111,7 @@
     "athlete": "Elsa B.",
     "distance": 969.5,
     "elevation": 15.9,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-02T12:00:00Z",
     "moving_time": 354,
     "sport": "Run",
     "title": "pas cool le chien 😔"
@@ -120,7 +120,7 @@
     "athlete": "Elsa B.",
     "distance": 2221.8,
     "elevation": 16.7,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-02T12:00:00Z",
     "moving_time": 721,
     "sport": "Run",
     "title": "partie 1"
@@ -129,7 +129,7 @@
     "athlete": "Louis C.",
     "distance": 4986.4,
     "elevation": 14.6,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-07-03T12:13:00Z",
     "moving_time": 1627,
     "sport": "Run",
     "title": "Course à pied le midi"
@@ -138,7 +138,7 @@
     "athlete": "Lou B.",
     "distance": 3532.8,
     "elevation": 35.9,
-    "first_seen": "2026-07-03T15:49:53Z",
+    "first_seen": "2026-06-29T12:00:00Z",
     "moving_time": 1369,
     "sport": "Run",
     "title": "Course à pied dans l'après-midi"
