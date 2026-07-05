@@ -89,6 +89,15 @@
     "sport": "Run",
     "title": "partie 2"
   },
+  "8c96ea18e5b15354": {
+    "athlete": "Elsa B.",
+    "distance": 1900.3,
+    "elevation": 14.6,
+    "first_seen": "2026-07-05T10:55:31Z",
+    "moving_time": 601,
+    "sport": "Run",
+    "title": "séance 2 partie 2"
+  },
   "9dceaa2280e6077f": {
     "athlete": "Julianne V.",
     "distance": 5034.0,
@@ -124,6 +133,15 @@
     "moving_time": 605,
     "sport": "Run",
     "title": "intervalle parti 1/2"
+  },
+  "b8e438bb42d20c3f": {
+    "athlete": "Elsa B.",
+    "distance": 1831.0,
+    "elevation": 13.7,
+    "first_seen": "2026-07-05T10:55:31Z",
+    "moving_time": 602,
+    "sport": "Run",
+    "title": "séance 2"
   },
   "bfa8de91d029847b": {
     "athlete": "Elsa B.",
