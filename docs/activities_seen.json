@@ -89,6 +89,15 @@
     "sport": "Run",
     "title": "partie 2"
   },
+  "7d9ae77cfb375618": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-06T11:19:30Z",
+    "moving_time": 3600,
+    "sport": "Workout",
+    "title": "Mise en Condition Physique 🏋🏃🏽🏃‍♀️"
+  },
   "7f5ff467369a54f2": {
     "athlete": "Maureen B.",
     "distance": 5003.0,
@@ -107,6 +116,15 @@
     "sport": "Run",
     "title": "séance 2 partie 2"
   },
+  "94b8826655be2e9e": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-06T11:19:30Z",
+    "moving_time": 3600,
+    "sport": "WeightTraining",
+    "title": "Pump🏋😀"
+  },
   "9dceaa2280e6077f": {
     "athlete": "Julianne V.",
     "distance": 5034.0,
@@ -115,6 +133,15 @@
     "moving_time": 2049,
     "sport": "Run",
     "title": "Course à pied du midi"
+  },
+  "a435231f0b475cd4": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-06T11:19:30Z",
+    "moving_time": 3628,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
   },
   "a4a1992634352ff2": {
     "athlete": "Elisa W.",
