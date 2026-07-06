@@ -44,6 +44,15 @@
     "sport": "Run",
     "title": "Semaine 2 Run 2"
   },
+  "306d3f4e05f29a55": {
+    "athlete": "Elisa W.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-06T17:35:09Z",
+    "moving_time": 2100,
+    "sport": "WeightTraining",
+    "title": "Muscu 2 semaine 2 (circuit trainning au camp )"
+  },
   "31699217ace29cdf": {
     "athlete": "Elisa W.",
     "distance": 6327.8,
@@ -169,6 +178,15 @@
     "moving_time": 2682,
     "sport": "WeightTraining",
     "title": "Muscu 1 semaine 2"
+  },
+  "aff96b504d811260": {
+    "athlete": "Lou R.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-06T17:35:09Z",
+    "moving_time": 2700,
+    "sport": "Workout",
+    "title": "Semaine 2: muscu 1"
   },
   "b41905ba3e9082c5": {
     "athlete": "Maureen B.",
