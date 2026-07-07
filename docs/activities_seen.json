@@ -89,6 +89,15 @@
     "sport": "Ride",
     "title": "Sortie vélo le midi"
   },
+  "551bd36d942963b5": {
+    "athlete": "Elisa W.",
+    "distance": 6302.3,
+    "elevation": 49.5,
+    "first_seen": "2026-07-07T11:35:23Z",
+    "moving_time": 2109,
+    "sport": "Run",
+    "title": "Semaine 3 Run 2"
+  },
   "58b7a5fcc7ffb369": {
     "athlete": "Julianne V.",
     "distance": 0.0,
@@ -205,6 +214,15 @@
     "moving_time": 602,
     "sport": "Run",
     "title": "séance 2"
+  },
+  "b8f9e73cae2f4cfd": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-07T11:35:23Z",
+    "moving_time": 3671,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
   },
   "bfa8de91d029847b": {
     "athlete": "Elsa B.",
