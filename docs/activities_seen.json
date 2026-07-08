@@ -17,6 +17,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le matin"
   },
+  "1f6198cecd123049": {
+    "athlete": "Louis C.",
+    "distance": 4615.4,
+    "elevation": 13.8,
+    "first_seen": "2026-07-08T07:19:18Z",
+    "moving_time": 1753,
+    "sport": "Run",
+    "title": "Course à pied le matin"
+  },
   "25dd97d21b5ff07c": {
     "athlete": "Julianne V.",
     "distance": 0.0,
