@@ -1,0 +1,1283 @@
+[
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Louis",
+      "lastname": "C."
+    },
+    "name": "Course à pied le matin",
+    "distance": 4615.4,
+    "moving_time": 1753,
+    "elapsed_time": 1753,
+    "total_elevation_gain": 13.8,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Apple Watch Ultra"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Lou",
+      "lastname": "R."
+    },
+    "name": "Semaine 2 : muscu 2",
+    "distance": 0.0,
+    "moving_time": 3000,
+    "elapsed_time": 3000,
+    "total_elevation_gain": 0,
+    "type": "Workout",
+    "sport_type": "Workout",
+    "workout_type": null
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Lou",
+      "lastname": "B."
+    },
+    "name": "Renforcement musculaire",
+    "distance": 0.0,
+    "moving_time": 3420,
+    "elapsed_time": 3420,
+    "total_elevation_gain": 0,
+    "type": "Workout",
+    "sport_type": "Workout",
+    "workout_type": null
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3671,
+    "elapsed_time": 3671,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Semaine 3 Run 2",
+    "distance": 6302.3,
+    "moving_time": 2109,
+    "elapsed_time": 2158,
+    "total_elevation_gain": 49.5,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Lou",
+      "lastname": "R."
+    },
+    "name": "Semaine 2: muscu 1",
+    "distance": 0.0,
+    "moving_time": 2700,
+    "elapsed_time": 2700,
+    "total_elevation_gain": 0,
+    "type": "Workout",
+    "sport_type": "Workout",
+    "workout_type": null
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Muscu 2 semaine 2 (circuit trainning au camp )",
+    "distance": 0.0,
+    "moving_time": 2100,
+    "elapsed_time": 2100,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3628,
+    "elapsed_time": 3628,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Julianne",
+      "lastname": "V."
+    },
+    "name": "Fractionné",
+    "distance": 3790.4,
+    "moving_time": 1468,
+    "elapsed_time": 1502,
+    "total_elevation_gain": 6.3,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Maureen",
+      "lastname": "B."
+    },
+    "name": "course fondamentale sur 5km",
+    "distance": 5003.0,
+    "moving_time": 1772,
+    "elapsed_time": 2344,
+    "total_elevation_gain": 10.6,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elsa",
+      "lastname": "B."
+    },
+    "name": "séance 2 partie 2",
+    "distance": 1900.3,
+    "moving_time": 601,
+    "elapsed_time": 601,
+    "total_elevation_gain": 14.6,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elsa",
+      "lastname": "B."
+    },
+    "name": "séance 2",
+    "distance": 1831.0,
+    "moving_time": 602,
+    "elapsed_time": 609,
+    "total_elevation_gain": 13.7,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Maureen",
+      "lastname": "B."
+    },
+    "name": "intervalle partie 2",
+    "distance": 1277.8,
+    "moving_time": 430,
+    "elapsed_time": 582,
+    "total_elevation_gain": 0.0,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Maureen",
+      "lastname": "B."
+    },
+    "name": "intervalle parti 1/2",
+    "distance": 1773.8,
+    "moving_time": 605,
+    "elapsed_time": 791,
+    "total_elevation_gain": 0.0,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Semaine 3 Run 1 au camps",
+    "distance": 6327.8,
+    "moving_time": 2102,
+    "elapsed_time": 2102,
+    "total_elevation_gain": 67.9,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Mise en Condition Physique 🏋🏃🏽🏃‍♀️",
+    "distance": 0.0,
+    "moving_time": 3600,
+    "elapsed_time": 3600,
+    "total_elevation_gain": 0,
+    "type": "Workout",
+    "sport_type": "Workout",
+    "workout_type": null
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Julianne",
+      "lastname": "V."
+    },
+    "name": "Course à pied du midi",
+    "distance": 5034.0,
+    "moving_time": 2049,
+    "elapsed_time": 2551,
+    "total_elevation_gain": 41.6,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Louis",
+      "lastname": "C."
+    },
+    "name": "Course à pied le midi",
+    "distance": 4986.4,
+    "moving_time": 1627,
+    "elapsed_time": 1631,
+    "total_elevation_gain": 14.6,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Apple Watch Ultra"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 4054,
+    "elapsed_time": 4054,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Julianne",
+      "lastname": "V."
+    },
+    "name": "Entraînement aux poids le midi",
+    "distance": 0.0,
+    "moving_time": 2625,
+    "elapsed_time": 2625,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Maureen",
+      "lastname": "B."
+    },
+    "name": "Entraînement aux poids le matin",
+    "distance": 0.0,
+    "moving_time": 3840,
+    "elapsed_time": 3840,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elsa",
+      "lastname": "B."
+    },
+    "name": "pas cool le chien 😔",
+    "distance": 969.5,
+    "moving_time": 354,
+    "elapsed_time": 504,
+    "total_elevation_gain": 15.9,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elsa",
+      "lastname": "B."
+    },
+    "name": "partie 2",
+    "distance": 2068.3,
+    "moving_time": 720,
+    "elapsed_time": 752,
+    "total_elevation_gain": 4.4,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elsa",
+      "lastname": "B."
+    },
+    "name": "partie 1",
+    "distance": 2221.8,
+    "moving_time": 721,
+    "elapsed_time": 721,
+    "total_elevation_gain": 16.7,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Maureen",
+      "lastname": "B."
+    },
+    "name": "programme muscu 🏋️‍♀️💪🏽",
+    "distance": 0.0,
+    "moving_time": 3782,
+    "elapsed_time": 3782,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Lou",
+      "lastname": "B."
+    },
+    "name": "Course à pied du midi",
+    "distance": 6655.0,
+    "moving_time": 2288,
+    "elapsed_time": 2791,
+    "total_elevation_gain": 67.1,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": 0,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Julianne",
+      "lastname": "V."
+    },
+    "name": "Entraînement aux poids l'après-midi",
+    "distance": 0.0,
+    "moving_time": 2534,
+    "elapsed_time": 2534,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Gym du dos",
+    "distance": 0.0,
+    "moving_time": 2700,
+    "elapsed_time": 2700,
+    "total_elevation_gain": 0,
+    "type": "Workout",
+    "sport_type": "Pilates",
+    "workout_type": null
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Pump🏋😀",
+    "distance": 0.0,
+    "moving_time": 3600,
+    "elapsed_time": 3600,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Muscu 1 semaine 2",
+    "distance": 0.0,
+    "moving_time": 2682,
+    "elapsed_time": 2682,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3667,
+    "elapsed_time": 3667,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Run 3 semaine 2",
+    "distance": 8357.5,
+    "moving_time": 2701,
+    "elapsed_time": 2701,
+    "total_elevation_gain": 52.7,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Lou",
+      "lastname": "B."
+    },
+    "name": "Course à pied dans l'après-midi",
+    "distance": 3532.8,
+    "moving_time": 1369,
+    "elapsed_time": 2365,
+    "total_elevation_gain": 35.9,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Semaine 2 Run 2",
+    "distance": 6587.5,
+    "moving_time": 2121,
+    "elapsed_time": 2121,
+    "total_elevation_gain": 46.2,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Run 1 semaine 2",
+    "distance": 7455.2,
+    "moving_time": 2404,
+    "elapsed_time": 2404,
+    "total_elevation_gain": 46.2,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Muscu 2",
+    "distance": 0.0,
+    "moving_time": 3600,
+    "elapsed_time": 3600,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Louis",
+      "lastname": "C."
+    },
+    "name": "Course à pied le matin",
+    "distance": 5025.2,
+    "moving_time": 2332,
+    "elapsed_time": 2612,
+    "total_elevation_gain": 186.4,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Apple Watch Ultra"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Run 3 sur tapis",
+    "distance": 5800.0,
+    "moving_time": 1860,
+    "elapsed_time": 1860,
+    "total_elevation_gain": 0,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Run 2 avec les jambes bien lourde",
+    "distance": 7309.9,
+    "moving_time": 2406,
+    "elapsed_time": 2406,
+    "total_elevation_gain": 46.1,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Muscu 1",
+    "distance": 0.0,
+    "moving_time": 3306,
+    "elapsed_time": 3306,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Run 1",
+    "distance": 5715.2,
+    "moving_time": 1807,
+    "elapsed_time": 1807,
+    "total_elevation_gain": 46.2,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 4566,
+    "elapsed_time": 4566,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 4987,
+    "elapsed_time": 4987,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Run \n(Je me suis pas arrêtée j’ai juste pas arrêtez mon chrono à la fin de mon run donc le temps écoulé n’est pas bon )",
+    "distance": 5212.9,
+    "moving_time": 1653,
+    "elapsed_time": 1814,
+    "total_elevation_gain": 46.1,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Entraînement aux poids le midi",
+    "distance": 0.0,
+    "moving_time": 3609,
+    "elapsed_time": 3609,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3301,
+    "elapsed_time": 3301,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 4406,
+    "elapsed_time": 4406,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Velo + renfo",
+    "distance": 0.0,
+    "moving_time": 2400,
+    "elapsed_time": 2400,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3131,
+    "elapsed_time": 3131,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Louis",
+      "lastname": "C."
+    },
+    "name": "Sortie vélo en soirée",
+    "distance": 24823.8,
+    "moving_time": 3192,
+    "elapsed_time": 3192,
+    "total_elevation_gain": 115.6,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Apple Watch Ultra"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 2101,
+    "elapsed_time": 2101,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Entraînement aux poids l'après-midi",
+    "distance": 0.0,
+    "moving_time": 3869,
+    "elapsed_time": 3869,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 4050,
+    "elapsed_time": 4050,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Louis",
+      "lastname": "C."
+    },
+    "name": "Course à pied le midi",
+    "distance": 5784.5,
+    "moving_time": 1851,
+    "elapsed_time": 1888,
+    "total_elevation_gain": 34.8,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Apple Watch Ultra"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3151,
+    "elapsed_time": 3151,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Mes chaussures n’ont pas survécu",
+    "distance": 5306.5,
+    "moving_time": 1650,
+    "elapsed_time": 1685,
+    "total_elevation_gain": 39.5,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 2767,
+    "elapsed_time": 2767,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Louis",
+      "lastname": "C."
+    },
+    "name": "Afternoon Ride",
+    "distance": 98490.4,
+    "moving_time": 13847,
+    "elapsed_time": 15568,
+    "total_elevation_gain": 197.0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Edge 540"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3447,
+    "elapsed_time": 3447,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3185,
+    "elapsed_time": 3185,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Course à pied matinale",
+    "distance": 5205.6,
+    "moving_time": 1590,
+    "elapsed_time": 1590,
+    "total_elevation_gain": 46.2,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 2461,
+    "elapsed_time": 2461,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 796,
+    "elapsed_time": 796,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Louis",
+      "lastname": "C."
+    },
+    "name": "Course à pied dans l'après-midi",
+    "distance": 10210.8,
+    "moving_time": 3670,
+    "elapsed_time": 4002,
+    "total_elevation_gain": 212.4,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3617,
+    "elapsed_time": 3617,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Louis",
+      "lastname": "C."
+    },
+    "name": "Course à pied le midi",
+    "distance": 6062.5,
+    "moving_time": 1948,
+    "elapsed_time": 2046,
+    "total_elevation_gain": 123.2,
+    "type": "Run",
+    "sport_type": "Run",
+    "workout_type": null,
+    "device_name": "Apple Watch Ultra"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 2883,
+    "elapsed_time": 2883,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3001,
+    "elapsed_time": 3001,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Entraînement aux poids l'après-midi",
+    "distance": 0.0,
+    "moving_time": 3469,
+    "elapsed_time": 3469,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3879,
+    "elapsed_time": 3879,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 2896,
+    "elapsed_time": 2896,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Elisa",
+      "lastname": "W."
+    },
+    "name": "Entraînement aux poids l'après-midi",
+    "distance": 0.0,
+    "moving_time": 3543,
+    "elapsed_time": 3543,
+    "total_elevation_gain": 0,
+    "type": "WeightTraining",
+    "sport_type": "WeightTraining",
+    "workout_type": 30,
+    "device_name": "Strava App"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3352,
+    "elapsed_time": 3352,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 2466,
+    "elapsed_time": 2466,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 566,
+    "elapsed_time": 566,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  },
+  {
+    "resource_state": 2,
+    "athlete": {
+      "resource_state": 2,
+      "firstname": "Manu",
+      "lastname": "V."
+    },
+    "name": "Sortie vélo le midi",
+    "distance": 0.0,
+    "moving_time": 3522,
+    "elapsed_time": 3522,
+    "total_elevation_gain": 0,
+    "type": "Ride",
+    "sport_type": "Ride",
+    "workout_type": null,
+    "device_name": "Garmin Forerunner 735XT"
+  }
+]
