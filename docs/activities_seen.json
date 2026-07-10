@@ -17,6 +17,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le matin"
   },
+  "110c22d889f498db": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-10T11:39:23Z",
+    "moving_time": 3683,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
+  },
   "1f6198cecd123049": {
     "athlete": "Louis C.",
     "distance": 4615.4,
@@ -322,6 +331,15 @@
     "moving_time": 721,
     "sport": "Run",
     "title": "partie 1"
+  },
+  "e9170848da70baed": {
+    "athlete": "Elisa W.",
+    "distance": 9650.2,
+    "elevation": 130.7,
+    "first_seen": "2026-07-10T11:39:23Z",
+    "moving_time": 7818,
+    "sport": "Walk",
+    "title": "Hike louveteaux"
   },
   "eb76f651b214f9a6": {
     "athlete": "Louis C.",
