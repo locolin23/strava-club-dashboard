@@ -7364,6 +7364,100 @@
           0.0
         ]
       ]
+    },
+    {
+      "timestamp": "2026-07-10T01:28:22Z",
+      "activity_count": 39,
+      "members": {
+        "Lou B.": {
+          "total_km": 12.79,
+          "run_km": 10.19,
+          "run_count": 2,
+          "avg_speed_kmh": 10.03
+        },
+        "Lou R.": {
+          "total_km": 5.5,
+          "run_km": 5.5,
+          "run_count": 1,
+          "avg_speed_kmh": 9.15
+        },
+        "Julianne V.": {
+          "total_km": 14.42,
+          "run_km": 14.42,
+          "run_count": 3,
+          "avg_speed_kmh": 8.77
+        },
+        "Elisa W.": {
+          "total_km": 27.58,
+          "run_km": 27.58,
+          "run_count": 4,
+          "avg_speed_kmh": 10.99
+        },
+        "Maureen B.": {
+          "total_km": 11.41,
+          "run_km": 11.41,
+          "run_count": 4,
+          "avg_speed_kmh": 10.57
+        },
+        "Louis C.": {
+          "total_km": 9.6,
+          "run_km": 9.6,
+          "run_count": 2,
+          "avg_speed_kmh": 10.22
+        },
+        "Manu V.": {
+          "total_km": 0.0,
+          "run_km": 0.0,
+          "run_count": 0,
+          "avg_speed_kmh": 0.0
+        },
+        "Elsa B.": {
+          "total_km": 8.99,
+          "run_km": 8.99,
+          "run_count": 5,
+          "avg_speed_kmh": 10.8
+        }
+      },
+      "type_breakdown": {
+        "Workout": 7,
+        "Run": 21,
+        "WeightTraining": 8,
+        "Ride": 3
+      },
+      "leaderboard": [
+        [
+          "Elisa W.",
+          27.58
+        ],
+        [
+          "Julianne V.",
+          14.42
+        ],
+        [
+          "Maureen B.",
+          11.41
+        ],
+        [
+          "Lou B.",
+          10.19
+        ],
+        [
+          "Louis C.",
+          9.6
+        ],
+        [
+          "Elsa B.",
+          8.99
+        ],
+        [
+          "Lou R.",
+          5.5
+        ],
+        [
+          "Manu V.",
+          0.0
+        ]
+      ]
     }
   ]
 }
