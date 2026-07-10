@@ -161,6 +161,15 @@
     "sport": "Workout",
     "title": "Renforcement musculaire"
   },
+  "7ccfc0e6a048a7c1": {
+    "athlete": "Lou B.",
+    "distance": 4095.6,
+    "elevation": 41.4,
+    "first_seen": "2026-07-10T08:54:38Z",
+    "moving_time": 1241,
+    "sport": "Run",
+    "title": "Course à pied matinale"
+  },
   "7d9ae77cfb375618": {
     "athlete": "Manu V.",
     "distance": 0.0,
