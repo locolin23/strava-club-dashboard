@@ -26,6 +26,15 @@
     "sport": "Ride",
     "title": "Sortie vélo le midi"
   },
+  "19406fd449cfae78": {
+    "athlete": "Maureen B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-11T10:49:50Z",
+    "moving_time": 2820,
+    "sport": "WeightTraining",
+    "title": "entraînement aux poids le midi"
+  },
   "1f6198cecd123049": {
     "athlete": "Louis C.",
     "distance": 4615.4,
