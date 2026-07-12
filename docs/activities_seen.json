@@ -170,6 +170,15 @@
     "sport": "Ride",
     "title": "Sortie vélo le midi"
   },
+  "5331ed25eb01d1d1": {
+    "athlete": "Maureen B.",
+    "distance": 3866.0,
+    "elevation": 46.5,
+    "first_seen": "2026-07-12T15:45:05Z",
+    "moving_time": 1412,
+    "sport": "Run",
+    "title": "course à pied"
+  },
   "551bd36d942963b5": {
     "athlete": "Elisa W.",
     "distance": 6302.3,
