@@ -224,6 +224,15 @@
     "sport": "Workout",
     "title": "Renforcement musculaire"
   },
+  "6d0ccc50a07d80e1": {
+    "athlete": "Lou B.",
+    "distance": 1683.7,
+    "elevation": 0.0,
+    "first_seen": "2026-07-12T19:58:32Z",
+    "moving_time": 598,
+    "sport": "Run",
+    "title": "Course de hier midi"
+  },
   "7ccfc0e6a048a7c1": {
     "athlete": "Lou B.",
     "distance": 4095.6,
