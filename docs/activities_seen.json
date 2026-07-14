@@ -440,6 +440,15 @@
     "sport": "Run",
     "title": "Couse du soir 2"
   },
+  "c02b9e9c82b5eac9": {
+    "athlete": "Elisa W.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-14T20:05:05Z",
+    "moving_time": 3406,
+    "sport": "WeightTraining",
+    "title": "Muscu 1 semaine 4"
+  },
   "cbe1a455cc48b678": {
     "athlete": "Lou B.",
     "distance": 2600.0,
