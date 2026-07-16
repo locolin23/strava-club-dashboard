@@ -305,6 +305,15 @@
     "sport": "Run",
     "title": "Course à pied de nuit"
   },
+  "829a3e20e33ed474": {
+    "athlete": "Louis C.",
+    "distance": 20052.6,
+    "elevation": 126.4,
+    "first_seen": "2026-07-16T19:53:27Z",
+    "moving_time": 2657,
+    "sport": "Ride",
+    "title": "Sortie vélo en soirée"
+  },
   "861029be2abfb080": {
     "athlete": "Elisa W.",
     "distance": 6373.6,
@@ -349,6 +358,15 @@
     "moving_time": 2665,
     "sport": "Run",
     "title": "Semaine 3 Run 2"
+  },
+  "900a9c9c9cb0d264": {
+    "athlete": "Lou B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-16T19:53:27Z",
+    "moving_time": 3433,
+    "sport": "Workout",
+    "title": "Muscu 2"
   },
   "94b8826655be2e9e": {
     "athlete": "Manu V.",
