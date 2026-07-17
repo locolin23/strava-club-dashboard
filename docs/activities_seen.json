@@ -53,6 +53,15 @@
     "sport": "Run",
     "title": "Course à pied le matin"
   },
+  "236d0eed44a460ed": {
+    "athlete": "Maureen B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-17T12:55:15Z",
+    "moving_time": 2344,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids le midi"
+  },
   "25dd97d21b5ff07c": {
     "athlete": "Julianne V.",
     "distance": 0.0,
