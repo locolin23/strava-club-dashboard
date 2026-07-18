@@ -125,6 +125,15 @@
     "sport": "Run",
     "title": "Semaine 3 Run 1 au camps"
   },
+  "33e3a65643cd6306": {
+    "athlete": "Julianne V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-18T11:41:20Z",
+    "moving_time": 3068,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids le midi"
+  },
   "3aa5039868218810": {
     "athlete": "Elisa W.",
     "distance": 4580.4,
@@ -295,6 +304,15 @@
     "moving_time": 3600,
     "sport": "Workout",
     "title": "Mise en Condition Physique 🏋🏃🏽🏃‍♀️"
+  },
+  "7e6d569695047b84": {
+    "athlete": "Lou B.",
+    "distance": 4737.1,
+    "elevation": 41.1,
+    "first_seen": "2026-07-18T11:41:20Z",
+    "moving_time": 590,
+    "sport": "Run",
+    "title": "Course à pied le matin"
   },
   "7f5ff467369a54f2": {
     "athlete": "Maureen B.",
