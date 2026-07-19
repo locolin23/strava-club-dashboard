@@ -35,6 +35,15 @@
     "sport": "Ride",
     "title": "Semaine 2"
   },
+  "171d28813ac51f19": {
+    "athlete": "Elisa W.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-19T09:40:53Z",
+    "moving_time": 3300,
+    "sport": "WeightTraining",
+    "title": "Muscu 2 semaine 4"
+  },
   "19406fd449cfae78": {
     "athlete": "Maureen B.",
     "distance": 0.0,
@@ -232,6 +241,15 @@
     "moving_time": 2534,
     "sport": "WeightTraining",
     "title": "Entraînement aux poids l'après-midi"
+  },
+  "591cd52eac2db3ba": {
+    "athlete": "Elisa W.",
+    "distance": 9258.7,
+    "elevation": 61.4,
+    "first_seen": "2026-07-19T09:40:53Z",
+    "moving_time": 3004,
+    "sport": "Run",
+    "title": "Semaine 4 Run 3"
   },
   "5ae969ef998cbc1d": {
     "athlete": "Elsa B.",
