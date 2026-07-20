@@ -278,6 +278,15 @@
     "sport": "Run",
     "title": "Course 1"
   },
+  "5f964a30a0fffd27": {
+    "athlete": "Lou B.",
+    "distance": 910.1,
+    "elevation": 0,
+    "first_seen": "2026-07-20T08:32:08Z",
+    "moving_time": 916,
+    "sport": "Walk",
+    "title": "Marche en soirée"
+  },
   "62482fffedaca572": {
     "athlete": "Lou B.",
     "distance": 0.0,
@@ -304,6 +313,15 @@
     "moving_time": 598,
     "sport": "Run",
     "title": "Course de hier midi"
+  },
+  "6f1aa4028ee31c66": {
+    "athlete": "Lou B.",
+    "distance": 1088.3,
+    "elevation": 0,
+    "first_seen": "2026-07-20T08:32:08Z",
+    "moving_time": 1992,
+    "sport": "Workout",
+    "title": "Entraînement en soirée"
   },
   "7aca905dade63cff": {
     "athlete": "Lou B.",
@@ -376,6 +394,15 @@
     "moving_time": 1800,
     "sport": "Run",
     "title": "Course à pied de nuit"
+  },
+  "8188566fddc7002c": {
+    "athlete": "Lou B.",
+    "distance": 1227.0,
+    "elevation": 0,
+    "first_seen": "2026-07-20T08:32:08Z",
+    "moving_time": 1326,
+    "sport": "Walk",
+    "title": "Marche en soirée"
   },
   "829a3e20e33ed474": {
     "athlete": "Louis C.",
