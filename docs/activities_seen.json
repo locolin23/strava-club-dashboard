@@ -746,6 +746,15 @@
     "sport": "WeightTraining",
     "title": "Muscu 1 semaine 3 (toujours le circuit training )"
   },
+  "f14aa85897132cab": {
+    "athlete": "Lou R.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-20T17:15:32Z",
+    "moving_time": 2700,
+    "sport": "Workout",
+    "title": "Semaine 4: muscu 1"
+  },
   "f6e1a5e769bb4f4d": {
     "athlete": "Lou B.",
     "distance": 3532.8,
