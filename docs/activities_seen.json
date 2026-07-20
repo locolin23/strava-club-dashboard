@@ -332,6 +332,15 @@
     "sport": "Workout",
     "title": "Entraînement en soirée"
   },
+  "78ef9d4276bff049": {
+    "athlete": "Lou B.",
+    "distance": 1571.5,
+    "elevation": 0,
+    "first_seen": "2026-07-20T13:40:57Z",
+    "moving_time": 2552,
+    "sport": "Workout",
+    "title": "Entraînement le midi"
+  },
   "7aca905dade63cff": {
     "athlete": "Lou B.",
     "distance": 0.0,
@@ -727,6 +736,15 @@
     "moving_time": 1369,
     "sport": "Run",
     "title": "Course à pied dans l'après-midi"
+  },
+  "f83aba92d5a4da90": {
+    "athlete": "Lou B.",
+    "distance": 1445.9,
+    "elevation": 0,
+    "first_seen": "2026-07-20T13:40:57Z",
+    "moving_time": 1428,
+    "sport": "Walk",
+    "title": "Marche dans l'après-midi"
   },
   "fb66a72aa928c45f": {
     "athlete": "Lou B.",
