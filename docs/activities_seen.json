@@ -431,6 +431,15 @@
     "sport": "Ride",
     "title": "Sortie vélo en soirée"
   },
+  "853b7bfab7eaf70b": {
+    "athlete": "Romane B.",
+    "distance": 7426.3,
+    "elevation": 45.0,
+    "first_seen": "2026-07-20T15:41:53Z",
+    "moving_time": 2700,
+    "sport": "Run",
+    "title": "Afternoon Run"
+  },
   "861029be2abfb080": {
     "athlete": "Elisa W.",
     "distance": 6373.6,
@@ -637,6 +646,15 @@
     "moving_time": 3406,
     "sport": "WeightTraining",
     "title": "Muscu 1 semaine 4"
+  },
+  "c871e2783a1ae9ea": {
+    "athlete": "Lou B.",
+    "distance": 1158.2,
+    "elevation": 0,
+    "first_seen": "2026-07-20T15:41:53Z",
+    "moving_time": 1264,
+    "sport": "Walk",
+    "title": "Marche dans l'après-midi"
   },
   "ca83756236936ed4": {
     "athlete": "Julianne V.",
