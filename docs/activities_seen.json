@@ -215,6 +215,15 @@
     "sport": "Workout",
     "title": "Semaine 2 : muscu 2"
   },
+  "51bc476284bb7602": {
+    "athlete": "Melina G.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-20T19:19:31Z",
+    "moving_time": 4049,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids en soirée"
+  },
   "532a0e7cfe99c749": {
     "athlete": "Manu V.",
     "distance": 0.0,
