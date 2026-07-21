@@ -485,6 +485,15 @@
     "sport": "WeightTraining",
     "title": "entraînement aux poids"
   },
+  "88e48c87f6099063": {
+    "athlete": "Lou B.",
+    "distance": 135.1,
+    "elevation": 5.2,
+    "first_seen": "2026-07-21T12:16:36Z",
+    "moving_time": 5,
+    "sport": "Run",
+    "title": "Course à pied le matin"
+  },
   "8b60758a9e5c565b": {
     "athlete": "Lou R.",
     "distance": 0.0,
