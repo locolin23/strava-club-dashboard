@@ -350,6 +350,15 @@
     "sport": "Workout",
     "title": "Entraînement en soirée"
   },
+  "751a701cf6f21267": {
+    "athlete": "Lou B.",
+    "distance": 1046.2,
+    "elevation": 0,
+    "first_seen": "2026-07-21T14:52:04Z",
+    "moving_time": 1019,
+    "sport": "Walk",
+    "title": "Marche dans l'après-midi"
+  },
   "78ef9d4276bff049": {
     "athlete": "Lou B.",
     "distance": 1571.5,
