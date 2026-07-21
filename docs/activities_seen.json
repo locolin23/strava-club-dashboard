@@ -8,6 +8,15 @@
     "sport": "Workout",
     "title": "Gym du dos"
   },
+  "0b3021d3fee8bba7": {
+    "athlete": "Lou B.",
+    "distance": 1265.8,
+    "elevation": 0,
+    "first_seen": "2026-07-21T18:05:34Z",
+    "moving_time": 1935,
+    "sport": "Workout",
+    "title": "Entraînement dans l'après-midi"
+  },
   "0d86e855290875e4": {
     "athlete": "Maureen B.",
     "distance": 0.0,
@@ -115,6 +124,15 @@
     "moving_time": 3226,
     "sport": "WeightTraining",
     "title": "Entraînement aux poids l'après-midi"
+  },
+  "2e3f435c56415bde": {
+    "athlete": "Romane B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-21T18:05:34Z",
+    "moving_time": 3080,
+    "sport": "WeightTraining",
+    "title": "Evening Weight Training"
   },
   "2ea1685b2ec0adc0": {
     "athlete": "Elisa W.",
