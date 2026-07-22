@@ -98,6 +98,15 @@
     "sport": "Run",
     "title": "Course à pied le matin"
   },
+  "1f9dd35ea754a189": {
+    "athlete": "Lou R.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-22T14:51:10Z",
+    "moving_time": 2700,
+    "sport": "Workout",
+    "title": "Semaine 4: muscu 2"
+  },
   "236d0eed44a460ed": {
     "athlete": "Maureen B.",
     "distance": 0.0,
