@@ -35,6 +35,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le matin"
   },
+  "0ecae7239a07fb21": {
+    "athlete": "Julianne V.",
+    "distance": 4716.8,
+    "elevation": 5.1,
+    "first_seen": "2026-07-22T07:27:31Z",
+    "moving_time": 1811,
+    "sport": "Run",
+    "title": "Fractionné"
+  },
   "110c22d889f498db": {
     "athlete": "Manu V.",
     "distance": 0.0,
