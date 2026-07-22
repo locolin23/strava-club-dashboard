@@ -386,6 +386,15 @@
     "sport": "Run",
     "title": "Course de hier midi"
   },
+  "6e47ea0c1563ab96": {
+    "athlete": "Lou B.",
+    "distance": 1125.0,
+    "elevation": 0,
+    "first_seen": "2026-07-22T16:11:23Z",
+    "moving_time": 4194,
+    "sport": "Swim",
+    "title": "Natation dans l'après-midi"
+  },
   "6f1aa4028ee31c66": {
     "athlete": "Lou B.",
     "distance": 1088.3,
