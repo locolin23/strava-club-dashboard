@@ -539,6 +539,15 @@
     "sport": "Run",
     "title": "Semaine 4 Run 1"
   },
+  "868806098ab5cc04": {
+    "athlete": "Louis C.",
+    "distance": 14232.7,
+    "elevation": 923.0,
+    "first_seen": "2026-07-23T12:17:28Z",
+    "moving_time": 14037,
+    "sport": "Hike",
+    "title": "Randonnée le matin"
+  },
   "881c0b213be62b4c": {
     "athlete": "Maureen B.",
     "distance": 0.0,
@@ -799,6 +808,15 @@
     "moving_time": 1468,
     "sport": "Run",
     "title": "Fractionné"
+  },
+  "dcd52fe1147fa2ed": {
+    "athlete": "Louis C.",
+    "distance": 13013.9,
+    "elevation": 1158.0,
+    "first_seen": "2026-07-23T12:17:28Z",
+    "moving_time": 14191,
+    "sport": "Hike",
+    "title": "Randonnée le matin"
   },
   "dcde29c35e09746d": {
     "athlete": "Lou R.",
