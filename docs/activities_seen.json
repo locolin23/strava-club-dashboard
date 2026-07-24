@@ -332,6 +332,15 @@
     "sport": "Run",
     "title": "partie 2"
   },
+  "5bbc3893289563be": {
+    "athlete": "Louis C.",
+    "distance": 8186.2,
+    "elevation": 164.0,
+    "first_seen": "2026-07-24T20:07:42Z",
+    "moving_time": 7222,
+    "sport": "Hike",
+    "title": "Randonnée le matin"
+  },
   "5c046b3f77bf6579": {
     "athlete": "Maureen B.",
     "distance": 3178.9,
