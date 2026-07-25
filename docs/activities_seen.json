@@ -341,6 +341,15 @@
     "sport": "Hike",
     "title": "Randonnée le matin"
   },
+  "5bd09715a16eb1a3": {
+    "athlete": "Lou B.",
+    "distance": 1081.5,
+    "elevation": 0,
+    "first_seen": "2026-07-25T09:23:36Z",
+    "moving_time": 2096,
+    "sport": "Workout",
+    "title": "Entraînement de nuit"
+  },
   "5c046b3f77bf6579": {
     "athlete": "Maureen B.",
     "distance": 3178.9,
@@ -512,6 +521,15 @@
     "sport": "Run",
     "title": "course fondamentale sur 5km"
   },
+  "7fa17543c3139307": {
+    "athlete": "Elisa W.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-25T09:23:36Z",
+    "moving_time": 2100,
+    "sport": "WeightTraining",
+    "title": "Muscu semaine 5 (toujours à l’hôtel)"
+  },
   "7fdd87be27aa3981": {
     "athlete": "Lou R.",
     "distance": 0.0,
@@ -601,6 +619,15 @@
     "moving_time": 4988,
     "sport": "WeightTraining",
     "title": "entraînement aux poids"
+  },
+  "88753e1de61e101d": {
+    "athlete": "Lou R.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-25T09:23:36Z",
+    "moving_time": 3000,
+    "sport": "Workout",
+    "title": "Semaine 4: muscu 3"
   },
   "88e48c87f6099063": {
     "athlete": "Lou B.",
