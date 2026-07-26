@@ -269,6 +269,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids en soirée"
   },
+  "51c827148c6a879c": {
+    "athlete": "Maureen B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-26T15:51:21Z",
+    "moving_time": 4863,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids l'après-midi"
+  },
   "532a0e7cfe99c749": {
     "athlete": "Manu V.",
     "distance": 0.0,
@@ -916,6 +925,15 @@
     "moving_time": 1468,
     "sport": "Run",
     "title": "Fractionné"
+  },
+  "cde1852286943e61": {
+    "athlete": "Julianne V.",
+    "distance": 7581.0,
+    "elevation": 65.1,
+    "first_seen": "2026-07-26T15:51:21Z",
+    "moving_time": 3372,
+    "sport": "Run",
+    "title": "EF sous la tempête"
   },
   "d5fbd9345751b93e": {
     "athlete": "Elsa B.",
