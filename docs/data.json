@@ -33366,6 +33366,123 @@
           0.0
         ]
       ]
+    },
+    {
+      "timestamp": "2026-07-27T17:26:04Z",
+      "activity_count": 88,
+      "members": {
+        "Louis C.": {
+          "total_km": 66.96,
+          "run_km": 11.48,
+          "run_count": 2,
+          "avg_speed_kmh": 10.32
+        },
+        "Manu V.": {
+          "total_km": 0.0,
+          "run_km": 0.0,
+          "run_count": 0,
+          "avg_speed_kmh": 0.0
+        },
+        "Lou B.": {
+          "total_km": 33.91,
+          "run_km": 29.36,
+          "run_count": 6,
+          "avg_speed_kmh": 10.52
+        },
+        "Maureen B.": {
+          "total_km": 29.07,
+          "run_km": 29.07,
+          "run_count": 8,
+          "avg_speed_kmh": 10.08
+        },
+        "Julianne V.": {
+          "total_km": 31.21,
+          "run_km": 31.21,
+          "run_count": 6,
+          "avg_speed_kmh": 8.86
+        },
+        "Lou R.": {
+          "total_km": 5.5,
+          "run_km": 5.5,
+          "run_count": 1,
+          "avg_speed_kmh": 9.15
+        },
+        "Elisa W.": {
+          "total_km": 59.18,
+          "run_km": 49.53,
+          "run_count": 8,
+          "avg_speed_kmh": 9.72
+        },
+        "Elsa B.": {
+          "total_km": 10.06,
+          "run_km": 10.06,
+          "run_count": 5,
+          "avg_speed_kmh": 10.77
+        },
+        "Romane B.": {
+          "total_km": 13.88,
+          "run_km": 13.88,
+          "run_count": 3,
+          "avg_speed_kmh": 9.94
+        },
+        "Melina G.": {
+          "total_km": 5.55,
+          "run_km": 5.55,
+          "run_count": 2,
+          "avg_speed_kmh": 10.58
+        }
+      },
+      "type_breakdown": {
+        "Run": 41,
+        "Ride": 7,
+        "Workout": 18,
+        "WeightTraining": 17,
+        "Kayaking": 1,
+        "Hike": 3,
+        "Walk": 1
+      },
+      "leaderboard": [
+        [
+          "Elisa W.",
+          49.53
+        ],
+        [
+          "Julianne V.",
+          31.21
+        ],
+        [
+          "Lou B.",
+          29.36
+        ],
+        [
+          "Maureen B.",
+          29.07
+        ],
+        [
+          "Romane B.",
+          13.88
+        ],
+        [
+          "Louis C.",
+          11.48
+        ],
+        [
+          "Elsa B.",
+          10.06
+        ],
+        [
+          "Melina G.",
+          5.55
+        ],
+        [
+          "Lou R.",
+          5.5
+        ],
+        [
+          "Manu V.",
+          0.0
+        ]
+      ]
     }
   ]
 }
