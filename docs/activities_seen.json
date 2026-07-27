@@ -8,6 +8,15 @@
     "sport": "Workout",
     "title": "Entraînement de nuit"
   },
+  "04d12f4e9e926beb": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-27T12:46:46Z",
+    "moving_time": 2781,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
+  },
   "062a54903a808226": {
     "athlete": "Manu V.",
     "distance": 0.0,
@@ -215,6 +224,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le matin"
   },
+  "3ad83b6da2f43251": {
+    "athlete": "Lou B.",
+    "distance": 6123.4,
+    "elevation": 57.6,
+    "first_seen": "2026-07-27T12:46:46Z",
+    "moving_time": 2101,
+    "sport": "Run",
+    "title": "Course 1"
+  },
   "3ceee02ddd698ee2": {
     "athlete": "Lou B.",
     "distance": 6655.0,
@@ -304,6 +322,15 @@
     "moving_time": 2109,
     "sport": "Run",
     "title": "Semaine 3 Run 2"
+  },
+  "56a405ec41fb83f2": {
+    "athlete": "Louis C.",
+    "distance": 6860.7,
+    "elevation": 53.6,
+    "first_seen": "2026-07-27T12:46:46Z",
+    "moving_time": 2250,
+    "sport": "Run",
+    "title": "Course à pied le midi"
   },
   "56f7b3436c6b7eaf": {
     "athlete": "Melina G.",
