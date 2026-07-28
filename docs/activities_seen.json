@@ -863,6 +863,15 @@
     "sport": "Workout",
     "title": "Semaine 2: muscu 1"
   },
+  "b1456db96d4c8a96": {
+    "athlete": "Romane B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-28T21:52:48Z",
+    "moving_time": 1875,
+    "sport": "WeightTraining",
+    "title": "Night Weight Training"
+  },
   "b41905ba3e9082c5": {
     "athlete": "Maureen B.",
     "distance": 1773.8,
