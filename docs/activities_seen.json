@@ -242,6 +242,15 @@
     "sport": "Run",
     "title": "Course à pied du midi"
   },
+  "442f37cb43b5d1ad": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-28T17:14:43Z",
+    "moving_time": 3840,
+    "sport": "Ride",
+    "title": "Sortie vélo en soirée"
+  },
   "4643f4c5867aefc5": {
     "athlete": "Maureen B.",
     "distance": 0.0,
@@ -916,6 +925,15 @@
     "moving_time": 3406,
     "sport": "WeightTraining",
     "title": "Muscu 1 semaine 4"
+  },
+  "c7cfc225a72b00ad": {
+    "athlete": "Lou R.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-28T17:14:43Z",
+    "moving_time": 1500,
+    "sport": "Run",
+    "title": "Semaine 5: course 1 reprise"
   },
   "c871e2783a1ae9ea": {
     "athlete": "Lou B.",
