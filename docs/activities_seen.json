@@ -107,6 +107,15 @@
     "sport": "WeightTraining",
     "title": "entraînement aux poids le midi"
   },
+  "1c1b038849298cf0": {
+    "athlete": "Elsa B.",
+    "distance": 983.5,
+    "elevation": 0.0,
+    "first_seen": "2026-07-30T07:24:15Z",
+    "moving_time": 286,
+    "sport": "Run",
+    "title": "pause vomi (le jus d’ananas est mal passé 😔)"
+  },
   "1f6198cecd123049": {
     "athlete": "Louis C.",
     "distance": 4615.4,
@@ -169,6 +178,15 @@
     "moving_time": 3226,
     "sport": "WeightTraining",
     "title": "Entraînement aux poids l'après-midi"
+  },
+  "2e0b9905e06ae7f7": {
+    "athlete": "Elsa B.",
+    "distance": 1591.4,
+    "elevation": 11.2,
+    "first_seen": "2026-07-30T07:24:15Z",
+    "moving_time": 601,
+    "sport": "Run",
+    "title": "échauffement cool ☀️"
   },
   "2e3f435c56415bde": {
     "athlete": "Romane B.",
@@ -998,6 +1016,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids en soirée"
   },
+  "cb83f9281d745873": {
+    "athlete": "Elsa B.",
+    "distance": 1349.4,
+    "elevation": 10.4,
+    "first_seen": "2026-07-30T07:24:15Z",
+    "moving_time": 399,
+    "sport": "Run",
+    "title": "course de comeback"
+  },
   "cbe1a455cc48b678": {
     "athlete": "Lou B.",
     "distance": 2600.0,
@@ -1123,6 +1150,15 @@
     "moving_time": 1627,
     "sport": "Run",
     "title": "Course à pied le midi"
+  },
+  "ebcbe818b59a381c": {
+    "athlete": "Lou B.",
+    "distance": 5119.0,
+    "elevation": 142.2,
+    "first_seen": "2026-07-30T07:24:15Z",
+    "moving_time": 1928,
+    "sport": "Run",
+    "title": "Course 2"
   },
   "ed90737b92fb761c": {
     "athlete": "Elisa W.",
