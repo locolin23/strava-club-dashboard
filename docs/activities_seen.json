@@ -26,6 +26,15 @@
     "sport": "Workout",
     "title": "Gym du dos"
   },
+  "0697533a47809025": {
+    "athlete": "Julianne V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-30T12:20:36Z",
+    "moving_time": 3081,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids le midi"
+  },
   "0b3021d3fee8bba7": {
     "athlete": "Lou B.",
     "distance": 1265.8,
@@ -61,6 +70,15 @@
     "moving_time": 1811,
     "sport": "Run",
     "title": "Fractionné"
+  },
+  "11070cfc3bf4e96c": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-30T12:20:36Z",
+    "moving_time": 3722,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
   },
   "110c22d889f498db": {
     "athlete": "Manu V.",
