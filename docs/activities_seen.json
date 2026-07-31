@@ -206,6 +206,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids l'après-midi"
   },
+  "2cd252d545d2c998": {
+    "athlete": "Elisa W.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-31T11:14:15Z",
+    "moving_time": 2916,
+    "sport": "WeightTraining",
+    "title": "Semaine 6 muscu 2"
+  },
   "2e0b9905e06ae7f7": {
     "athlete": "Elsa B.",
     "distance": 1591.4,
@@ -493,6 +502,15 @@
     "moving_time": 2359,
     "sport": "Run",
     "title": "Course 1"
+  },
+  "5eaf81f0e5264d2b": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-07-31T11:14:15Z",
+    "moving_time": 3994,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
   },
   "5f964a30a0fffd27": {
     "athlete": "Lou B.",
