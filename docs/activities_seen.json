@@ -1313,6 +1313,15 @@
     "sport": "Walk",
     "title": "Marche dans l'après-midi"
   },
+  "f9919b0d47a872f8": {
+    "athlete": "Maureen B.",
+    "distance": 4657.5,
+    "elevation": 3.4,
+    "first_seen": "2026-07-31T19:01:49Z",
+    "moving_time": 1683,
+    "sport": "Run",
+    "title": "Course à pied le soir"
+  },
   "fb66a72aa928c45f": {
     "athlete": "Lou B.",
     "distance": 0.0,
