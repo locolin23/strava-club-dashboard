@@ -359,6 +359,15 @@
     "sport": "Run",
     "title": "interval"
   },
+  "4bebc207eed05615": {
+    "athlete": "Maureen B.",
+    "distance": 4002.9,
+    "elevation": 5.5,
+    "first_seen": "2026-08-01T16:43:24Z",
+    "moving_time": 1270,
+    "sport": "Run",
+    "title": "course 2 interval"
+  },
   "51a6fef1848ae6b8": {
     "athlete": "Lou R.",
     "distance": 0.0,
