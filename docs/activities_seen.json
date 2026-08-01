@@ -35,6 +35,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids le midi"
   },
+  "0a7ed811bf0e8acd": {
+    "athlete": "Maureen B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-01T15:48:33Z",
+    "moving_time": 5042,
+    "sport": "Workout",
+    "title": "Reprise hockey 😋"
+  },
   "0b3021d3fee8bba7": {
     "athlete": "Lou B.",
     "distance": 1265.8,
@@ -1069,6 +1078,15 @@
     "moving_time": 3406,
     "sport": "WeightTraining",
     "title": "Muscu 1 semaine 4"
+  },
+  "c757739e3d4310a0": {
+    "athlete": "Lou R.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-01T15:48:33Z",
+    "moving_time": 2700,
+    "sport": "Workout",
+    "title": "Semaine 5:muscu 2"
   },
   "c7cfc225a72b00ad": {
     "athlete": "Lou R.",
