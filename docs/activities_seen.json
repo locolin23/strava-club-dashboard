@@ -863,6 +863,15 @@
     "sport": "Ride",
     "title": "Semaine 3 : vélo 1 ( remplacement course)"
   },
+  "8c1943c1e2411f8b": {
+    "athlete": "Louis C.",
+    "distance": 51167.5,
+    "elevation": 653.8,
+    "first_seen": "2026-08-02T15:48:53Z",
+    "moving_time": 9025,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
+  },
   "8c96ea18e5b15354": {
     "athlete": "Elsa B.",
     "distance": 1900.3,
