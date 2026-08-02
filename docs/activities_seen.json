@@ -926,6 +926,15 @@
     "sport": "Run",
     "title": "course 1 prépa"
   },
+  "99274348dd9587ed": {
+    "athlete": "Lou B.",
+    "distance": 7800.0,
+    "elevation": 0,
+    "first_seen": "2026-08-02T14:20:11Z",
+    "moving_time": 11280,
+    "sport": "Kayaking",
+    "title": "Kayak avec charlotte"
+  },
   "9b86c8177921ffb6": {
     "athlete": "Melina G.",
     "distance": 0.0,
