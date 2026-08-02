@@ -800,6 +800,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids en soirée"
   },
+  "84c3903975dafdd8": {
+    "athlete": "Julianne V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-02T20:02:34Z",
+    "moving_time": 2195,
+    "sport": "WeightTraining",
+    "title": "Muscu à l’hôtel"
+  },
   "853b7bfab7eaf70b": {
     "athlete": "Romane B.",
     "distance": 7426.3,
