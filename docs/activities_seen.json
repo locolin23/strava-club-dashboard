@@ -1277,6 +1277,15 @@
     "sport": "WeightTraining",
     "title": "Night Weight Training"
   },
+  "df836912107a137d": {
+    "athlete": "Lou R.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-03T19:13:23Z",
+    "moving_time": 2700,
+    "sport": "Workout",
+    "title": "Semaine 6: muscu 1"
+  },
   "e2a338dfdb46fa7d": {
     "athlete": "Elisa W.",
     "distance": 0.0,
