@@ -341,6 +341,15 @@
     "sport": "Run",
     "title": "Course à pied matinale"
   },
+  "3ff9b0d8002c9959": {
+    "athlete": "Julianne V.",
+    "distance": 14071.5,
+    "elevation": 59.5,
+    "first_seen": "2026-08-04T17:26:25Z",
+    "moving_time": 10624,
+    "sport": "Walk",
+    "title": "Dernier jour à Londres"
+  },
   "442f37cb43b5d1ad": {
     "athlete": "Manu V.",
     "distance": 0.0,
@@ -1015,6 +1024,15 @@
     "moving_time": 2102,
     "sport": "Run",
     "title": "Semaine 6 Run 2"
+  },
+  "a36a3fc13ff2b217": {
+    "athlete": "Lou R.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-04T17:26:25Z",
+    "moving_time": 2400,
+    "sport": "Run",
+    "title": "Semaine 6: run1"
   },
   "a435231f0b475cd4": {
     "athlete": "Manu V.",
