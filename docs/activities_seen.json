@@ -332,6 +332,15 @@
     "sport": "Run",
     "title": "Course à pied du midi"
   },
+  "3e922e50e1d9253d": {
+    "athlete": "Elsa B.",
+    "distance": 3848.4,
+    "elevation": 15.9,
+    "first_seen": "2026-08-04T07:28:28Z",
+    "moving_time": 1234,
+    "sport": "Run",
+    "title": "Course à pied matinale"
+  },
   "442f37cb43b5d1ad": {
     "athlete": "Manu V.",
     "distance": 0.0,
@@ -1348,6 +1357,15 @@
     "moving_time": 1928,
     "sport": "Run",
     "title": "Course 2"
+  },
+  "ecb58342e53ec66b": {
+    "athlete": "Elsa B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-04T07:28:28Z",
+    "moving_time": 1800,
+    "sport": "Workout",
+    "title": "natation à la maison 🏊"
   },
   "ed90737b92fb761c": {
     "athlete": "Elisa W.",
