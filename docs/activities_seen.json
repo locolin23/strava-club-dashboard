@@ -1070,6 +1070,15 @@
     "sport": "WeightTraining",
     "title": "Night Weight Training"
   },
+  "b2b3ee0c84f0239f": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-04T12:50:48Z",
+    "moving_time": 4313,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
+  },
   "b41905ba3e9082c5": {
     "athlete": "Maureen B.",
     "distance": 1773.8,
