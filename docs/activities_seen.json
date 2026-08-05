@@ -989,6 +989,15 @@
     "sport": "Kayaking",
     "title": "Kayak avec charlotte"
   },
+  "9a78d0edc6b6fbee": {
+    "athlete": "Elisa W.",
+    "distance": 6449.5,
+    "elevation": 7.7,
+    "first_seen": "2026-08-05T10:20:08Z",
+    "moving_time": 2105,
+    "sport": "Run",
+    "title": "Semaine 7 Run 1 pour la première fois accompagnée"
+  },
   "9b86c8177921ffb6": {
     "athlete": "Melina G.",
     "distance": 0.0,
@@ -1240,6 +1249,15 @@
     "moving_time": 399,
     "sport": "Run",
     "title": "course de comeback"
+  },
+  "cbbd4a74a25e6ce3": {
+    "athlete": "Romane B.",
+    "distance": 6116.5,
+    "elevation": 37.2,
+    "first_seen": "2026-08-05T10:20:08Z",
+    "moving_time": 2400,
+    "sport": "Run",
+    "title": "Morning Run"
   },
   "cbe1a455cc48b678": {
     "athlete": "Lou B.",
