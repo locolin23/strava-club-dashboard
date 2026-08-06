@@ -557,6 +557,15 @@
     "sport": "Run",
     "title": "mini course à pied"
   },
+  "5c0fb345fe5cc8d0": {
+    "athlete": "Julianne V.",
+    "distance": 4498.8,
+    "elevation": 15.1,
+    "first_seen": "2026-08-06T15:03:35Z",
+    "moving_time": 1492,
+    "sport": "Run",
+    "title": "Fractionné"
+  },
   "5d0cb3366e1fd7d9": {
     "athlete": "Elisa W.",
     "distance": 7505.7,
@@ -1384,6 +1393,15 @@
     "moving_time": 2100,
     "sport": "Run",
     "title": "Muscu 2 semaine 3 la dernière au camp"
+  },
+  "e45dd515f9a7ef02": {
+    "athlete": "Manu V.",
+    "distance": 6335.8,
+    "elevation": 72.0,
+    "first_seen": "2026-08-06T15:03:35Z",
+    "moving_time": 2345,
+    "sport": "Run",
+    "title": "Petit Run tranquille et test des nouvelles chaussures 👟"
   },
   "e5af12578b399c21": {
     "athlete": "Elisa W.",
