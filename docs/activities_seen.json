@@ -701,6 +701,15 @@
     "sport": "Run",
     "title": "partie 1"
   },
+  "758bd03f79444d3d": {
+    "athlete": "Manu V.",
+    "distance": 6335.8,
+    "elevation": 72.0,
+    "first_seen": "2026-08-06T10:21:47Z",
+    "moving_time": 2345,
+    "sport": "Run",
+    "title": "Course à pied le matin"
+  },
   "78ef9d4276bff049": {
     "athlete": "Lou B.",
     "distance": 1571.5,
