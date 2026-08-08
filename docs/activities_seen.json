@@ -944,6 +944,15 @@
     "sport": "Hike",
     "title": "Randonnée le matin"
   },
+  "87c374b9a9ce8de5": {
+    "athlete": "Elisa W.",
+    "distance": 6563.5,
+    "elevation": 7.3,
+    "first_seen": "2026-08-08T08:24:27Z",
+    "moving_time": 2105,
+    "sport": "Run",
+    "title": "Semaine 7 Run 2"
+  },
   "881c0b213be62b4c": {
     "athlete": "Maureen B.",
     "distance": 0.0,
