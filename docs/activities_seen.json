@@ -1196,6 +1196,15 @@
     "sport": "Workout",
     "title": "Entraînement le matin"
   },
+  "ac13289f3f81a7aa": {
+    "athlete": "Julianne V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-08T21:17:01Z",
+    "moving_time": 2493,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids de nuit"
+  },
   "aff96b504d811260": {
     "athlete": "Lou R.",
     "distance": 0.0,
@@ -1240,6 +1249,15 @@
     "moving_time": 2700,
     "sport": "Workout",
     "title": "Semaine 3: muscu 2"
+  },
+  "b60ae449856549bb": {
+    "athlete": "Lou B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-08T21:17:01Z",
+    "moving_time": 2686,
+    "sport": "Workout",
+    "title": "Muscu 1"
   },
   "b72b7517f3069958": {
     "athlete": "Elisa W.",
