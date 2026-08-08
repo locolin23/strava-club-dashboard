@@ -926,6 +926,15 @@
     "sport": "Run",
     "title": "Afternoon Run"
   },
+  "856aebb9ab4dd63b": {
+    "athlete": "Lou B.",
+    "distance": 6691.5,
+    "elevation": 193.9,
+    "first_seen": "2026-08-08T09:24:25Z",
+    "moving_time": 2549,
+    "sport": "Run",
+    "title": "Course 1"
+  },
   "861029be2abfb080": {
     "athlete": "Elisa W.",
     "distance": 6373.6,
