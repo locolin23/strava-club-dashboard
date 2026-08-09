@@ -638,6 +638,15 @@
     "sport": "Walk",
     "title": "Marche en soirée"
   },
+  "614f08e8232565a0": {
+    "athlete": "Elsa B.",
+    "distance": 3554.8,
+    "elevation": 23.0,
+    "first_seen": "2026-08-09T06:33:24Z",
+    "moving_time": 1163,
+    "sport": "Run",
+    "title": "Course à pied matinale"
+  },
   "62482fffedaca572": {
     "athlete": "Lou B.",
     "distance": 0.0,
