@@ -791,6 +791,15 @@
     "sport": "Run",
     "title": "Course à pied le matin"
   },
+  "75aa4e334c9a30dd": {
+    "athlete": "Elisa W.",
+    "distance": 4235.9,
+    "elevation": 6.0,
+    "first_seen": "2026-08-09T17:19:09Z",
+    "moving_time": 1525,
+    "sport": "Run",
+    "title": "Dernier Run (enfin) : vitesse donc sprint et marche"
+  },
   "78ef9d4276bff049": {
     "athlete": "Lou B.",
     "distance": 1571.5,
