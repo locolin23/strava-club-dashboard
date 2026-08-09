@@ -332,6 +332,15 @@
     "sport": "Walk",
     "title": "Marche le midi"
   },
+  "328a94842fe5a502": {
+    "athlete": "Maureen B.",
+    "distance": 3001.0,
+    "elevation": 21.1,
+    "first_seen": "2026-08-09T20:16:20Z",
+    "moving_time": 996,
+    "sport": "Run",
+    "title": "Course à pied le soir course 2"
+  },
   "33e3a65643cd6306": {
     "athlete": "Julianne V.",
     "distance": 0.0,
@@ -754,6 +763,15 @@
     "moving_time": 1992,
     "sport": "Workout",
     "title": "Entraînement en soirée"
+  },
+  "70ead36747389bcf": {
+    "athlete": "Lou B.",
+    "distance": 4030.7,
+    "elevation": 0.0,
+    "first_seen": "2026-08-09T20:16:20Z",
+    "moving_time": 1500,
+    "sport": "Run",
+    "title": "Course 2"
   },
   "73b53e85ef92e414": {
     "athlete": "Elsa B.",
