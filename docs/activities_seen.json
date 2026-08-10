@@ -719,6 +719,15 @@
     "sport": "Kayaking",
     "title": "Rafting pendant 3h30"
   },
+  "6801a13a844a5b1d": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-10T11:38:53Z",
+    "moving_time": 3153,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
+  },
   "686a8bf1929c5614": {
     "athlete": "Lou B.",
     "distance": 1945.3,
