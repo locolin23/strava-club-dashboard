@@ -1700,6 +1700,15 @@
     "sport": "Walk",
     "title": "Marche dans l'après-midi"
   },
+  "f89267cb72a10fc2": {
+    "athlete": "Lou B.",
+    "distance": 1653.0,
+    "elevation": 0.0,
+    "first_seen": "2026-08-10T09:03:04Z",
+    "moving_time": 2145,
+    "sport": "Workout",
+    "title": "Tennis"
+  },
   "f9919b0d47a872f8": {
     "athlete": "Maureen B.",
     "distance": 4657.5,
