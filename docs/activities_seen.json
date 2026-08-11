@@ -1277,6 +1277,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids de nuit"
   },
+  "acc19fd6b7bc4695": {
+    "athlete": "Romane B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-11T11:34:23Z",
+    "moving_time": 1904,
+    "sport": "WeightTraining",
+    "title": "Lunch Weight Training"
+  },
   "aff96b504d811260": {
     "athlete": "Lou R.",
     "distance": 0.0,
@@ -1564,6 +1573,15 @@
     "moving_time": 2700,
     "sport": "Workout",
     "title": "Semaine 6: muscu 1"
+  },
+  "dfcccadd516a91c3": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-11T11:34:23Z",
+    "moving_time": 3481,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
   },
   "e2a338dfdb46fa7d": {
     "athlete": "Elisa W.",
