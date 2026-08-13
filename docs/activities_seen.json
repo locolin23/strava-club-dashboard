@@ -422,6 +422,15 @@
     "sport": "Walk",
     "title": "Dernier jour à Londres"
   },
+  "41f478e27ea277e1": {
+    "athlete": "Maureen B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-13T22:27:48Z",
+    "moving_time": 2348,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids de nuit"
+  },
   "442f37cb43b5d1ad": {
     "athlete": "Manu V.",
     "distance": 0.0,
