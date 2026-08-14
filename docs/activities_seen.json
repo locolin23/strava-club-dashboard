@@ -125,6 +125,15 @@
     "sport": "Ride",
     "title": "Sortie vélo le midi"
   },
+  "12663e832f79a9e6": {
+    "athlete": "Louis C.",
+    "distance": 52075.1,
+    "elevation": 350.0,
+    "first_seen": "2026-08-14T19:40:03Z",
+    "moving_time": 6945,
+    "sport": "Ride",
+    "title": "Sortie vélo en soirée"
+  },
   "12c0023492a51672": {
     "athlete": "Lou R.",
     "distance": 0.0,
