@@ -1,111 +1,6 @@
 {
   "history": [
     {
-      "timestamp": "2026-07-12T15:45:05Z",
-      "activity_count": 51,
-      "members": {
-        "Maureen B.": {
-          "total_km": 15.27,
-          "run_km": 15.27,
-          "run_count": 5,
-          "avg_speed_kmh": 10.38
-        },
-        "Melina G.": {
-          "total_km": 0.29,
-          "run_km": 0.29,
-          "run_count": 1,
-          "avg_speed_kmh": 11.73
-        },
-        "Julianne V.": {
-          "total_km": 18.9,
-          "run_km": 18.9,
-          "run_count": 4,
-          "avg_speed_kmh": 9.02
-        },
-        "Elisa W.": {
-          "total_km": 41.81,
-          "run_km": 32.16,
-          "run_count": 6,
-          "avg_speed_kmh": 9.14
-        },
-        "Lou R.": {
-          "total_km": 5.5,
-          "run_km": 5.5,
-          "run_count": 1,
-          "avg_speed_kmh": 9.15
-        },
-        "Manu V.": {
-          "total_km": 0.0,
-          "run_km": 0.0,
-          "run_count": 0,
-          "avg_speed_kmh": 0.0
-        },
-        "Lou B.": {
-          "total_km": 16.88,
-          "run_km": 14.28,
-          "run_count": 3,
-          "avg_speed_kmh": 10.5
-        },
-        "Louis C.": {
-          "total_km": 9.6,
-          "run_km": 9.6,
-          "run_count": 2,
-          "avg_speed_kmh": 10.22
-        },
-        "Elsa B.": {
-          "total_km": 8.99,
-          "run_km": 8.99,
-          "run_count": 5,
-          "avg_speed_kmh": 10.8
-        }
-      },
-      "type_breakdown": {
-        "Run": 27,
-        "WeightTraining": 11,
-        "Ride": 5,
-        "Walk": 1,
-        "Workout": 7
-      },
-      "leaderboard": [
-        [
-          "Elisa W.",
-          32.16
-        ],
-        [
-          "Julianne V.",
-          18.9
-        ],
-        [
-          "Maureen B.",
-          15.27
-        ],
-        [
-          "Lou B.",
-          14.28
-        ],
-        [
-          "Louis C.",
-          9.6
-        ],
-        [
-          "Elsa B.",
-          8.99
-        ],
-        [
-          "Lou R.",
-          5.5
-        ],
-        [
-          "Melina G.",
-          0.29
-        ],
-        [
-          "Manu V.",
-          0.0
-        ]
-      ]
-    },
-    {
       "timestamp": "2026-07-12T16:41:18Z",
       "activity_count": 51,
       "members": {
@@ -57035,6 +56930,122 @@
         [
           "Romane B.",
           12.57
+        ],
+        [
+          "Louis C.",
+          6.86
+        ],
+        [
+          "Manu V.",
+          6.34
+        ],
+        [
+          "Lou R.",
+          0.0
+        ],
+        [
+          "Melina G.",
+          0.0
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-08-15T18:09:08Z",
+      "activity_count": 99,
+      "members": {
+        "Romane B.": {
+          "total_km": 17.28,
+          "run_km": 17.28,
+          "run_count": 4,
+          "avg_speed_kmh": 9.57
+        },
+        "Elsa B.": {
+          "total_km": 17.2,
+          "run_km": 17.2,
+          "run_count": 7,
+          "avg_speed_kmh": 11.04
+        },
+        "Louis C.": {
+          "total_km": 161.31,
+          "run_km": 6.86,
+          "run_count": 1,
+          "avg_speed_kmh": 10.98
+        },
+        "Lou R.": {
+          "total_km": 0.0,
+          "run_km": 0.0,
+          "run_count": 6,
+          "avg_speed_kmh": 0.0
+        },
+        "Manu V.": {
+          "total_km": 6.34,
+          "run_km": 6.34,
+          "run_count": 1,
+          "avg_speed_kmh": 9.73
+        },
+        "Maureen B.": {
+          "total_km": 18.86,
+          "run_km": 18.86,
+          "run_count": 5,
+          "avg_speed_kmh": 10.4
+        },
+        "Julianne V.": {
+          "total_km": 79.23,
+          "run_km": 20.86,
+          "run_count": 4,
+          "avg_speed_kmh": 9.0
+        },
+        "Lou B.": {
+          "total_km": 31.42,
+          "run_km": 21.96,
+          "run_count": 4,
+          "avg_speed_kmh": 9.79
+        },
+        "Elisa W.": {
+          "total_km": 41.42,
+          "run_km": 41.42,
+          "run_count": 8,
+          "avg_speed_kmh": 9.33
+        },
+        "Melina G.": {
+          "total_km": 0.0,
+          "run_km": 0.0,
+          "run_count": 0,
+          "avg_speed_kmh": 0.0
+        }
+      },
+      "type_breakdown": {
+        "Run": 40,
+        "Workout": 20,
+        "Ride": 13,
+        "WeightTraining": 21,
+        "Walk": 3,
+        "Kayaking": 2
+      },
+      "leaderboard": [
+        [
+          "Elisa W.",
+          41.42
+        ],
+        [
+          "Lou B.",
+          21.96
+        ],
+        [
+          "Julianne V.",
+          20.86
+        ],
+        [
+          "Maureen B.",
+          18.86
+        ],
+        [
+          "Romane B.",
+          17.28
+        ],
+        [
+          "Elsa B.",
+          17.2
         ],
         [
           "Louis C.",
