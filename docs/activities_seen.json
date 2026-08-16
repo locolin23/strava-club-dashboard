@@ -1781,6 +1781,15 @@
     "sport": "Run",
     "title": "Semaine 7:run 2"
   },
+  "ef8659409ff0b23f": {
+    "athlete": "Maureen B.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-16T10:09:41Z",
+    "moving_time": 3781,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids le matin"
+  },
   "f14aa85897132cab": {
     "athlete": "Lou R.",
     "distance": 0.0,
