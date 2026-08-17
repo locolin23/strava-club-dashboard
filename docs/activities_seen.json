@@ -1124,6 +1124,15 @@
     "sport": "Run",
     "title": "Course à pied le matin"
   },
+  "8963c3e09f62cdae": {
+    "athlete": "Romane B.",
+    "distance": 4056.2,
+    "elevation": 14.5,
+    "first_seen": "2026-08-17T18:18:28Z",
+    "moving_time": 1584,
+    "sport": "Run",
+    "title": "Evening Run"
+  },
   "8b60758a9e5c565b": {
     "athlete": "Lou R.",
     "distance": 0.0,
