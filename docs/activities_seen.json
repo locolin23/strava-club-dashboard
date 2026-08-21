@@ -584,6 +584,15 @@
     "sport": "Run",
     "title": "course à pied"
   },
+  "54879adda94e86c8": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-21T11:14:04Z",
+    "moving_time": 3241,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
+  },
   "551bd36d942963b5": {
     "athlete": "Elisa W.",
     "distance": 6302.3,
@@ -1420,6 +1429,15 @@
     "moving_time": 1875,
     "sport": "WeightTraining",
     "title": "Night Weight Training"
+  },
+  "b1ab6f01c58cf61a": {
+    "athlete": "Louis C.",
+    "distance": 7054.3,
+    "elevation": 93.8,
+    "first_seen": "2026-08-21T11:14:04Z",
+    "moving_time": 2249,
+    "sport": "Run",
+    "title": "Course à pied le midi"
   },
   "b2b3ee0c84f0239f": {
     "athlete": "Manu V.",
