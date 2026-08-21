@@ -1259,6 +1259,15 @@
     "sport": "WeightTraining",
     "title": "Entraînement aux poids de nuit"
   },
+  "9ae8896086253839": {
+    "athlete": "Julianne V.",
+    "distance": 3125.9,
+    "elevation": 43.1,
+    "first_seen": "2026-08-21T18:17:48Z",
+    "moving_time": 1260,
+    "sport": "Run",
+    "title": "Course à pied matinale"
+  },
   "9b86c8177921ffb6": {
     "athlete": "Melina G.",
     "distance": 0.0,
