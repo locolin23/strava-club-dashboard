@@ -719,6 +719,15 @@
     "sport": "Run",
     "title": "Course 1"
   },
+  "5eae42fe218a61e1": {
+    "athlete": "Julianne V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-23T17:10:17Z",
+    "moving_time": 2589,
+    "sport": "WeightTraining",
+    "title": "Entraînement aux poids en soirée"
+  },
   "5eaf81f0e5264d2b": {
     "athlete": "Manu V.",
     "distance": 0.0,
