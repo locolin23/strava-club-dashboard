@@ -1304,6 +1304,15 @@
     "sport": "Run",
     "title": "Course à pied du midi"
   },
+  "9f296ef9de81cb51": {
+    "athlete": "Manu V.",
+    "distance": 0.0,
+    "elevation": 0,
+    "first_seen": "2026-08-24T11:15:54Z",
+    "moving_time": 3213,
+    "sport": "Ride",
+    "title": "Sortie vélo le midi"
+  },
   "a1a6d00edd80f365": {
     "athlete": "Lou R.",
     "distance": 0.0,
